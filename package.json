@@ -1,0 +1,23 @@
+{
+  "name": "seat12a-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Site public de Seat 12A (bêta).",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "captures": "node tools/captures.js"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/geist-mono": "5.3.0",
+    "astro": "7.4.13",
+    "lenis": "1.1.13"
+  }
+}

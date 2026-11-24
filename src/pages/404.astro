@@ -1,0 +1,27 @@
+---
+/* Not found. Plain and quiet: the night sky colour of the arrival, one sentence, one way back. */
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import '@fontsource-variable/geist';
+---
+<Base title="Page introuvable · Seat 12A" description="Cette page n'existe pas." noindex>
+  <main class="lost">
+    <a class="brand" href="/" aria-label="Seat 12A, accueil"><Logo /></a>
+    <h1>Cette porte d'embarquement n'existe pas.</h1>
+    <p>La page a peut-être changé d'adresse, ou n'a jamais existé.</p>
+    <a class="back" href="/">Retour à l'accueil</a>
+  </main>
+</Base>
+
+<style is:global>
+  body { margin: 0; background: #0B1030; color: #fff; font-family: "Geist Variable", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+</style>
+<style>
+  .lost { min-height: 100svh; box-sizing: border-box; padding: 32px 16px; display: grid; place-content: center; justify-items: center; gap: 18px; text-align: center; }
+  .brand { color: #fff; margin-bottom: 24px; }
+  .brand :global(svg) { height: 26px; width: auto; display: block; }
+  h1 { margin: 0; font-weight: 500; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.05; letter-spacing: -.045em; max-width: 18ch; text-wrap: balance; }
+  p { margin: 0; color: rgba(255, 255, 255, .78); font-size: 17px; line-height: 1.55; }
+  .back { margin-top: 8px; color: #0B1030; background: #fff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 13px 20px; border-radius: 99px; }
+  .back:focus-visible { outline: 2px solid #FFB020; outline-offset: 3px; }
+</style>
