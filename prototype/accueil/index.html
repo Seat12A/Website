@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Seat 12A Hublot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : une scène pixel plein écran (WebGL, une échelle de 8 tons par scène, tramage Bayer) qui raconte un vol au
+   scroll ; par-dessus, une barre de navigation et des sections de texte nettes, centrées, posées dans des zones de ciel
+   calmes. Univers unique, donc pas de variante claire/sombre. */
+:root {
+  color-scheme: dark;
+  --white: #FFFFFF;
+  --soft: rgba(255, 255, 255, .78);
+  --ink: #161B36;
+  --ink-soft: rgba(22, 27, 54, .72);
+  --amber: #FFB020;
+  --chip: #0B1030;
+  --line: rgba(255, 255, 255, .1);
+  --sans: "Geist", "SF Pro Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+}
+html, body { overflow-x: clip; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+body { background: #1A2357; color: var(--white); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+#sky { position: fixed; left: 0; top: 0; z-index: 0; pointer-events: none; }
+
+/* ---------- Barre de navigation ---------- */
+.nav {
+  position: fixed; z-index: 5; top: calc(14px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%);
+  width: min(1180px, calc(100% - 32px)); display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 9px 9px 9px 16px; border-radius: 99px;
+  transition: width .6s var(--ease), background-color .4s var(--ease), box-shadow .4s var(--ease);
+}
+.nav.solid {
+  width: min(880px, calc(100% - 32px)); background: #0B1030; box-shadow: inset 0 0 0 1px var(--line);
+}
+.brand { display: flex; align-items: center; color: var(--white); text-decoration: none; }
+.brand svg { height: 24px; width: auto; display: block; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a { color: var(--soft); text-decoration: none; font: 500 14px/1 var(--sans); padding: 10px 12px; border-radius: 99px; transition: color .2s; }
+.nav-links a:hover { color: var(--white); }
+.nav a:focus-visible, .btn:focus-visible, .link:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+.btn {
+  appearance: none; border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  font: 500 14px/1 var(--sans); padding: 13px 20px; border-radius: 99px; background: var(--white); color: var(--ink);
+  transition: transform .25s var(--ease), background-color .25s var(--ease);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.small { padding: 11px 16px; }
+.link { color: var(--white); text-decoration: none; font: 500 14px/1 var(--sans); padding-bottom: 3px; border-bottom: 1px solid rgba(255, 255, 255, .4); transition: border-color .2s; }
+.link:hover { border-bottom-color: var(--white); }
+
+/* ---------- Piste de scroll et sections ---------- */
+#track { position: relative; height: 1000vh; z-index: 1; }
+.sec {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); will-change: transform;
+  width: min(720px, calc(100% - 32px)); display: grid; justify-items: center; gap: 20px; text-align: center;
+}
+.sec h1, .sec h2 { margin: 0; font-weight: 500; letter-spacing: -.045em; text-wrap: balance; }
+.sec h1 { font-size: clamp(42px, 6.4vw, 92px); line-height: .96; letter-spacing: -.05em; }
+.sec h2 { font-size: clamp(32px, 4.6vw, 62px); line-height: 1; }
+.sec p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--soft); max-width: 46ch; text-wrap: pretty; }
+.sec.left { left: clamp(16px, 9vw, 140px); width: min(560px, calc(100% - 32px)); justify-items: start; text-align: left; }
+.sec.left .ctas, .sec.left .ask { justify-content: flex-start; }
+.sec.light { color: var(--ink); }
+.sec.light p { color: var(--ink-soft); }
+.ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; margin-top: 6px; }
+.hero { width: min(980px, calc(100% - 32px)); }
+
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 44px; text-align: left; margin-top: 10px; width: 100%; }
+.rules div { display: grid; gap: 6px; min-width: 0; }
+.rules h3 { margin: 0; font: 500 18px/1.2 var(--sans); letter-spacing: -.02em; }
+.rules p { font-size: 15px; }
+
+.ask { display: flex; gap: 8px; width: min(520px, 100%); margin-top: 6px; }
+.ask input {
+  flex: 1; min-width: 0; font: 400 15px/1 var(--sans); color: var(--white); background: #0B1030;
+  border: 1px solid rgba(255, 255, 255, .22); border-radius: 99px; padding: 14px 18px;
+}
+.ask input::placeholder { color: rgba(255, 255, 255, .55); }
+.note { font-size: 14px; color: var(--soft); }
+
+
+/* ---------- Altimètre ---------- */
+.alt {
+  position: fixed; z-index: 4; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px 9px 11px; border-radius: 99px;
+  background: var(--chip); box-shadow: inset 0 0 0 1px var(--line);
+  font: 500 13px/1 var(--mono); color: #EEF2FF; font-variant-numeric: tabular-nums;
+}
+.alt svg { width: 18px; height: 12px; display: block; transition: transform .6s var(--ease); shape-rendering: crispEdges; }
+.digits { display: inline-flex; height: 1em; overflow: hidden; }
+.digits .d { display: inline-block; width: 1ch; height: 1em; overflow: hidden; }
+.digits .d.gap { margin-left: .3ch; }
+.digits .d.lead { width: 0; }
+.digits .col { display: flex; flex-direction: column; transition: transform .45s var(--ease); }
+.digits .col span { height: 1em; line-height: 1em; }
+.unit { color: rgba(238, 242, 255, .6); }
+
+/* ---------- Pictogrammes en pixels ---------- */
+.picto { width: 40px; height: 40px; image-rendering: pixelated; image-rendering: crisp-edges; margin-bottom: 4px; }
+
+/* ---------- Survol des boutons : un balayage en pixels ----------
+   Une couleur de ciel balaie le bouton de gauche à droite par paliers, avec un bord tramé, comme la lumière
+   qui passe sur l'aile. Le texte se décale d'un pixel. Les liens : des tirets qui défilent comme un balisage de piste. */
+.btn { position: relative; isolation: isolate; overflow: hidden; }
+.btn::before {
+  content: ""; position: absolute; inset: 0 -8px 0 0; z-index: -1;
+  background:
+    linear-gradient(#CFDDFF, #CFDDFF) left / calc(100% - 8px) 100% no-repeat,
+    repeating-conic-gradient(#CFDDFF 0 25%, transparent 0 50%) right / 8px 8px repeat-y;
+  transform: translateX(-102%); transition: transform .42s steps(8);
+}
+.btn:hover::before, .btn:focus-visible::before { transform: translateX(0); }
+.btn > * , .btn { transition: transform .25s steps(2), background-color .25s; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); }
+.link { background: linear-gradient(90deg, currentColor 50%, transparent 0) 0 100% / 6px 1px repeat-x; border-bottom: 0; padding-bottom: 4px; }
+.link:hover { animation: balisage .5s steps(3) infinite; }
+@keyframes balisage { to { background-position: 6px 100%; } }
+
+/* ---------- Pied de page : sous la scène, il n'apparaît que si l'on continue de descendre après l'arrivée ---------- */
+.foot-gap { height: 22vh; }
+.foot {
+  position: relative; z-index: 2; background: #070A1A;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 56px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+.foot::before {                                     /* un bord tramé, comme le reste de la scène */
+  content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px;
+  background:
+    repeating-conic-gradient(#070A1A 0 25%, transparent 0 50%) 0 6px / 6px 6px no-repeat,
+    repeating-conic-gradient(#070A1A 0 25%, transparent 0 50%) 0 0 / 12px 12px;
+  background-repeat: repeat-x;
+}
+.foot-in { max-width: 1120px; margin: 0 auto; display: grid; gap: 36px; }
+.foot-brand p { margin: 0; max-width: 48ch; font-size: 14px; line-height: 1.55; color: var(--soft); }
+.foot-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.foot-cols div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.foot-cols h4 { margin: 0 0 2px; font: 500 13px/1 var(--sans); color: var(--white); }
+.foot-cols a { color: rgba(255, 255, 255, .62); text-decoration: none; font-size: 14px; transition: color .2s; }
+.foot-cols a:hover { color: var(--white); }
+.foot-cols a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.foot-base { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font: 400 12px/1.4 var(--mono); color: rgba(255, 255, 255, .5); }
+
+/* ---------- Son de cabine ---------- */
+.snd {
+  position: fixed; z-index: 4; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  appearance: none; border: 0; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 9px 13px 9px 11px; border-radius: 99px;
+  background: var(--chip); box-shadow: inset 0 0 0 1px var(--line);
+  font: 500 12px/1 var(--sans); color: #EEF2FF; transition: opacity .4s var(--ease);
+}
+.snd svg { width: 12px; height: 12px; shape-rendering: crispEdges; }
+.snd .w1, .snd .w2 { opacity: .25; }
+.snd[aria-pressed="true"] .w1, .snd[aria-pressed="true"] .w2 { opacity: 1; }
+.snd:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.alt, .snd { transition: opacity .4s var(--ease); }
+.landed .alt, .landed .snd { opacity: 0; pointer-events: none; }
+.foot-base { padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, .08); }
+
+@media (max-width: 760px) {
+  .sec.left { left: 50%; justify-items: center; text-align: center; }
+  .sec.left .ctas, .sec.left .ask { justify-content: center; }
+  .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nav-links { display: none; }
+  .brand svg { height: 20px; }
+  .rules { grid-template-columns: 1fr; gap: 20px; }
+  .sec p { font-size: 16px; }
+  .ask { flex-direction: column; }
+}
+@media (max-width: 520px) {
+  .sec { gap: 16px; }
+  .rules p { font-size: 14px; }
+  .alt { padding: 8px 12px 8px 10px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn::before { transition: none; }
+  .link:hover { animation: none; }
+  .digits .col, .alt svg, .nav { transition: none; }
+}
+</style>
+
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<nav class="nav" id="nav" aria-label="Navigation principale">
+  <a class="brand" href="#" id="home" aria-label="Seat 12A, accueil">
+    <svg viewBox="0 0 966 202" fill="none" aria-hidden="true">
+      <path d="M99.583 4.958H58.417C28.904 4.958 4.979 31.541 4.979 64.333v72.834c0 32.791 23.925 59.375 53.438 59.375h41.166c29.513 0 53.438-26.584 53.438-59.375V64.333c0-32.792-23.925-59.375-53.438-59.375Z" fill="#fff" stroke="#0B1030" stroke-width="9.9"/>
+      <mask id="lgm" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="39" y="39" width="80" height="120"><path d="M86.521 39H71.479C53.553 39 39.021 54.241 39.021 73.042V124.5c0 18.801 14.532 34.042 32.458 34.042h15.042c17.926 0 32.458-15.241 32.458-34.042V73.042C118.979 54.241 104.447 39 86.521 39Z" fill="#fff"/></mask>
+      <g mask="url(#lgm)">
+        <path d="M124.521 31.479H33.479v134.583h91.042V31.479Z" fill="url(#lgl)"/>
+        <circle cx="60.396" cy="64.333" r="13.458" fill="url(#lgr)"/>
+        <path d="M33.479 122.521c5.938-3.958 11.875-4.354 16.625-2.771 6.333-3.958 17.417-4.354 23.75.396 9.5-.792 20.584 1.583 26.125 7.125 7.125.396 14.25 3.167 20.584 7.917l3.958 30.875H33.479v-43.542Z" fill="#FEFDFF"/>
+      </g>
+      <path d="M71.479 35.833h15.042c19.675 0 35.625 16.659 35.625 37.209V124.5c0 20.55-15.95 37.208-35.625 37.208H71.479c-19.675 0-35.625-16.658-35.625-37.208V73.042c0-20.55 15.95-37.209 35.625-37.209Z" stroke="#0B1030" stroke-width="7.1"/>
+      <path fill="currentColor" d="M268.117 175.021c-9.769 0-18.156-1.28-25.163-3.84-6.939-2.627-12.733-6.265-17.381-10.914-4.649-4.716-8.118-9.667-10.409-14.855l-3.334-7.781 24.758-8.489 2.122 5.053c1.482 3.301 3.537 6.299 6.164 8.994 2.695 2.627 5.996 4.783 9.904 6.467 3.907 1.685 8.455 2.527 13.642 2.527 7.141 0 12.699-1.55 16.674-4.649 3.975-3.166 5.962-7.68 5.962-13.541v-1.314c0-6.063-2.122-10.678-6.366-13.844-4.177-3.167-12.531-6.771-25.062-10.813-15.764-5.053-26.644-10.948-32.64-17.685-5.929-6.804-8.893-14.956-8.893-24.455v-.808c0-11.52 4.413-20.851 13.238-27.992 8.893-7.209 20.784-10.813 35.672-10.813 8.556 0 15.799 1.078 21.727 3.234 5.929 2.088 11.083 5.221 15.462 9.398 4.379 4.177 7.713 8.522 10.004 13.036l3.436 6.67-23.748 8.69-2.324-4.345c-1.55-2.897-3.436-5.457-5.659-7.68-2.224-2.223-4.784-3.874-7.681-4.952-2.829-1.078-6.366-1.617-10.61-1.617-6.333 0-11.487 1.347-15.462 4.042-3.907 2.627-5.861 6.299-5.861 11.015v.808c0 4.379 1.819 8.118 5.457 11.217 3.705 3.1 12.666 6.973 26.881 11.622 15.293 4.985 25.937 10.981 31.933 17.987 5.996 7.007 8.994 15.765 8.994 26.275v1.313c0 13.003-4.783 23.277-14.35 30.822-9.499 7.478-21.861 11.217-37.087 11.217Zm113.548 0c-15.159 0-27.858-4.952-38.098-14.855-10.24-9.971-15.36-22.67-15.36-38.098v-4.749c0-15.293 5.086-27.891 15.259-37.795 10.173-9.97 22.67-14.956 37.491-14.956 15.091 0 27.218 4.716 36.38 14.148 9.23 9.364 13.844 21.356 13.844 35.975v11.723h-89.837V110.75h65.989v-1.92c-.405-6.535-2.965-11.89-7.681-16.067-4.716-4.245-10.88-6.367-18.493-6.367-7.882 0-14.686 2.897-20.413 8.691-5.659 5.794-8.488 13.305-8.488 22.535v5.457c0 9.297 2.964 16.775 8.892 22.434 5.996 5.659 12.969 8.489 20.919 8.489 4.177 0 7.848-.607 11.015-1.819 3.234-1.213 6.13-3.032 8.69-5.457 2.628-2.493 5.188-6.097 7.681-10.813l19.604 8.792c-3.705 7.545-7.714 13.406-12.025 17.583-4.245 4.11-9.23 7.276-14.956 9.499-5.727 2.156-12.531 3.234-20.413 3.234Zm93.873 0c-10.914 0-19.941-2.93-27.083-8.792-7.073-5.861-10.61-13.676-10.61-23.444v-2.628c0-10.24 3.907-18.392 11.722-24.455 7.815-6.063 18.123-9.095 30.923-9.095 4.716 0 9.364.472 13.945 1.415 4.581.943 8.758 2.29 12.531 4.042v-7.175c0-6.13-2.122-10.846-6.366-14.147-4.177-3.369-9.196-5.053-15.057-5.053-3.167 0-6.097.472-8.792 1.415-2.695.876-5.154 2.122-7.377 3.739-2.223 1.617-4.48 3.604-6.771 5.962l-3.335 3.436-18.088-13.137 4.749-5.154c3.234-3.436 6.872-6.468 10.914-9.095 4.042-2.695 8.59-4.75 13.642-6.165 5.12-1.414 11.184-2.122 18.19-2.122 13.407 0 24.152 3.436 32.237 10.308 8.151 6.871 12.227 16.472 12.227 28.8V173h-24.96v-19.908l4.648 4.75h-4.648c-3.571 5.659-8.118 9.937-13.643 12.834-5.457 2.897-11.789 4.345-18.998 4.345Zm7.074-19.605c7.613 0 13.575-2.56 17.887-7.68 4.311-5.187 6.467-10.307 6.467-15.36v-3.941c-2.358-1.684-5.491-3.032-9.398-4.042-3.907-1.078-8.152-1.617-12.733-1.617-6.467 0-11.621 1.314-15.461 3.941-3.84 2.627-5.76 6.434-5.76 11.419v2.628c0 4.648 1.751 8.252 5.254 10.812 3.504 2.56 8.085 3.84 13.744 3.84Zm98.958 19.605c-8.624 0-15.63-2.425-21.02-7.276-5.322-4.918-7.983-12.766-7.983-23.546V40.82h26.173v100.752c0 4.379.842 7.411 2.527 9.095 1.751 1.684 4.244 2.526 7.478 2.526 1.684 0 3.233-.101 4.648-.303 1.482-.269 3.099-.674 4.851-1.213l2.728-.808v20.312l-3.537 1.213c-2.29.741-4.817 1.347-7.579 1.819-2.695.539-5.457.808-8.286.808Zm-43.555-86.503V66.589h62.957v21.929h-62.957ZM683.965 173V62.446l-25.062 18.19-12.429-18.796 46.485-33.752h17.583V173h-26.577Zm48.089 0v-20.211l41.534-46.081c8.354-9.162 14.215-16.303 17.583-21.423 3.436-5.12 5.154-10.308 5.154-15.563v-.606c0-5.592-1.65-9.971-4.951-13.137-3.302-3.234-8.017-4.851-14.148-4.851-3.773 0-7.007.573-9.701 1.718-2.695 1.145-5.087 2.998-7.175 5.558-2.089 2.493-3.941 5.322-5.558 8.488l-2.426 4.649-20.615-10.308 3.133-6.872c2.156-4.649 5.255-9.196 9.297-13.642 4.042-4.514 8.994-8.051 14.855-10.611 5.929-2.56 12.8-3.84 20.615-3.84 13.878 0 24.624 3.604 32.237 10.813 7.612 7.141 11.419 16.505 11.419 28.093v.808c0 7.95-2.021 15.394-6.063 22.333-3.975 6.872-10.51 15.293-19.605 25.264l-31.226 35.369h61.037V173h-95.396Zm100.735 0 52.548-144.71h26.982L964.968 173h-30.114l-35.773-101.459-.809-3.537-1.01 3.537L861.387 173h-28.598Zm26.072-31.529 6.871-20.211h65.181l7.074 20.211h-79.126Z"/>
+      <defs>
+        <linearGradient id="lgl" x1="0" y1="39.4" x2="0" y2="134.4" gradientUnits="userSpaceOnUse"><stop stop-color="#4A83C4"/><stop offset=".2" stop-color="#66A2E4"/><stop offset=".55" stop-color="#90BFEF"/><stop offset="1" stop-color="#BDD6F0"/></linearGradient>
+        <radialGradient id="lgr" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60.396 64.333) scale(13.458)"><stop stop-color="#FFF4E6"/><stop offset=".55" stop-color="#FBF7F4"/><stop offset=".75" stop-color="#E2EDF9" stop-opacity=".9"/><stop offset="1" stop-color="#A8C8EC" stop-opacity="0"/></radialGradient>
+      </defs>
+    </svg>
+  </a>
+  <div class="nav-links">
+    <a href="#" data-noop>Cases</a>
+    <a href="#" data-noop>Demander</a>
+    <a href="#" data-noop>Méthode</a>
+    <a href="#" data-noop>À propos</a>
+  </div>
+  <a class="btn small" href="#" data-noop>Installer l'extension</a>
+</nav>
+
+<main id="track">
+  <section class="sec hero" style="--f:0" data-calm="1" data-y="-.04">
+    <h1>Prenez de la hauteur sur ce qui circule.</h1>
+    <p>Seat 12A vérifie ce qui circule sur X, sources à l'appui. Sans regarder qui parle, sans rien vendre.</p>
+    <div class="ctas">
+      <a class="btn" href="#" data-noop>Voir les cases</a>
+      <a class="link" href="#" data-noop>Demander une vérification</a>
+    </div>
+  </section>
+
+  <section class="sec light left" style="--f:.265" data-calm="0">
+    <h2>On ne regarde jamais qui parle.</h2>
+    <p>Nos modèles ne reçoivent jamais l'auteur d'un post. Ni son nom, ni sa popularité, ni son bord politique ne changent la priorité ou le verdict.</p>
+  </section>
+
+  <section class="sec" style="--f:.455" data-calm="1" data-y="-.14">
+    <h2>Puis on cherche, jusqu'à y voir clair.</h2>
+    <p>Chaque affirmation est isolée, confrontée aux sources, puis relue par l'équipage avant de devenir une note publique, écrite pour être comprise.</p>
+  </section>
+
+  <section class="sec left" style="--f:.55" data-calm="1" data-y="-.12">
+    <h2>Ce qui vient d'être vérifié.</h2>
+    <p>Chaque case montre le post d'origine, l'affirmation vérifiée, les sources consultées et le verdict, sans jargon.</p>
+    <div class="ctas"><a class="btn" href="#" data-noop>Parcourir les cases</a></div>
+  </section>
+
+  <section class="sec" style="--f:.64" data-calm="1">
+    <h2>Nos règles de vol.</h2>
+    <div class="rules">
+      <div><canvas class="picto" data-p="balance" width="16" height="16" aria-hidden="true"></canvas><h3>Pas de faux équilibre</h3><p>Quand les preuves penchent d'un côté, on le dit clairement.</p></div>
+      <div><canvas class="picto" data-p="loupe" width="16" height="16" aria-hidden="true"></canvas><h3>Les sources, toujours</h3><p>Chaque note montre d'où elle vient. Vous pouvez tout vérifier.</p></div>
+      <div><canvas class="picto" data-p="casque" width="16" height="16" aria-hidden="true"></canvas><h3>Un humain a le dernier mot</h3><p>L'équipage relit et modère chaque note.</p></div>
+      <div><canvas class="picto" data-p="coeur" width="16" height="16" aria-hidden="true"></canvas><h3>Rien à vendre</h3><p>Pas de pub, pas d'abonnement. Une association à but non lucratif.</p></div>
+    </div>
+  </section>
+
+  <section class="sec left" style="--f:.73" data-calm="1" data-y="-.06">
+    <h2>Un doute ? Posez la question.</h2>
+    <p>Collez une affirmation ou un lien. On cherche les sources et on vous dit aussi quand on ne sait pas.</p>
+    <form class="ask" id="ask">
+      <input id="askInput" type="text" placeholder="Cette photo date-t-elle vraiment de 2024 ?" aria-label="Affirmation ou lien à vérifier">
+      <button class="btn" type="submit">Vérifier</button>
+    </form>
+    <span class="note">Ou installez l'extension : elle repère les posts à vérifier directement sur X.</span>
+  </section>
+
+  <section class="sec end" style="--f:1" data-calm="1" data-y="-.21">
+    <h2>Vous pouvez détacher votre ceinture.</h2>
+    <p>Merci d'avoir pris de la hauteur avec nous.</p>
+    <div class="ctas"><button class="btn" id="takeoff" type="button">Redécoller</button></div>
+  </section>
+</main>
+<div class="foot-gap" aria-hidden="true"></div>
+<footer class="foot" id="foot">
+  <div class="foot-in">
+    <div class="foot-brand">
+      <p>Seat 12A vérifie ce qui circule sur X, en français, sources à l'appui. Une association à but non lucratif, indépendante de X et de tout parti politique.</p>
+    </div>
+    <nav class="foot-cols" aria-label="Pied de page">
+      <div><h4>Seat 12A</h4><a href="#" data-noop>Les cases</a><a href="#" data-noop>Demander une vérification</a><a href="#" data-noop>L'extension</a></div>
+      <div><h4>Comprendre</h4><a href="#" data-noop>Méthode</a><a href="#" data-noop>Nos règles de vol</a><a href="#" data-noop>Questions fréquentes</a></div>
+      <div><h4>L'association</h4><a href="#" data-noop>À propos</a><a href="#" data-noop>Transparence et financement</a><a href="#" data-noop>Nous contacter</a></div>
+      <div><h4>Légal</h4><a href="#" data-noop>Mentions légales</a><a href="#" data-noop>Confidentialité</a></div>
+    </nav>
+    <div class="foot-base">
+      <span>© 2026 Seat 12A</span>
+      <span class="foot-flight">Vol S12A · arrivé à destination</span>
+    </div>
+  </div>
+</footer>
+
+<button class="snd" id="snd" type="button" aria-pressed="false" title="Son de cabine">
+  <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="1" y="4" width="2" height="4"/><rect x="3" y="3" width="2" height="6"/><rect x="5" y="1" width="1" height="10"/>
+    <rect class="w1" x="8" y="4" width="1" height="4"/><rect class="w2" x="10" y="2" width="1" height="8"/></svg>
+  <span id="sndLabel">Son coupé</span>
+</button>
+
+<div class="alt" aria-hidden="true">
+  <svg id="plane" viewBox="0 0 18 12" fill="currentColor">
+    <rect x="2" y="5" width="13" height="3"/><rect x="15" y="6" width="2" height="2"/><rect x="1" y="2" width="2" height="4"/>
+    <rect x="3" y="4" width="2" height="1"/><rect x="7" y="7" width="5" height="2" opacity=".7"/><rect x="13" y="5" width="2" height="1" opacity=".5"/>
+  </svg>
+  <span class="digits" id="digits"></span><span class="unit">ft</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(() => {
+'use strict';
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (t) => t * t * (3 - 2 * t);
+const $ = (s) => document.querySelector(s);
+const mixV = (a, b, t) => Array.isArray(a) ? a.map((v, i) => mixV(v, b[i], t)) : lerp(a, b, t);
+const curve = (T) => (f) => { let i = 0; while (i < T.length - 2 && f > T[i + 1][0]) i++;
+  const [fa, va] = T[i], [fb, vb] = T[i + 1]; return mixV(va, vb, smooth(clamp((f - fa) / (fb - fa)))); };
+
+/* ---------- Palettes ----------
+   Comme chez Aria : UNE échelle de 8 tons par scène, et tout y est dessiné (ciel, nuages, sol, bâtiments, aile).
+   Construites en OKLCH : luminosité régulière, saturation qui retombe vers le noir et vers le blanc.
+   On mélange toujours des tons avant le tramage, jamais des couleurs : pas de damier entre deux couleurs éloignées.
+   Un seul accent hors échelle : la lumière chaude des fenêtres. */
+function oklch(L, C, H) {
+  const hr = H * Math.PI / 180, A = C * Math.cos(hr), Bb = C * Math.sin(hr);
+  const l = (L + .3963377774 * A + .2158037573 * Bb) ** 3, m = (L - .1055613458 * A - .0638541728 * Bb) ** 3, s3 = (L - .0894841775 * A - 1.291485548 * Bb) ** 3;
+  const lin = [4.0767416621 * l - 3.3077115913 * m + .2309699292 * s3, -1.2684380046 * l + 2.6097574011 * m - .3413193965 * s3, -.0041960863 * l - .7034186147 * m + 1.707614701 * s3];
+  return lin.map((x) => { x = clamp(x); return x <= .0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - .055; });
+}
+const ladder = (L, C, H) => L.map((v, i) => oklch(v, C[i], Array.isArray(H) ? H[i] : H));
+const PAL = {
+  DAWN:      ladder([.14, .22, .30, .39, .49, .61, .75, .93], [.035, .06, .08, .09, .095, .10, .09, .045], [272, 272, 280, 300, 345, 25, 50, 75]),
+  SUNRISE:   ladder([.18, .27, .36, .46, .57, .69, .82, .96], [.05, .08, .10, .10, .09, .09, .08, .04], [262, 262, 268, 290, 340, 30, 55, 80]),
+  CLOUDDAWN: ladder([.42, .52, .61, .70, .78, .85, .91, .98], [.03, .035, .035, .03, .03, .025, .02, .01], [290, 295, 305, 320, 340, 10, 40, 70]),
+  CLOUD:     ladder([.45, .55, .64, .72, .80, .87, .93, .99], [.03, .03, .028, .025, .02, .015, .01, .005], 258),
+  CRUISE:    ladder([.14, .24, .34, .45, .56, .68, .81, .97], [.04, .08, .12, .15, .15, .12, .07, .015], 264),
+  GOLD:      ladder([.18, .27, .37, .48, .60, .72, .84, .95], [.06, .09, .11, .13, .14, .13, .10, .05], [290, 310, 340, 10, 40, 58, 72, 85]),
+  DUSK:      ladder([.15, .22, .30, .39, .48, .58, .69, .82], [.04, .06, .07, .07, .07, .06, .06, .05], [280, 285, 295, 310, 330, 350, 20, 45]),
+  NIGHT:     ladder([.10, .16, .22, .29, .37, .47, .62, .90], [.02, .04, .06, .07, .07, .06, .045, .025], [265, 265, 266, 268, 270, 268, 258, 250]),
+};
+
+/* ---------- Plan de vol ----------
+   Les scènes ne changent jamais à vue : on entre dans le nuage (fog monte, des voiles s'épaississent), on change de décor
+   tant qu'on est dedans, puis on en ressort (les voiles s'effilochent). sea et ceil ne bougent pas quand on les voit. */
+const K = [
+  { f: 0.000, pal: 'DAWN',      ceil: 1.4, sea: -.4, fog: 0, cover: .10, top: .03, bot: .92, lo: .45, hi: .80, sun: [.82, .3, .04], glow: .55, rays: .22, stars: .7, wing: [.10, .62] },
+  { f: 0.070, pal: 'DAWN',      ceil: 1.4, sea: -.4, fog: 0, cover: .12, top: .06, bot: .93, lo: .45, hi: .82, sun: [.82, .3, .04], glow: .62, rays: .30, stars: .25, wing: [.12, .68] },
+  { f: 0.115, pal: 'SUNRISE',   ceil: 1.4, sea: -.4, fog: 0, cover: .16, top: .12, bot: .92, lo: .50, hi: .92, sun: [.82, .3, .04], glow: .72, rays: .70, stars: 0, wing: [.16, .80] },
+  { f: 0.140, pal: 'SUNRISE',   ceil: 1.4, sea: -.4, fog: 0, cover: .20, top: .20, bot: .90, lo: .50, hi: .92, sun: [.82, .3, .04], glow: .55, rays: .45, stars: 0, wing: [.18, .82] },
+  { f: 0.165, pal: 'SUNRISE',   ceil: 1.4, sea: -.4, fog: .3, cover: .20, top: .22, bot: .89, lo: .55, hi: .92, sun: [.82, .3, .04], glow: .45, rays: .3, stars: 0, wing: [.22, .84] },
+  { f: 0.192, pal: 'SUNRISE',   ceil: 1.4, sea: -.4, fog: .62, cover: .20, top: .26, bot: .88, lo: .55, hi: .92, sun: [.82, .3, .04], glow: .25, rays: .1, stars: 0, wing: [.26, .86] },
+  { f: 0.215, pal: 'CLOUDDAWN', ceil: 1.4, sea: -.4, fog: 1, cover: .20, top: .70, bot: .80, lo: .55, hi: .90, sun: [.82, .3, 0],   glow: 0,  rays: 0, stars: 0, wing: [.30, .88] },
+  { f: 0.330, pal: 'CLOUD',     ceil: 1.4, sea: -.4, fog: 1, cover: .14, top: .75, bot: .80, lo: .60, hi: .95, sun: [.76, .76, .05], glow: 0, rays: 0, stars: 0, wing: [.32, .92] },
+  { f: 0.340, pal: 'CLOUD',     ceil: 1.4, sea: .22, fog: 1, cover: .14, top: .75, bot: .80, lo: .60, hi: .95, sun: [.76, .76, .05], glow: 0, rays: 0, stars: 0, wing: [.32, .92] },
+  { f: 0.372, pal: 'CLOUD',     ceil: 1.4, sea: .22, fog: 1, cover: .14, top: .40, bot: .70, lo: .60, hi: 1.0, sun: [.76, .76, .05], glow: .2, rays: .2, stars: 0, wing: [.32, .95] },
+  { f: 0.440, pal: 'CRUISE',    ceil: 1.4, sea: .22, fog: 0, cover: .14, top: .04, bot: .55, lo: .60, hi: 1.05, sun: [.76, .76, .05], glow: .45, rays: .6, stars: 0, wing: [.32, .98] },
+  { f: 0.680, pal: 'CRUISE',    ceil: 1.4, sea: .22, fog: 0, cover: .12, top: .06, bot: .58, lo: .60, hi: 1.05, sun: [.74, .64, .05], glow: .40, rays: .35, stars: 0, wing: [.30, .96] },
+  { f: 0.750, pal: 'GOLD',      ceil: 1.4, sea: .22, fog: 0, cover: .18, top: .08, bot: .82, lo: .40, hi: 1.0, sun: [.80, .50, .065], glow: .6, rays: .8, stars: 0, wing: [.20, .92] },
+  { f: 0.772, pal: 'GOLD',      ceil: 1.4, sea: .22, fog: 0, cover: .18, top: .08, bot: .82, lo: .40, hi: 1.0, sun: [.80, .50, .065], glow: .6, rays: .8, stars: 0, wing: [.20, .92] },
+  { f: 0.798, pal: 'DUSK',      ceil: 1.4, sea: .22, fog: 1, cover: .18, top: .30, bot: .60, lo: .40, hi: .80, sun: [.80, .50, 0],   glow: 0,  rays: 0, stars: 0, wing: [.12, .62] },
+  { f: 0.812, pal: 'NIGHT',     ceil: 1.4, sea: -.4, fog: 1, cover: .06, top: .10, bot: .34, lo: .30, hi: .52, sun: [.80, .50, 0],   glow: 0,  rays: 0, stars: 0, wing: [.05, .45] },
+  { f: 0.835, pal: 'NIGHT',     ceil: 1.4, sea: -.4, fog: 1, cover: .06, top: .10, bot: .34, lo: .14, hi: .40, sun: [.80, .50, 0],   glow: 0,  rays: 0, stars: 0, wing: [.05, .45] },
+  { f: 0.868, pal: 'NIGHT',     ceil: 1.4, sea: -.4, fog: 0, cover: .06, top: .10, bot: .34, lo: .14, hi: .40, sun: [.80, .50, 0],   glow: 0,  rays: 0, stars: 0, wing: [.05, .45] },
+  { f: 1.000, pal: 'NIGHT',     ceil: 1.4, sea: -.4, fog: 0, cover: .06, top: .10, bot: .34, lo: .14, hi: .40, sun: [.80, .50, 0],   glow: 0,  rays: 0, stars: 0, wing: [.05, .45] },
+];
+function sky(f) {
+  let i = 0; while (i < K.length - 2 && f > K[i + 1].f) i++;
+  const a = K[i], b = K[i + 1], t = smooth(clamp((f - a.f) / (b.f - a.f))), o = {};
+  for (const k in a) if (k !== 'f') o[k] = k === 'pal' ? mixV(PAL[a.pal], PAL[b.pal], t) : mixV(a[k], b[k], t);
+  return o;
+}
+const altFt = curve([[0, 13], [.05, 13], [.08, 520], [.115, 2400], [.16, 4800], [.36, 18000], [.44, 35000], [.68, 35000],
+  [.78, 15000], [.82, 5000], [.86, 2200], [.955, 13], [1, 13]]);
+/* tangage : vu du hublot gauche, cabrer fait pencher l'horizon (l'avant, à droite, descend) */
+const tilt = curve([[0, 0], [.043, 0], [.053, 9], [.10, 8], [.14, 4], [.18, 0], [.93, 0], [.948, 4], [.957, 0], [1, 0]]);
+/* virage à gauche pendant la montée : l'aile s'abaisse, on voit le sol d'en haut, l'horizon remonte */
+const horizon = curve([[0, .30], [.06, .31], [.09, .66], [.13, .74], [.17, .62], [.20, .5], [.83, .5], [.86, .72], [.9, .66], [.935, .5], [.955, .40], [1, .40]]);
+const RWY = [-400, 3200, 98200, 101800];
+const lightsF = curve([[0, 1], [.07, 1], [.13, .25], [.17, 0], [.80, 0], [.83, 1], [1, 1]]);
+const sunEl = curve([[0, -.07], [.06, -.05], [.12, .035], [.2, .05]]);
+
+/* ---------- WebGL2 : passe 1 = une couleur par cellule, passe 2 = un carré net par cellule ---------- */
+const canvas = $('#sky');
+const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' });
+const VS = `#version 300 es
+in vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }`;
+const BLIT = `#version 300 es
+precision highp float;
+uniform sampler2D uTex; uniform float uCell; uniform float uOffY; out vec4 o;
+void main(){ o = texelFetch(uTex, ivec2(floor((gl_FragCoord.xy + vec2(0., uOffY)) / uCell)), 0); }`;
+const FS = `#version 300 es
+precision highp float;
+out vec4 o;
+uniform vec2 uRes; uniform float uTime;
+uniform vec3 uPal[8];
+uniform float uCeil, uSea, uFog, uCover, uTop, uBot, uLo, uHi, uGlow, uRays, uStars, uOffY, uFlash;
+uniform vec3 uSun; uniform vec2 uPointer; uniform vec2 uWing;
+uniform float uGround, uH, uTravel, uTilt, uHorizon, uNight, uCity, uStrobe, uWingS, uBlink, uGlint;
+uniform vec4 uRwy; uniform vec4 uCalm; uniform float uCalmK;
+uniform vec4 uMoon; uniform vec3 uMoonL; uniform float uMilky; uniform vec4 uMet; uniform vec2 uMet2;
+uniform float uFogDir, uPeaks, uStorm; uniform vec3 uBolt; uniform float uFlightX;
+const float F = 1.2;
+const float B[16] = float[16](0.,8.,2.,10.,12.,4.,14.,6.,3.,11.,1.,9.,15.,7.,13.,5.);
+float bay(vec2 fc){ return (B[int(mod(fc.y, 4.)) * 4 + int(mod(fc.x, 4.))] + .5) / 16.; }
+float h(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+  return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y); }
+float fbm(vec2 p){ float a = .5, s = 0.; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+  for (int i = 0; i < 5; i++) { s += a * vn(p); p = m * p; a *= .5; } return s; }
+float fbm3(vec2 p){ float a = .5, s = 0.; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+  for (int i = 0; i < 3; i++) { s += a * vn(p); p = m * p; a *= .5; } return s * 1.14; }
+vec3 pal(float t, float b){ float q = clamp(t, 0., 1.) * 7.; float i = floor(q); i += step(b, q - i); return uPal[int(min(i, 7.))]; }
+float ridge(float x){ float r = 0., a = .5; for (int i = 0; i < 4; i++) { r += a * (1. - abs(vn(vec2(x, 2.3)) * 2. - 1.)); x *= 2.1; a *= .5; } return r; }
+float gB = 0.;
+/* des lumières de ville sans scintillement : à chaque distance, des points ancrés au sol sur une grille dont la maille
+   suit la taille d'un pixel ; en s'éloignant, ceux de la maille fine s'éteignent un à un pendant que ceux de la maille
+   plus large s'allument. Chaque lumière reste attachée à son point au sol. */
+float cityLight(vec2 w, float fwx, float fwz, float dens, out float br){
+  float lev = max(0., log2(max(fwx, fwz) / 8.)), L0 = floor(lev), fr = lev - L0, on = 0.; br = 0.;
+  for (int i = 0; i < 2; i++) {
+    float L = L0 + float(i), sz = 16. * exp2(L);
+    vec2 cell = floor(w / sz), seed = cell + L * 13.7;
+    float keep = h(seed + 2.9);
+    if ((i == 0 ? keep < fr : keep >= fr) || h(seed + 5.3) > dens) continue;
+    vec2 pos = (cell + .2 + .6 * vec2(h(seed + .3), h(seed + 7.1))) * sz, d = abs(w - pos);
+    if (d.x < max(.9, .5 * fwx) && d.y < max(.9, .5 * fwz)) { on = 1.; br = .65 + .35 * h(seed + 9.); }
+  }
+  return on;
+}
+float G(float t){ return .02 + t * .40; }                 /* le sol : le bas de l'échelle */
+float Bt(float t){ return .06 + t * .46; }                /* les bâtiments : le milieu */
+/* une rangée de feux ponctuels le long de x, sans halo : un point net */
+float lamp(float wx, float period, float z, float zl, float r, float fwx, float fwz){
+  if (fwx > period * .45) return 0.;
+  float dx = abs(mod(wx, period) - period * .5), dz = abs(z - zl);
+  return (dx < max(r, .5 * fwx) && dz < max(r * .7, .5 * fwz)) ? 1. : 0.; }
+
+/* ---------- le sol : peu de tons, de grandes masses ; renvoie un ton de l'échelle ---------- */
+float ground(vec2 w, float fwx, float fwz, out float emit, out vec3 ecol, out float wet){
+  emit = 0.; ecol = vec3(0.); wet = 0.;
+  float z = w.y, n = uNight, fw = max(fwx, fwz);
+  vec3 warm = vec3(1., .74, .38);
+  float shade = smoothstep(.50, .66, fbm3(w * .00022 + vec2(uTime * .006, 0.))) * (1. - n);
+  float t = .4;
+  bool rA = w.x > uRwy.x && w.x < uRwy.y, rB = w.x > uRwy.z && w.x < uRwy.w;
+  bool apt = (w.x > uRwy.x - 700. && w.x < uRwy.y + 700.) || (w.x > uRwy.z - 700. && w.x < uRwy.w + 700.);
+  if (apt && z < 560.) {
+    if ((rA || rB) && z < 34.) {                                                      /* la piste et sa ligne de bord */
+      if (z > 32.6) return .5;
+      return G(.1);
+    }
+    if ((rA || rB) && n > .08 && lamp(w.x, 60., z, 36.5, .35, fwx, fwz) > 0.) { emit = 1.; ecol = uPal[7]; }
+    if (z > 150. && z < 172.) { if (n > .08 && lamp(w.x, 15., z, 161., .25, fwx, fwz) > 0.) { emit = 1.; ecol = vec3(.35, 1., .55); } return G(.14); }
+    if (n > .08 && (lamp(w.x, 50., z, 147.5, .3, fwx, fwz) > 0. || lamp(w.x + 25., 50., z, 174.5, .3, fwx, fwz) > 0.)) { emit = 1.; ecol = uPal[6]; }
+    if (z > 380.) return G(.18);
+    t = .36 + (vn(w * .01) - .5) * .05;
+  } else {
+    if (uCity > .5) {                                                                    /* Paris, la nuit */
+      vec2 dq = w - vec2(98600., 6200.);
+      float rad = length(dq * vec2(.75, 1.)) + (fbm3(w * .0004) - .5) * 1600.;
+      if (rad < 5600.) {
+        float sz = 4700. + 1300. * sin((w.x - 98600.) / 2400.) + 350. * sin((w.x - 98600.) / 780.);
+        float sd = abs(z - sz);
+        if (sd < max(85., fwz * .7)) {                                                   /* la Seine, et ses ponts éclairés */
+          if (abs(mod(w.x, 460.) - 230.) < max(7., .6 * fwx)) { emit = 1.; ecol = fract(z / 14.) < .5 ? warm : warm * .7; return G(.2); }
+          wet = 1.; return G(.1);
+        }
+        if (sd < 110. && lamp(w.x, 20., z, sz + sign(z - sz) * 96., 1., fwx, fwz) > 0.) { emit = 1.; ecol = warm; }   /* les quais */
+        vec2 gq = mat2(.86, -.5, .5, .86) * dq;
+        bool street = abs(mod(gq.x, 150.) - 75.) < max(5., fwx * .5) || abs(mod(gq.y, 120.) - 60.) < max(5., fwz * .5);
+        vec2 et = w - vec2(96900., 7400.); float le = length(et);
+        if (le < 3200. && abs(fract(atan(et.y, et.x) / 6.2832 * 12.) - .5) * le * .52 < max(8., fw * .6)) street = true;   /* l'Étoile */
+        float dens = 1. - rad / 5600. * .45, lb;
+        if (emit < .5 && cityLight(w, fwx, fwz, (street ? .95 : .5) * dens, lb) > 0.) { emit = 1.; ecol = warm * lb; }
+        return G(street ? .22 : .13);
+      }
+    }
+    vec2 p = mat2(.94, -.34, .34, .94) * w;
+    float S = 220.;
+    vec2 cid = floor(p / S), cf = fract(p / S), sub = cf, csz = vec2(S);
+    float hs = h(cid);
+    if (hs > .55) { cid.x += step(.5, cf.x) * .5; sub.x = fract(cf.x * 2.); csz.x = S * .5; }
+    float k = h(cid + .7);
+    t = k < .3 ? .30 : k < .6 ? .37 : k < .85 ? .44 : .52;
+    vec2 ed = min(sub, 1. - sub) * csz;
+    if (min(ed.x, ed.y) < 4. && fw < 5.) t -= .08;
+    if (fbm3(w * .0011 + 3.) > .60) t = .17;
+    float rz = 2600. + sin(w.x * .0007) * 700. + (fbm3(vec2(w.x * .0004, 1.)) - .5) * 900.;
+    float rd = abs(z - rz);
+    if (rd < max(26., fwz * .7)) wet = 1.;
+    else if (rd < 44. && fw < 8.) t = .13;
+    float hz = 5200. + 900. * sin(w.x * .00035) + (fbm3(vec2(w.x * .0002, 4.)) - .5) * 800.;
+    float dz = z - hz;
+    if (abs(dz) < max(13., fwz * .6)) {                                                 /* l'autoroute : des phares */
+      t = .5;
+      if (n > .05) { float dirc = dz < 0. ? 1. : -1., lane = dz < 0. ? -6.5 : 6.5, cx = w.x - dirc * uTime * 32.;
+        if (lamp(cx, 38., z, hz + lane, 1.2, fwx, fwz) > 0. && h(vec2(floor(cx / 38.), lane)) < .5) { emit = 1.; ecol = dz < 0. ? uPal[7] : warm; } }
+    }
+    float town = fbm3(w * .0006 + 11.);
+    if (town > .6) {                                                                     /* villages : une tache claire ; leurs lumières à l'arrivée seulement */
+      t += .04;
+      if (uCity > .5) {
+        float lb2;
+        if (cityLight(w + 3100., fwx, fwz, .3 * n * smoothstep(.6, .7, town), lb2) > 0.) { emit = 1.; ecol = warm * lb2; }
+      }
+    }
+  }
+  return G(t - shade * .08);
+}
+
+/* ---------- aéroport : tour de contrôle, aérogare, avion au parking ; renvoie un ton ---------- */
+bool building(float sx, float sy, float base, out float bt, out float zb, out float em, out vec3 ec){
+  em = 0.; ec = vec3(1., .74, .38); bt = 0.; zb = 1e9;
+  if (uCity > .5) {                                                                      /* Paris : quelques monuments, stylisés */
+    vec3 lit = vec3(1., .74, .38);
+    /* Notre-Dame, sur son île */
+    vec2 q = vec2(sx * 5000. / F + uTravel - 99700., (sy + uH * F / 5000.) * 5000. / F);
+    if (q.y > 0. && q.y < 97.) {
+      bool tw = (abs(q.x + 12.) < 5.5 || abs(q.x - 2.) < 5.5) && q.y < 69.;
+      bool nave = q.x > 7. && q.x < 62. && q.y < 33. - max(q.x - 55., 0.) * 1.5;
+      bool spire = abs(q.x - 40.) < 1. && q.y < 96.;
+      if (tw || nave || spire) { bt = Bt(.5); zb = 5000.; em = h(floor(q / 4.)) < .35 ? 1. : 0.; ec = lit * .9; return true; }
+    }
+    /* la tour Montparnasse */
+    q = vec2(sx * 6000. / F + uTravel - 99300., (sy + uH * F / 6000.) * 6000. / F);
+    if (q.y > 0. && q.y < 210. && abs(q.x) < 26.) {
+      bt = Bt(.22); zb = 6000.;
+      if (fract(q.x / 4.) < .5 && fract(q.y / 3.6) < .5 && h(floor(q / vec2(4., 3.6))) < .3) { em = 1.; ec = lit * .85; }
+      if (q.y > 205. && abs(abs(q.x) - 24.) < 2.) { em = uBlink; ec = vec3(1., .25, .2); }
+      return true;
+    }
+    /* l'Arc de Triomphe, au centre de l'Étoile */
+    q = vec2(sx * 7400. / F + uTravel - 96900., (sy + uH * F / 7400.) * 7400. / F);
+    if (q.y > 0. && q.y < 50. && abs(q.x) < 23. && !(abs(q.x) < 7. && q.y < 29.)) { bt = Bt(.6); zb = 7400.; em = h(floor(q / 3.)) < .45 ? 1. : 0.; ec = lit; return true; }
+    /* le Sacré-Cœur, sur la butte */
+    q = vec2(sx * 8600. / F + uTravel - 101200., (sy + uH * F / 8600.) * 8600. / F);
+    if (q.y > 0. && q.y < 170.) {
+      bool hill = q.y < 85. * pow(max(1. - abs(q.x) / 420., 0.), .6);
+      bool body = abs(q.x) < 38. && q.y > 80. && q.y < 116.;
+      bool dome = length(vec2(q.x, q.y - 120.) / vec2(17., 27.)) < 1. && q.y > 112.;
+      bool lant = abs(q.x) < 2.5 && q.y < 160. && q.y > 140.;
+      bool side = length(vec2(abs(q.x) - 27., q.y - 118.) / vec2(7., 10.)) < 1.;
+      if (body || dome || lant || side) { bt = Bt(.95); zb = 8600.; em = h(floor(q / 5.)) < .12 ? 1. : 0.; ec = lit; return true; }
+      if (hill) { bt = Bt(.1); zb = 8600.; return true; }
+    }
+    /* La Défense, au loin : des tours et la Grande Arche */
+    q = vec2(sx * 10500. / F + uTravel - 95000., (sy + uH * F / 10500.) * 10500. / F);
+    if (q.y > 0. && q.y < 235. && q.x > -170. && q.x < 330.) {
+      float tx = q.x < -100. ? -140. : q.x < -20. ? -60. : q.x < 55. ? 20. : q.x < 125. ? 90. : 160.;
+      float tw2 = tx == -140. ? 12. : tx == -60. ? 15. : tx == 20. ? 11. : tx == 90. ? 17. : 13.;
+      float th = tx == -140. ? 160. : tx == -60. ? 231. : tx == 20. ? 190. : tx == 90. ? 210. : 150.;
+      if (abs(q.x - tx) < tw2 && q.y < th) {
+        bt = Bt(.2); zb = 10500.;
+        if (fract(q.x / 3.) < .5 && fract(q.y / 3.6) < .5 && h(floor(q / vec2(3., 3.6))) < .32) { em = 1.; ec = lit * .8; }
+        return true;
+      }
+      if (abs(q.x - 265.) < 55. && q.y < 110. && !(abs(q.x - 265.) < 37. && q.y > 14. && q.y < 92.)) { bt = Bt(.75); zb = 10500.; em = h(floor(q / 4.)) < .2 ? 1. : 0.; ec = lit; return true; }
+    }
+
+    float ze = 4300., we = sx * ze / F + uTravel - 98100., he = (sy + uH * F / ze) * ze / F;
+    if (he > 0. && he < 330.) {
+      float hwE = 62. * pow(max(1. - he / 300., 0.), 2.2) + 2.5;
+      bool arch = he < 50. && abs(we) < hwE * .55 * (1. - pow(he / 50., 2.));
+      bool deck = (abs(he - 57.) < 3. && abs(we) < hwE + 4.) || (abs(he - 115.) < 2.5 && abs(we) < hwE + 2.);
+      if ((abs(we) < hwE && !arch) || deck || (he > 300. && abs(we) < 1.2)) {
+        bt = Bt(.45); zb = ze; em = 1.; ec = h(floor(vec2(we, he) / 3.)) < .25 ? vec3(1., .9, .66) : vec3(1., .72, .34);   /* dorée, d'un seul tenant */
+        if (he > 318.) { em = uBlink; ec = vec3(1., .25, .2); }
+        return true;
+      }
+    }
+  }
+  if (uNight > .3) {                                                                     /* mâts d'éclairage du tarmac */
+    float zm = 520., wm = sx * zm / F + uTravel - base, hm = (sy + uH * F / zm) * zm / F;
+    if (wm > 250. && wm < 1350. && hm > 0. && hm < 27.) {
+      float lm = abs(mod(wm - 300., 180.) - 90.);
+      if (lm < .5 && hm < 25.) { bt = Bt(.25); zb = zm; return true; }
+      if (lm < 2. && hm > 24.) { bt = Bt(.9); zb = zm; em = 1.; ec = vec3(1., .92, .72); return true; }
+    }
+  }
+  float zt = 330., wx = sx * zt / F + uTravel - base, hy = (sy + uH * F / zt) * zt / F;
+  if (hy > 0. && hy < 56.) {
+    float dx = abs(wx - 470.);
+    if (hy > 46.5 && hy < 55. && dx < .5) { bt = Bt(.3); zb = zt;                       /* le phare de l'aéroport : vert, blanc */
+      if (hy > 53.) { em = uNight > .3 ? 1. : uBlink; ec = uNight > .3 ? (uBlink > .5 ? vec3(.35, 1., .5) : vec3(1.)) : vec3(1., .25, .2); } return true; }
+    if (hy > 44.5 && hy < 46.5 && dx < 9.) { bt = Bt(.85); zb = zt; return true; }
+    if (hy > 36. && hy < 44.5 && dx < 8.) { zb = zt;
+      bool glass = hy > 37.5 && hy < 43.;
+      bt = glass ? Bt(.15 + .25 * step(.6, fract(wx / 3.))) : Bt(.7);
+      if (glass && uNight > .3) em = 1.; return true; }
+    if (hy < 36. && dx < 3.2) { bt = Bt(.62 - (wx - 470.) * .06); zb = zt; return true; }
+  }
+  float zp = 405.; wx = sx * zp / F + uTravel - base; hy = (sy + uH * F / zp) * zp / F;
+  if (wx > 1320. && wx < 1362. && hy > 0.) {
+    float u = wx - 1320.;
+    bool fus = hy > 2.6 && hy < 7.6 - smoothstep(30., 42., u) * 2.4 && u > 1.5 - (hy - 2.6) * .3;
+    bool fin = u > 33. && hy > 7. && hy < 7. + (u - 33.) * 1.7 && u < 41.5;
+    if (fus || fin) { zb = zp; bool win = fus && hy > 5.6 && hy < 6.2 && fract(u / 1.3) < .5;
+      bt = fin ? Bt(.2) : win ? Bt(.25) : Bt(.9 - (hy - 2.6) * .02);
+      if (win && uNight > .3) em = 1.; return true; }
+  }
+  float za = 430.; wx = sx * za / F + uTravel - base; hy = (sy + uH * F / za) * za / F;
+  if (hy > 0. && hy < 15. && wx > 560. && wx < 1300.) { zb = za;
+    bool win = hy > 5. && hy < 9.5 && fract(wx / 6.) < .7;
+    bt = hy > 13.5 ? Bt(.9) : win ? Bt(.22) : Bt(.55);
+    if (win && uNight > .3 && h(vec2(floor(wx / 6.), 1.)) < .7) em = 1.; return true; }
+  return false;
+}
+
+void main(){
+  vec2 fc = gl_FragCoord.xy, uv = fc / uRes; float asp = uRes.x / uRes.y;
+  float b = bay(fc); gB = b;
+  vec2 cc = vec2((uv.x - .5) * asp, uv.y - .5);
+  float cs = cos(uTilt), sn = sin(uTilt);
+  vec2 r = vec2(cs * cc.x - sn * cc.y, sn * cc.x + cs * cc.y);
+  float sx = r.x, sy = r.y + .5 - uHorizon, ry = r.y + .5;
+  vec2 p = vec2(r.x + .5 * asp, ry);
+  bool gnd = uGround > .5;
+  /* zone calme derrière le texte : une ellipse très douce, sans bord visible */
+  vec2 cc0 = (uCalm.xy + uCalm.zw) * .5, chs = max((uCalm.zw - uCalm.xy) * .5, vec2(.01));
+  float ce = length((uv - cc0) / chs);
+  float calm = uCalmK * (1. - smoothstep(.55, 1.35, ce));
+
+  /* ---- ciel ---- */
+  float T = gnd ? mix(uBot, uTop, clamp(sy * 2.8, 0., 1.)) : mix(uBot, uTop, ry);
+  vec2 sd = p - vec2(uSun.x * asp, uSun.y); float d = length(sd);
+  T += uGlow * exp(-d * d / max(uSun.z * uSun.z * 26., 1e-4)) * (1. - calm * .5);
+  T += uRays * pow(vn(vec2(atan(sd.y, sd.x) * 9. + 40., uTime * .05)), 3.) * exp(-d * 2.6) * .3 * (1. - calm * .7);
+  T = min(T, .86);                                                                     /* le ton le plus clair est réservé au disque */
+  /* le disque du soleil fait partie du ciel : tout ce qui suit (voiles, cumulus, montagnes, nuages) passe devant */
+  float disk = (uSun.z > 0. && d < uSun.z && !(gnd && sy < 0.)) ? 1. : 0.;
+  if (disk > .5) T = 1.03;
+  /* ---- nuit : voie lactée, étoiles, lune, étoiles filantes ; les nuages passent devant ---- */
+  float starB = 0.;
+  bool skyUp = !gnd || sy > 0.;
+  if (uStars > .01 && skyUp) {
+    float vis = uStars * (gnd ? smoothstep(.06, .3, sy) : 1.) * (1. - calm * .85);
+    float band = 0.;
+    if (uMilky > .01) {                                                                   /* une bande diagonale, avec ses poussières */
+      vec2 q = (uv - vec2(.62, .8)) * vec2(asp, 1.), dir = normalize(vec2(1., .5));
+      float dp = abs(dot(q, vec2(-dir.y, dir.x))), al = dot(q, dir);
+      band = exp(-dp * dp * 24.) * (.5 + .5 * fbm3(vec2(al * 3., dp * 6.) + 4.));
+      float lane = smoothstep(.5, .66, fbm3(vec2(al * 7., dp * 18.) + 9.)) * exp(-dp * dp * 70.);
+      T += uMilky * vis * (band * .15 - lane * .07);
+    }
+    vec2 c = floor(fc);
+    float dens = .0024 * (1. + 2.6 * band * uMilky);
+    float r2 = h(c + 9.1);
+    if (h(c + .37) < dens) { float tw = .5 + .5 * sin(uTime * 1.1 + r2 * 60.); starB = r2 > .97 ? 1. : .3 + r2 * .45 - tw * .12; }
+    else {                                                                                 /* les plus brillantes : une petite croix */
+      if (h(c + vec2(1., 0.) + .37) < dens && h(c + vec2(1., 0.) + 9.1) > .97) starB = .5;
+      if (h(c + vec2(-1., 0.) + .37) < dens && h(c + vec2(-1., 0.) + 9.1) > .97) starB = .5;
+      if (h(c + vec2(0., 1.) + .37) < dens && h(c + vec2(0., 1.) + 9.1) > .97) starB = .5;
+      if (h(c + vec2(0., -1.) + .37) < dens && h(c + vec2(0., -1.) + 9.1) > .97) starB = .5;
+    }
+    starB *= vis;
+    if (uMet2.y > 0.) {                                                                    /* étoile filante : une tête, une traîne qui s'amenuise */
+      vec2 rel = p - uMet.xy, dd = uMet.zw;
+      float back = -dot(rel, dd) * uRes.y, off = abs(rel.x * dd.y - rel.y * dd.x) * uRes.y, len = uMet2.x * uRes.y;
+      if (off < 1.1 && back > -1.5 && back < len) {
+        float k2 = 1. - max(back, 0.) / len, mb = uMet2.y * k2;
+        if (back < 1.5) starB = max(starB, uMet2.y);
+        else if (b < mb) starB = max(starB, mb * .85);
+      }
+    }
+  }
+  if (uMoon.w > .01 && skyUp) {                                                            /* la lune : une sphère éclairée, ses mers, la lumière cendrée */
+    vec2 mq = (p - vec2(uMoon.x * asp, uMoon.y)) / uMoon.z; float rr = length(mq);
+    T += uMoon.w * .09 * exp(-max(rr - 1., 0.) * 1.5) * (1. - calm * .6);
+    if (rr < 1.) {
+      float lam = dot(vec3(mq, sqrt(1. - rr * rr)), normalize(uMoonL));
+      float mare = smoothstep(.52, .68, fbm3(mq * 2.4 + 5.));
+      T = lam > 0. ? mix(T, .82 + lam * .25 - mare * .14, uMoon.w) : T + .05 * uMoon.w;
+      starB = 0.;
+    }
+  }
+  if (gnd) T += uNight * uCity * .12 * exp(-max(sy, 0.) * 9.);
+  if (uCover > .01) {                                                                   /* voiles d'altitude, doux */
+    float nf = fbm(p * vec2(1.1, 2.2) + vec2(uTime * .02 + uFlightX * .25, uOffY * .4));
+    float cf = smoothstep(1. - uCover, 1. - uCover + .3, nf) * (gnd ? smoothstep(.16, .3, sy) : 1.) * (1. - calm * .9);
+    T = mix(T, mix(uLo, uHi, .55 + .3 * nf), cf * .7);
+  }
+  if (!gnd || sy > 0.) T = mix(T, uTop + .06, calm * .12);
+  float emit = 0.; vec3 ecol = vec3(0.);
+
+  if (gnd) {
+    if (sy > 0.) {
+      /* la couche de nuages au-dessus de nous, en perspective : des masses organiques (bruit déformé), plus petites vers
+         l'horizon ; leur côté tourné vers le soleil s'éclaire. En montant, on s'en approche jusqu'à y entrer. */
+      float Hc = 1800.;
+      if (Hc > uH + 8.) {
+        float zr = (Hc - uH) * F / max(sy, 1e-3), zc = min(zr, 60000.);
+        {
+          /* deux lectures du même ciel : en perspective en haut (la profondeur au-dessus de nous), en masses à peine
+             aplaties près de l'horizon (pour que les nuages lointains gardent du volume au lieu de s'écraser en traits) */
+          vec2 tl = vec2(clamp((uSun.x - .5) * asp - sx, -1., 1.) * .07, .07);
+          vec2 wq = vec2(sx * zc / F + uTravel + uTime * 90., zc) / 2600.;
+          vec2 wv = vec2(fbm3(wq * .8 + 2.), fbm3(wq * .8 + 7.3));
+          float dP = fbm(wq + wv * .95), lP = fbm(wq + tl + wv * .95);
+          float wS = max(1. - smoothstep(.05, .32, sy), smoothstep(30000., 60000., zr));
+          float dens = dP, lit0 = lP;
+          if (wS > 0.) {
+            vec2 sq = vec2(sx * 2.4 + uTravel / 7000. + uTime * .022, sy * 6.5 + uH / 900.);
+            vec2 sv = vec2(fbm3(sq * .7 + 4.), fbm3(sq * .7 + 9.1));
+            float dS = fbm(sq + sv * 1.1) + (.12 - sy) * .5, lS = fbm(sq + vec2(tl.x * 3., .35) + sv * 1.1) + (.12 - sy - .05) * .5;
+            dens = mix(dP, dS, wS); lit0 = mix(lP, lS, wS);
+          }
+          float cv = dens - .5 - uCity * .16 + smoothstep(Hc - 1000., Hc - 60., uH) * .32;  /* plus on s'approche, plus elle se referme */                                          /* la nuit, le ciel se dégage */
+          if (cv > -.06) {
+            float lit = clamp((dens - lit0) * 5. + .5, 0., 1.);
+            float a = smoothstep(-.06, .1, cv);
+            float ct = mix(uLo - .22, uHi, lit * .7 + clamp(cv, 0., .3) * .9);
+            float far = (1. - exp(-zc / 15000.)) * (1. - wS * .7);
+            ct = mix(ct, uBot - .03, far * .4);
+            float sunNear = uSun.z > 0. ? exp(-d * d / (uSun.z * uSun.z * 40.)) : 0.;          /* près du soleil, les nuages s'éclairent et s'amincissent */
+            ct += sunNear * .3; a *= 1. - sunNear * .55;
+            a *= smoothstep(Hc - 8., Hc - 320., uH);                                       /* elle s'estompe pendant qu'on y entre */
+            T = mix(T, ct, a * (1. - far * .3) * (1. - calm * .85));
+          }
+        }
+      }
+    }
+    if (sy < 0.) {
+      float z = uH * F / (-sy);
+      if (z < 90000.) {
+        vec2 w = vec2(sx * z / F + uTravel, z);
+        float fwx = z / (F * uRes.y), fwz = z * z / (max(uH, 1.) * F * uRes.y);
+        float wet; T = ground(w, fwx, fwz, emit, ecol, wet);
+        if (wet > 1.5) {                                                                  /* piste mouillée : le ciel s'y reflète */
+          float rs = -sy, rx = sx + (vn(vec2(z * 1.7, uTime * 1.5)) - .5) * .012;
+          float tr = mix(uBot, uTop, clamp(rs * 2.8, 0., 1.));
+          vec2 sp = vec2(rx + .5 * asp, uHorizon + rs) - vec2(uSun.x * asp, uSun.y); float ds = length(sp);
+          tr += uGlow * exp(-ds * ds / max(uSun.z * uSun.z * 26., 1e-4));
+          float rb, rz2, re; vec3 rc;
+          bool rh = building(rx, rs, uRwy.x, rb, rz2, re, rc);
+          if (!rh) rh = building(rx, rs, 100000., rb, rz2, re, rc);
+          if (rh) tr = rb * .8;
+          T = mix(T, tr * .8, .7);
+          if (rh && re > .5 && emit < .5) { emit = 1.; ecol = rc * .8; }
+        } else if (wet > .5) {                                                             /* la rivière reflète l'horizon */
+          T = uBot - .12 + (vn(w * .05 + uTime) - .5) * .06;
+          if (uCity > .5 && h(floor(w / vec2(10., 3.)) + floor(uTime * 4.)) < .07) { emit = 1.; ecol = vec3(1., .74, .38) * .7; }
+          float spark = exp(-abs(sx - (uSun.x - .5) * asp) * 5.) * uGlow;
+          if (h(floor(w / 4.) + floor(uTime * 6.)) < spark * .35) { emit = 1.; ecol = uPal[7]; }
+        }
+        float haze = clamp(1. - exp(-z / 13000.) + uH / 3000. * .15, 0., 1.);
+        T = mix(T, mix(G(.66), uBot - .16, smoothstep(.6, .99, haze) * .7), haze);  /* au loin, le sol se fond dans l'horizon */
+        if (haze > .85) emit = 0.;
+      }
+    }
+    /* au ras de l'horizon : un banc de brume et de nuages bas lointains, pour qu'il n'y ait pas de bande vide */
+    if (abs(sy) < .09) {
+      vec2 mq = vec2(sx * 2.6 + uFlightX * .12 + uTime * .006, sy * 16.);
+      float md = fbm(mq + vec2(fbm3(mq * .7 + 3.), 0.) * .8) - .42 - abs(sy - .012) * 7.;
+      if (md > -.04) {
+        float lit = clamp((md - (fbm(mq + vec2(.25, .4)) - .42 - abs(sy + .013) * 7.)) * 4. + .5, 0., 1.);
+        float mt = mix(uBot - .32, uBot - .02, lit * .6 + clamp(md, 0., .25) * 1.6);
+        T = mix(T, mt, smoothstep(-.04, .08, md) * (1. - calm * .6));
+        emit *= 1. - smoothstep(-.04, .08, md);
+      }
+    }
+    float bt, zb, be; vec3 bc;
+    bool hit = building(sx, sy, uRwy.x, bt, zb, be, bc);
+    if (!hit) hit = building(sx, sy, 100000., bt, zb, be, bc);
+    if (hit) { float hb = clamp(1. - exp(-zb / 13000.), 0., 1.); T = mix(bt, mix(G(.66), uBot - .1, smoothstep(.5, .97, hb)), hb); emit = be; ecol = bc; }
+  }
+
+  /* ---- le phare de la tour Eiffel : un faisceau qui tourne, et l'éclat quand il passe sur l'avion ---- */
+  float beamHit = 0.;
+  if (gnd && uCity > .5) {
+    vec2 top = vec2((98100. - uTravel) * F / 4300. + .5 * asp, (324. - uH) * F / 4300. + uHorizon);
+    if (top.x > -.6 && top.x < asp + .6) {
+      float th = uTime * 1.1;
+      {
+        float a = th, sa = sin(a), ca = cos(a);
+        vec2 dir = normalize(vec2(sa, .1 + .05 * abs(ca)));
+        float len = .06 + 1.7 * abs(sa);
+        vec2 rel = p - top; float al = dot(rel, dir), pe = abs(rel.x * dir.y - rel.y * dir.x);
+        float wdt = .003 + al * .03;
+        if (al > 0. && al < len) T = mix(T, uHi + .3, exp(-pe * pe / (wdt * wdt)) * (1. - al / len) * (ca > 0. ? .6 : .35));
+      }
+      beamHit = pow(max(cos(th), 0.), 30.);                                              /* le faisceau est tourné vers nous */
+      T += beamHit * .35 * exp(-length(p - top) * 2.5);
+    }
+  }
+
+  /* ---- couches de nuages (immobiles quand on les voit) et brouillard (on les traverse) ---- */
+  float e = (fbm3(vec2(p.x * 2.2 + uTime * .05 + uFlightX, 7.)) - .5) * .16;
+  float tw = max(0., fbm3(vec2(p.x * 1.1 + 31. + uTime * .025 + uFlightX * .5, 2.)) - .5) * .8;
+  float msc = max(smoothstep(uSea + e + tw + .03, uSea + e + tw - .03, ry), smoothstep(uCeil - e - .03, uCeil - e + .03, ry));
+  if (msc > 0.) {
+    vec2 q = p * 2.2 + vec2(uTime * .06 + uFlightX, 0.);
+    float n = fbm(q), nl = fbm(q + vec2(0., -.05));
+    float lt = clamp((n - nl) * 4. + .5, .2, 1.);
+    float tc = mix(uLo, uHi, clamp(n * 1.2 - .1, 0., 1.) * .55 + lt * .45);
+    T = mix(T, tc, msc);
+  }
+  float fogM = 0.;
+  if (uFog > 0.) {
+    /* des bancs de nuages qui défilent vers le bas pendant la montée, de plus en plus serrés */
+    float nfog = fbm(p * vec2(1.05, 1.45) + vec2(uTime * .07 + uFlightX * 1.6, uOffY * 3.4));
+    fogM = clamp((uFog * 1.4 - nfog * .95 - .05) / .3, 0., 1.);
+    /* on entre dans le nuage par le côté où il se trouve : par le haut en montant, par le bas en descendant */
+    float gy = uFogDir > 0. ? ry : 1. - ry;
+    fogM *= smoothstep(1.2 - uFog * 1.55, 1.45 - uFog * 1.55, gy + (nfog - .5) * .45);
+    float tf = mix(uLo, uHi, .56 + (fbm(p * vec2(1.2, 2.) + vec2(uTime * .09 + uFlightX * 1.6, uOffY * 1.4)) - .5) * .5);
+    T = mix(T, tf, fogM);
+  }
+  float m = max(msc, fogM);
+  T += uFlash;
+  vec3 col = pal(T, b);
+  float sb = clamp(starB * (1. - m), 0., 1.);
+  if (sb > .01) col = mix(col, vec3(.88, .92, 1.), sb);
+  if (emit * (1. - m) > .5) col = ecol;
+
+  /* ---- l'aile gauche, en 3D, projetée avec la même caméra ----
+     repère de l'avion (m) : x vers l'avant (à droite), y vers le haut, z vers l'extérieur.
+     Flèche ~25°, dièdre ~5°, corde 6 m à l'emplanture et 1,5 m au saumon, demi-envergure 17 m. */
+  float wx = (uv.x - .5) * asp / uWingS, wy = (uv.y - .42) / uWingS;
+  const float LE0 = 1., LEK = .465, TE0 = -5., TEK = .2, Y0 = -2.5, DH = .087, SPAN = 17.;
+  float tipLE = LE0 - SPAN * LEK, tipTE = TE0 - SPAN * TEK, tipY = Y0 + SPAN * DH;
+  float zw = SPAN + .15, xw = wx * zw / F, yw = wy * zw / F, wu = (yw - tipY) / 2.4;
+  if (wu > 0. && wu < 1.) {                                                              /* winglet */
+    float le = tipLE - 1.5 * wu, te = le - mix(tipLE - tipTE, .7, wu);
+    if (xw < le && xw > te) col = pal(mix(uWing.x, uWing.y, .3 + wu * .3 + (le - xw) * .08), b);
+  }
+  float den = wy - DH * F;
+  if (den < 0.) {
+    float z = Y0 * F / den;
+    if (z > 0. && z < SPAN) {
+      float x = wx * z / F, le = LE0 - z * LEK, te = TE0 - z * TEK, ch = (le - x) / (le - te);
+      float lw = .035 * z / 6.;
+      if (ch >= 0. && ch <= 1.) {
+        float wt = .72 - ch * .26 + z / SPAN * .12;
+        if (ch < .03) wt = .98;
+        else if (abs(ch - .095) < lw * .5 && z > 2.5) wt -= .2;
+        if (ch > .1 && ch < .62 && fract(z / 1.6) < lw * 1.2) wt -= .08;
+        if (abs(ch - .2) < lw * .5 || abs(ch - .6) < lw * .5) wt -= .06;
+        if (ch > .62 && ch < .73 && z < 11.5 && fract(z / 2.2) < lw * 1.5) wt -= .1;
+        if (ch > .73) wt -= .1;
+        if (abs(ch - .73) < lw * .6) wt = .12;
+        if (ch > .73 && abs(z - 11.5) < lw * 3.) wt = .14;
+        if (z < 6.5 && (abs(ch - .26) < lw * .4 || abs(ch - .5) < lw * .4)) wt = .2;
+        if (ch > .965) wt = .2;
+        wt += (1. - smoothstep(0., 1.3, abs(z - (3. + uGlint * 40.) + ch * 2.))) * .26 * clamp(uGlow * 2., 0., 1.);
+        wt += beamHit * .35;                                                              /* le faisceau balaie l'aile */
+        col = pal(mix(uWing.x, uWing.y, wt), b);
+      }
+    }
+  }
+  /* feu de navigation rouge, fixe, et stroboscope blanc : des points nets, comme vus de loin */
+  vec2 navUv = vec2(.5 + tipLE * F / SPAN * uWingS / asp, .42 + tipY * F / SPAN * uWingS);
+  float dn = length(fc - navUv * uRes);
+  if (dn < 1.1) col = vec3(1., .26, .2);
+  else if (dn < 2.1 && uNight > .3) col = mix(col, vec3(1., .26, .2), .45);
+  if (uStrobe > 0.) {
+    vec2 stUv = vec2(.5 + (tipLE - 2.2) * F / zw * uWingS / asp, .42 + (tipY + 2.4) * F / zw * uWingS);
+    float ds = length(fc - stUv * uRes);
+    if (ds < 1.2) col = mix(col, vec3(1.), uStrobe);
+    else if (ds < 2.3) col = mix(col, vec3(1.), .5 * uStrobe);
+  }
+  o = vec4(col, 1.);
+}`;
+
+let prog = null, blit = null, tex = null, fbo = null; const U = {};
+let gw = 1, gh = 1, cellDev = 3, devW = 1, devH = 1;
+if (gl) {
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+  const link = (fs) => { const pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs));
+    gl.bindAttribLocation(pr, 0, 'p'); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr)); return pr; };
+  try {
+    prog = link(FS); blit = link(BLIT);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    ['uRes', 'uTime', 'uPal', 'uCeil', 'uSea', 'uFog', 'uCover', 'uTop', 'uBot', 'uLo', 'uHi', 'uGlow', 'uRays', 'uStars', 'uOffY', 'uFlash',
+      'uSun', 'uPointer', 'uWing', 'uGround', 'uH', 'uTravel', 'uTilt', 'uHorizon', 'uNight', 'uCity', 'uStrobe', 'uWingS', 'uBlink', 'uGlint',
+      'uRwy', 'uCalm', 'uCalmK', 'uMoon', 'uMoonL', 'uMilky', 'uMet', 'uMet2', 'uFogDir', 'uPeaks', 'uStorm', 'uBolt', 'uFlightX'].forEach((k) => U[k] = gl.getUniformLocation(prog, k));
+    U.bTex = gl.getUniformLocation(blit, 'uTex'); U.bCell = gl.getUniformLocation(blit, 'uCell'); U.bOff = gl.getUniformLocation(blit, 'uOffY');
+    tex = gl.createTexture(); fbo = gl.createFramebuffer();
+  } catch (err) { console.error(err); prog = null; }
+}
+
+/* ---------- Taille des cellules : chacune un nombre entier de pixels de l'écran, pour des carrés nets ---------- */
+function layout() {
+  const w = innerWidth, hgt = innerHeight, dpr = Math.min(devicePixelRatio || 1, 3);
+  /* comme Aria : ~480 cellules sur la largeur, et chaque cellule fait un nombre entier de pixels de l'écran */
+  const cellCss = Math.max(3, Math.round(Math.max(w, hgt * 1.4) / 480));
+  cellDev = Math.max(1, Math.round(cellCss * dpr));
+  devW = Math.round(w * dpr); devH = Math.round(hgt * dpr);
+  gw = Math.ceil(devW / cellDev); gh = Math.ceil(devH / cellDev);
+  canvas.width = devW; canvas.height = devH; canvas.style.width = w + 'px'; canvas.style.height = hgt + 'px';
+  if (prog) {
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gw, gh, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+}
+addEventListener('resize', layout); layout();
+
+/* ---------- Défilement : Lenis (comme Aria), freiné près des textes ----------
+   La molette et le pavé tactile sont freinés quand un texte approche du centre : tout ralentit ensemble, puis repart.
+   Avant le pied de page, un frein fort et un ressort : il faut pousser franchement pour y arriver. */
+const STRETCH = 1.4;
+const trackEl = $('#track'), secEls = Array.from(document.querySelectorAll('.sec'));
+const secF = secEls.map((el) => parseFloat(el.style.getPropertyValue('--f')));
+let H = innerHeight;
+function layoutFlight() { H = innerHeight; trackEl.style.height = (H + 9 * H * STRETCH) + 'px'; }
+layoutFlight(); addEventListener('resize', layoutFlight);
+const SPAN = () => 9 * H * STRETCH;
+const fOf = (sc) => clamp(sc / SPAN());
+const sOf = (f) => f * SPAN();
+function placeTexts(sc) {
+  secEls.forEach((el, i) => {
+    const y = sOf(secF[i]) - sc + (parseFloat(el.dataset.y) || 0) * H;
+    const tx = el.classList.contains('left') && innerWidth > 760 ? '0' : '-50%';
+    el.style.transform = `translate(${tx}, calc(-50% + ${y.toFixed(1)}px))`;
+    el.style.visibility = Math.abs(y) > H * 1.2 ? 'hidden' : 'visible';
+  });
+}
+const maxScroll = () => Math.max(1, trackEl.offsetHeight - innerHeight);
+const docMax = () => document.documentElement.scrollHeight - innerHeight;
+function brake(y, d) {
+  const end = maxScroll(), gap = H * .22;
+  let dist = 1e9;
+  secF.forEach((f) => { dist = Math.min(dist, Math.abs(y - sOf(f))); });
+  let k = .28 + .72 * smooth(clamp(dist / (H * .4)));
+  if (d > 0 && y > end - 4 && y < end + gap + 60) k = Math.min(k, .16);
+  return k;
+}
+let lenis = null, lastInput = 0;
+const smoothOn = !RM && !!window.Lenis && matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (smoothOn) {
+  try {
+    lenis = new window.Lenis({ lerp: .1, smoothWheel: true, wheelMultiplier: 1,
+      virtualScroll: (e) => { e.deltaY *= brake(lenis ? lenis.targetScroll : scrollY, e.deltaY); lastInput = performance.now(); return true; } });
+  } catch (err) { lenis = null; }
+}
+addEventListener('touchend', () => { lastInput = performance.now(); }, { passive: true });
+addEventListener('scroll', () => { if (!lenis) lastInput = performance.now(); }, { passive: true });
+function smoothScroll(now) {
+  if (lenis) lenis.raf(now);
+  if (now - lastInput > 380 && !(lenis && lenis.isScrolling)) {
+    const end = maxScroll(), gap = H * .22, y = scrollY;
+    if (y > end + 1 && y < end + gap * .6) { if (lenis) lenis.scrollTo(end, { duration: .9 }); else scrollTo({ top: end, behavior: 'smooth' }); }   /* le ressort */
+    lastInput = now;
+  }
+}
+const go = (f) => { const y = clamp(sOf(f), 0, document.documentElement.scrollHeight - innerHeight); if (lenis) lenis.scrollTo(y, { duration: 2.4 }); else scrollTo({ top: y, behavior: RM ? 'auto' : 'smooth' }); };
+$('#takeoff').addEventListener('click', () => go(0));
+$('#home').addEventListener('click', (e) => { e.preventDefault(); go(0); });
+document.querySelectorAll('[data-noop]').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+$('#ask').addEventListener('submit', (e) => e.preventDefault());
+
+/* ---------- Altimètre : chiffres qui roulent, petit avion qui suit l'assiette ---------- */
+const digits = $('#digits'), plane = $('#plane'), cols = [];
+for (let i = 0; i < 5; i++) {
+  const d = document.createElement('span'); d.className = 'd' + (i === 2 ? ' gap' : '');
+  const c = document.createElement('span'); c.className = 'col';
+  for (let k = 0; k < 10; k++) { const s = document.createElement('span'); s.textContent = k; c.appendChild(s); }
+  d.appendChild(c); digits.appendChild(d); cols.push([d, c]);
+}
+let lastShown = -1, vsS = 0, lastAlt = 13, lastPitch = 99;
+function altimeter(ft) {
+  const shown = ft < 60 ? 0 : Math.round(ft / 100) * 100;
+  if (shown !== lastShown) {
+    const s = String(shown).padStart(5, '0'); let lead = true;
+    cols.forEach(([d, c], i) => { const n = +s[i]; if (n !== 0 || i === 4) lead = false; d.classList.toggle('lead', lead); c.style.transform = `translateY(${-n}em)`; });
+    lastShown = shown;
+  }
+  vsS = lerp(vsS, ft - lastAlt, .08); lastAlt = ft;
+  const pitch = Math.round(clamp(-vsS * .9, -12, 9));
+  if (pitch !== lastPitch) { plane.style.transform = `rotate(${pitch}deg)`; lastPitch = pitch; }
+}
+
+/* ---------- Sections : apparition, et zone calme dans le ciel derrière celle qu'on lit ---------- */
+const secs = Array.from(document.querySelectorAll('.sec')), nav = $('#nav');
+if ('IntersectionObserver' in window && !RM) {
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .35 });
+  secs.forEach((s) => io.observe(s));
+}
+function calmRect() {
+  let best = null, bd = 1e9; const H = innerHeight, W = innerWidth;
+  for (const s of secs) { const r = s.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - H / 2); if (d < bd) { bd = d; best = [s, r]; } }
+  if (!best || best[0].dataset.calm !== '1') return [0, 0, 0, 0, 0];
+  const r = best[1], cx = (r.left + r.right) / 2, half = Math.min(r.width / 2 - 20, W * .42);
+  return [(cx - half) / W, 1 - (r.bottom - 8) / H, (cx + half) / W, 1 - (r.top + 8) / H, clamp(1 - (bd - H * .25) / (H * .3))];
+}
+
+
+/* ---------- Pictogrammes : du pixel art dessiné avec les tons de la scène en cours ---------- */
+const PICTOS = {
+  balance: ['................','.......33.......','..333333333333..','..2....22....2..','.222...22...222.','2...2..22..2...2','2...2..22..2...2','22222..22..22222','.......22.......','.......22.......','.......22.......','.......22.......','.....222222.....','....22222222....','................','................'],
+  loupe:   ['................','....33333.......','...3.....3......','..3..222..3.....','..3.......3.....','..3..2222.3.....','..3.......3.....','..3..22...3.....','...3.....3......','....333332......','..........2.....','...........2....','............2...','.............2..','..............2.','................'],
+  casque:  ['................','.....222222.....','....2......2....','...2..3333..2...','...2.333333.2...','..22.333333.22..','..22.333333.22..','..22..3333..21..','.......33....1..','.....333333.1...','...3333333333...','..333333333333..','..333333333333..','..333333333333..','................','................'],
+  coeur:   ['................','................','...222....222...','..23332..23332..','.2333332233333 2'.replace(' ', '3'),'.23333333333332.','.23333333333332.','..233333333332..','...2333333332...','....23333332....','.....233332.....','......2332......','.......22.......','................','................','................'],
+};
+const pictos = Array.from(document.querySelectorAll('.picto'));
+let pictoPal = '';
+function drawPictos(pal) {
+  const key = pal.map((c) => c.map((v) => Math.round(v * 40)).join()).join();
+  if (key === pictoPal) return; pictoPal = key;
+  const tone = { '1': pal[3], '2': pal[5], '3': pal[7] };
+  pictos.forEach((cv) => {
+    const map = PICTOS[cv.dataset.p], ctx = cv.getContext('2d');
+    ctx.clearRect(0, 0, 16, 16);
+    map.forEach((row, y) => [...row].forEach((ch, x) => {
+      const c = tone[ch]; if (!c) return;
+      ctx.fillStyle = `rgb(${c.map((v) => Math.round(v * 255))})`; ctx.fillRect(x, y, 1, 1);
+    }));
+  });
+}
+
+/* ---------- Son de cabine, coupé par défaut : seulement l'ambiance (moteur, ventilation), synthétisée et étouffée ---------- */
+const Cabin = (() => {
+  let ac = null, master = null, on = false;
+  const noise = (sec, brown) => {
+    const bf = ac.createBuffer(1, ac.sampleRate * sec, ac.sampleRate), d = bf.getChannelData(0); let last = 0;
+    for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; if (brown) { last = (last + .02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w; }
+    return bf;
+  };
+  function boot() {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+    const loop = (buf, nodes, gain) => { const src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
+      let n = src; nodes.forEach((x) => { n.connect(x); n = x; }); const g = ac.createGain(); g.gain.value = gain; n.connect(g).connect(master); src.start(); };
+    const f = (type, fq, q) => { const x = ac.createBiquadFilter(); x.type = type; x.frequency.value = fq; if (q) x.Q.value = q; return x; };
+    loop(noise(8, true), [f('lowpass', 240)], .95);                               /* le grondement, grave et sourd */
+    loop(noise(6, false), [f('lowpass', 1100), f('highpass', 180)], .07);         /* le souffle de la ventilation */
+    const o = ac.createOscillator(); o.frequency.value = 68; const og = ac.createGain(); og.gain.value = .03;   /* la vibration de la cellule */
+    const lfo = ac.createOscillator(); lfo.frequency.value = .11; const lg = ac.createGain(); lg.gain.value = .012; lfo.connect(lg).connect(og.gain); lfo.start();
+    o.connect(og).connect(master); o.start();
+  }
+  async function toggle() {
+    if (!ac) boot();
+    on = !on;
+    if (on) { await ac.resume(); master.gain.cancelScheduledValues(ac.currentTime); master.gain.linearRampToValueAtTime(.5, ac.currentTime + 1.5); }
+    else { master.gain.cancelScheduledValues(ac.currentTime); master.gain.linearRampToValueAtTime(0, ac.currentTime + .4); }
+    return on;
+  }
+  return { toggle, get on() { return on; } };
+})();
+const sndBtn = $('#snd'), sndLabel = $('#sndLabel');
+sndBtn.addEventListener('click', async () => {
+  const on = await Cabin.toggle();
+  sndBtn.setAttribute('aria-pressed', String(on)); sndLabel.textContent = on ? 'Son de cabine' : 'Son coupé';
+});
+
+/* ---------- Boucle ---------- */
+let vY = scrollY, t0 = performance.now(), prev = t0, drift = 0, px = .5, py = .5, tx = .5, ty = .5;
+addEventListener('pointermove', (e) => { tx = e.clientX / innerWidth; ty = 1 - e.clientY / innerHeight; }, { passive: true });
+function travel(f) {
+  if (f < .02) return 0;
+  if (f < .053) { const s = (f - .02) / .033; return 1900 * s * s; }
+  /* l'avance du temps (le sol défile tout seul en vol) s'installe en douceur après le décollage : pas de saut */
+  if (f < .5) return 1900 + (f - .053) * 90000 + 2500 * (1 - Math.exp(-drift / 2500)) * smooth(clamp((f - .053) / .04));
+  if (f < .955) { const s = clamp((f - .84) / .115); return 96000 + s * 2800; }
+  /* on s'arrête face à la tour et à l'aérogare */
+  const s = clamp((f - .955) / .045); return 98800 + 1750 * (1 - (1 - s) * (1 - s));
+}
+/* lune : un fin croissant avant l'aube (éclairé du côté du soleil qui va se lever), un plus gros à l'arrivée */
+function moon(f, hz) {
+  if (f < .2) return [[.13, hz + .44, .03, 1 - smooth(clamp((f - .05) / .09))], [.92, -.25, -.5]];
+  if (f > .8) return [[.80, innerWidth < innerHeight * .9 ? .88 : hz + .36, .034, smooth(clamp((f - .845) / .04))], [-.85, -.1, -.12]];
+  return [[0, 0, .03, 0], [1, 0, 0]];
+}
+/* étoiles filantes : toutes les 4 à 11 s quand le ciel est noir, ~0,9 s chacune */
+let met = null, nextMet = performance.now() + 2200;
+function meteor(now, vis, asp) {
+  if (RM || vis < .45) { met = null; return [[0, 0, 1, 0], [0, 0]]; }
+  if (!met && now > nextMet) {
+    const a = Math.PI + .3 + Math.random() * .35;
+    met = { t0: now, x: (.3 + Math.random() * .6) * asp, y: .7 + Math.random() * .24, dx: Math.cos(a), dy: Math.sin(a), life: 750 + Math.random() * 350 };
+  }
+  if (!met) return [[0, 0, 1, 0], [0, 0]];
+  const t = now - met.t0;
+  if (t > met.life) { met = null; nextMet = now + 4000 + Math.random() * 7000; return [[0, 0, 1, 0], [0, 0]]; }
+  const s = t / 1000 * .8, k = t / met.life;
+  return [[met.x + met.dx * s, met.y + met.dy * s, met.dx, met.dy], [.13 * Math.min(1, t / 220), Math.sin(Math.PI * k) * vis]];
+}
+/* éclairs dans le cumulonimbus : un double éclat toutes les 2 à 5 s */
+let bolt = { t: -1e9, x: 0, y: 0 }, nextBolt = 0;
+function lightning(now, vis) {
+  if (RM || vis < .2) return [0, 0, 0];
+  if (now > nextBolt) { bolt = { t: now, x: (Math.random() - .5) * .1, y: .06 + Math.random() * .22 }; nextBolt = now + 1800 + Math.random() * 3500; }
+  const d = now - bolt.t, v = d < 70 ? 1 : d < 130 ? .25 : d < 210 ? .85 : d < 400 ? .3 * (1 - (d - 210) / 190) : 0;
+  return [bolt.x, bolt.y, v * vis];
+}
+/* stroboscope : deux éclairs brefs toutes les 1,4 s, avec une montée et une descente très courtes */
+function strobe(now) {
+  if (RM) return 0;
+  const ph = now % 1400, pulse = (t) => clamp(1 - Math.abs(ph - t) / 45);
+  return Math.max(pulse(40), pulse(220));
+}
+function frame(now) {
+  smoothScroll(now);
+  const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+  vY = lenis || RM ? scrollY : vY + (scrollY - vY) * .22;
+  if (Math.abs(scrollY - vY) < .2) vY = scrollY;
+  const f = fOf(vY);
+  placeTexts(vY);
+  const S = sky(f), ft = altFt(f), hM = Math.max(4, ft / 3.281), hz = horizon(f), tl = tilt(f);
+  if (f < .2) S.sun = [.82, hz + sunEl(f), .04];
+  /* écran en hauteur : le soleil monte au-dessus du texte au lieu de passer derrière */
+  const portrait = innerWidth < innerHeight * .9;
+  if (portrait && f >= .2) S.sun = [.8, Math.max(S.sun[1], .87), S.sun[2] * .8];
+  const time = RM ? 40 : (now - t0) / 1000;
+  if (!RM && f > .053 && f < .5) drift += dt * 70;
+  if (f <= .053) drift = 0;
+  px = lerp(px, tx, .05); py = lerp(py, ty, .05);
+  nav.classList.toggle('solid', scrollY > 40);
+  if (prog) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo); gl.viewport(0, 0, gw, gh); gl.useProgram(prog);
+    gl.uniform2f(U.uRes, gw, gh); gl.uniform1f(U.uTime, time); gl.uniform3fv(U.uPal, S.pal.flat());
+    gl.uniform1f(U.uCeil, S.ceil); gl.uniform1f(U.uSea, S.sea); gl.uniform1f(U.uFog, S.fog); gl.uniform1f(U.uCover, S.cover);
+    gl.uniform1f(U.uTop, S.top); gl.uniform1f(U.uBot, S.bot); gl.uniform1f(U.uLo, S.lo); gl.uniform1f(U.uHi, S.hi);
+    gl.uniform1f(U.uGlow, S.glow); gl.uniform1f(U.uRays, S.rays); gl.uniform1f(U.uStars, S.stars);
+    gl.uniform1f(U.uOffY, ft / 35000 * 7);
+    gl.uniform1f(U.uFlash, f > .38 && f < .45 ? Math.sin(Math.PI * (f - .38) / .07) * .1 : 0);
+    gl.uniform3fv(U.uSun, S.sun); gl.uniform2f(U.uPointer, px, py); gl.uniform2fv(U.uWing, S.wing);
+    gl.uniform1f(U.uGround, f < .215 || f > .81 ? 1 : 0); gl.uniform1f(U.uH, hM); gl.uniform1f(U.uTravel, travel(f));
+    gl.uniform1f(U.uTilt, tl * Math.PI / 180); gl.uniform1f(U.uHorizon, hz);
+    gl.uniform1f(U.uNight, lightsF(f)); gl.uniform1f(U.uCity, f > .5 ? 1 : 0);
+    gl.uniform1f(U.uStrobe, strobe(now)); gl.uniform1f(U.uWingS, clamp(gw / gh / 1.4, .5, 1));
+    gl.uniform1f(U.uBlink, (now % 1500) < 700 ? 1 : 0);
+    gl.uniform1f(U.uGlint, .12 + (hz - .30) * .5 + tl * .01 + Math.sin(time * .25) * .02);
+    gl.uniform4fv(U.uRwy, RWY);
+    const mo = moon(f, hz); gl.uniform4fv(U.uMoon, mo[0]); gl.uniform3fv(U.uMoonL, mo[1]);
+    gl.uniform1f(U.uMilky, f > .8 ? smooth(clamp((f - .86) / .05)) : 0);
+    gl.uniform1f(U.uFlightX, f * 55);                                   /* le décor défile avec le scroll */
+    gl.uniform1f(U.uFogDir, f < .3 ? 1 : f < .82 ? -1 : 1);
+    gl.uniform1f(U.uPeaks, smooth(clamp((f - .43) / .03)) * (1 - smooth(clamp((f - .775) / .02))));
+    const storm = smooth(clamp((f - .70) / .03)) * (1 - smooth(clamp((f - .78) / .015)));
+    gl.uniform1f(U.uStorm, storm); gl.uniform3fv(U.uBolt, lightning(now, storm));
+    const me = meteor(now, S.stars, gw / gh); gl.uniform4fv(U.uMet, me[0]); gl.uniform2fv(U.uMet2, me[1]);
+    const c = calmRect(); gl.uniform4f(U.uCalm, c[0], c[1], c[2], c[3]); gl.uniform1f(U.uCalmK, c[4]);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, devW, devH); gl.useProgram(blit);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.uniform1i(U.bTex, 0); gl.uniform1f(U.bCell, cellDev); gl.uniform1f(U.bOff, gh * cellDev - devH);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  } else {
+    const a = S.pal[2].map((v) => Math.round(v * 255)), c = S.pal[5].map((v) => Math.round(v * 255));
+    document.body.style.background = `linear-gradient(rgb(${a}), rgb(${c}))`;
+  }
+  altimeter(ft);
+  drawPictos(S.pal);
+  document.body.classList.toggle('landed', f > .985);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+/* accès pour les scripts de vérification (tools/) : aller à un point du vol */
+window.seat12a = { goTo: (f) => scrollTo(0, sOf(f)), fOf, sOf };
+})();
+</script>
+
+</body>
+</html>
