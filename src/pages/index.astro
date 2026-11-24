@@ -1,0 +1,109 @@
+---
+/*
+ * Home page: a flight seen from seat 12A. The scene is drawn by src/scripts/home/ (WebGL); the sections below are placed
+ * along the flight by scroll.js: `--f` is the point of the flight (0..1) where a section is centred, `data-y` shifts
+ * it (fraction of the screen), `data-calm="1"` quiets the sky behind it, `.left` aligns it left (desktop only),
+ * `.light` uses dark ink (for bright skies).
+ *
+ * Links marked data-soon point to pages that do not exist yet: they do nothing for now.
+ * Texts: see docs/textes.md (current version, alternatives, what must be validated).
+ */
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/home.css';
+---
+<Base
+  title="Seat 12A · Prenez de la hauteur sur ce qui circule"
+  description="Seat 12A vérifie les affirmations qui circulent sur X, en français, et publie chaque vérification avec ses sources. Une association à but non lucratif."
+>
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <nav class="nav" id="nav" aria-label="Navigation principale">
+    <a class="brand" href="/" id="home" aria-label="Seat 12A, accueil"><Logo /></a>
+    <div class="nav-links">
+      <a href="#" data-soon>Cases</a>
+      <a href="#" data-soon>Demander</a>
+      <a href="#" data-soon>Méthode</a>
+      <a href="#" data-soon>À propos</a>
+    </div>
+    <a class="btn small" href="#" data-soon>Installer l'extension</a>
+  </nav>
+
+  <main id="track">
+    <section class="sec hero" style="--f:0" data-calm="1" data-y="-.04">
+      <h1>Prenez de la hauteur sur ce qui circule.</h1>
+      <p>Seat 12A vérifie les affirmations qui circulent sur X, en français, et publie chaque vérification avec ses sources, pour que vous puissiez juger par vous-même.</p>
+      <div class="ctas">
+        <a class="btn" href="#" data-soon>Voir les cases</a>
+        <a class="link" href="#" data-soon>Demander une vérification</a>
+      </div>
+    </section>
+
+    <section class="sec light left" style="--f:.265" data-calm="0">
+      <h2>D'abord, on isole ce qui est affirmé.</h2>
+      <p>Un post mélange souvent des faits, des opinions et du ressenti. On en extrait ce qui peut se vérifier : un chiffre, une citation, une date, une image. Une opinion, elle, ne se vérifie pas.</p>
+    </section>
+
+    <section class="sec" style="--f:.455" data-calm="1" data-y="-.14">
+      <h2>Puis on cherche, jusqu'à y voir clair.</h2>
+      <p>On remonte aux sources d'origine : données publiques, documents, études, archives. La note dit ce qu'on a trouvé, où, et ce qui reste incertain.</p>
+    </section>
+
+    <section class="sec left" style="--f:.55" data-calm="1" data-y="-.12">
+      <h2>Ce qui vient d'être vérifié.</h2>
+      <p>Chaque case montre le post d'origine, l'affirmation vérifiée, les sources consultées et le verdict, sans jargon.</p>
+      <div class="ctas"><a class="btn" href="#" data-soon>Parcourir les cases</a></div>
+    </section>
+
+    <section class="sec" style="--f:.64" data-calm="1">
+      <h2>Nos règles de vol.</h2>
+      <div class="rules">
+        <div><canvas class="picto" data-p="balance" width="16" height="16" aria-hidden="true"></canvas><h3>Pas de faux équilibre</h3><p>Quand les preuves penchent d'un côté, on le dit clairement.</p></div>
+        <div><canvas class="picto" data-p="magnifier" width="16" height="16" aria-hidden="true"></canvas><h3>Les sources, toujours</h3><p>Chaque note montre d'où elle vient. Vous pouvez tout vérifier.</p></div>
+        <div><canvas class="picto" data-p="headset" width="16" height="16" aria-hidden="true"></canvas><h3>Un humain a le dernier mot</h3><p>L'équipage relit et modère chaque note.</p></div>
+        <div><canvas class="picto" data-p="heart" width="16" height="16" aria-hidden="true"></canvas><h3>Rien à vendre</h3><p>Pas de pub, pas d'abonnement. Une association à but non lucratif.</p></div>
+      </div>
+    </section>
+
+    <section class="sec left" style="--f:.73" data-calm="1" data-y="-.06">
+      <h2>Un doute ? Posez la question.</h2>
+      <p>Collez une affirmation ou un lien. On cherche les sources et on vous dit aussi quand on ne sait pas.</p>
+      <form class="ask" id="ask">
+        <label class="visually-hidden" for="askInput">Affirmation ou lien à vérifier</label>
+        <input id="askInput" type="text" placeholder="Cette photo date-t-elle vraiment de 2024 ?">
+        <button class="btn" type="submit">Vérifier</button>
+      </form>
+      <span class="note">Ou installez l'extension : elle repère les posts à vérifier directement sur X.</span>
+    </section>
+
+    <section class="sec end" style="--f:1" data-calm="1" data-y="-.21">
+      <h2>Une erreur dans une case ? Dites-le-nous.</h2>
+      <p>Envoyez le lien de la case et la source qui la contredit. Si on s'est trompé, la note est corrigée et la correction reste visible.</p>
+      <div class="ctas">
+        <a class="btn" href="#" data-soon>Signaler une erreur</a>
+        <button class="link" id="takeoff" type="button">Redécoller</button>
+      </div>
+    </section>
+  </main>
+  <div class="foot-gap" aria-hidden="true"></div>
+  <Footer />
+
+  <button class="snd" id="snd" type="button" aria-pressed="false" title="Son de cabine">
+    <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="1" y="4" width="2" height="4"/><rect x="3" y="3" width="2" height="6"/><rect x="5" y="1" width="1" height="10"/>
+      <rect class="w1" x="8" y="4" width="1" height="4"/><rect class="w2" x="10" y="2" width="1" height="8"/></svg>
+    <span id="sndLabel">Son coupé</span>
+  </button>
+
+  <div class="alt" aria-hidden="true">
+    <svg id="plane" viewBox="0 0 18 12" fill="currentColor">
+      <rect x="2" y="5" width="13" height="3"/><rect x="15" y="6" width="2" height="2"/><rect x="1" y="2" width="2" height="4"/>
+      <rect x="3" y="4" width="2" height="1"/><rect x="7" y="7" width="5" height="2" opacity=".7"/><rect x="13" y="5" width="2" height="1" opacity=".5"/>
+    </svg>
+    <span class="digits" id="digits"></span><span class="unit">ft</span>
+  </div>
+
+  <script>
+    import '../scripts/home/main.js';
+  </script>
+</Base>

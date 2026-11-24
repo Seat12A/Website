@@ -1,7 +1,7 @@
 # Décisions de design et retours de Jules
 
 Ce document rassemble ce qui a été décidé pour la page d'accueil, et surtout **ce que Jules a refusé**, pour ne pas
-refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentaine d'itérations sur le prototype).
+refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentaine d'itérations sur le prototype), complété au passage en bêta.
 
 ## Le concept
 
@@ -25,9 +25,15 @@ refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentai
   navigation rouge, feux bleus et verts du taxiway, phare vert et blanc de l'aéroport.
 - **Le soleil** : disque net, réservé au ton le plus clair ; halo et rayons (Jules veut garder les rayons : sans eux,
   le halo sature en un aplat). Les nuages passent **devant** le soleil.
+- **Soleil et lune logiques** (demande de Jules, 24/11/2026 : « on passe le nuage et le soleil change de place ») :
+  le soleil n'est jamais placé directement à l'écran ; il a une hauteur au-dessus de l'horizon visible qui change en
+  continu. Une seule journée : lever pendant la montée, encore bas à la percée, haut en croisière, coucher dans la mer
+  de nuages à la descente, puis la nuit. Lune : croissant avant l'aube du côté du soleil, **pas de lune la nuit**
+  (un croissant descendant s'est couché avant le soleil). Détails : `accueil.md` §4.
 - **Typographie** : Geist (texte) et Geist Mono (altimètre). **Police normale** pour les titres (le titre dessiné en
   pixels a été refusé). **Titres d'une seule couleur. Jamais de texte tout en majuscules.**
-- **Responsive** : sur téléphone, le soleil et la lune passent au-dessus du texte, les textes sont centrés.
+- **Responsive** : sur téléphone, les textes sont centrés ; le soleil reste au-dessus du texte qu'on lit et ne monte
+  ou ne se couche qu'entre deux textes.
 
 ## Ce qui fait « IA » (refusé, ne pas remettre)
 
@@ -76,10 +82,16 @@ refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentai
   synthétisée et étouffée. Les annonces de bord ont été refusées (voix de synthèse « ralentie », puis MBROLA) ; le
   « ding » de la ceinture a été retiré avec elles (à proposer à nouveau si besoin).
 
+## Textes
+
+- Le texte sur l'auteur des posts (« On ne regarde jamais qui parle ») : retiré, « on s'en fiche » (Jules). Chaque
+  phrase doit apprendre quelque chose au visiteur ; pas de phrases futiles (« Merci d'avoir pris de la hauteur avec
+  nous » : retirée). Propositions et points à valider : `textes.md`.
+
 ## Points à valider avec Jules ou l'équipe
 
-- Le texte des sections (rédigé pendant le prototypage) : notamment « un humain relit chaque note » — à aligner sur le
-  fonctionnement réel de Tower (relecture avant ou après publication ?).
+- Les textes qui décrivent le fonctionnement de Tower (voir `textes.md`) : notamment « un humain relit chaque note »
+  (relecture avant ou après publication ?) et le signalement des erreurs.
 - Les libellés exacts des verdicts (pour le futur tableau des arrivées).
 - L'éclairage de nuit de la tour Eiffel et son phare font l'objet de droits pour certains usages : à vérifier avant la
   mise en ligne.

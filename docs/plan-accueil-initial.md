@@ -2,7 +2,7 @@
 
 > **Plan de départ (24/11/2026).** Le prototype s'en est écarté sur plusieurs points (vue plein écran au sol plutôt
 > qu'un hublot encadré, heure bleue au départ, nuit sur Paris à l'arrivée, sections simplifiées). Ce qui fait foi :
-> `decisions.md` et `prototype-accueil.md`. Les idées non encore réalisées (la traversée animée, le tableau des
+> `decisions.md` et `accueil.md`. Les idées non encore réalisées (la traversée animée, le tableau des
 > arrivées, la carte de consignes) restent valables.
 
 > Document de cadrage pour le développement. Il décrit le concept, chaque section, les textes, les animations et les
