@@ -1,10 +1,11 @@
 /*
- * Home page, shared part: fonts, colour tokens, navigation bar, buttons, links, footer; home.css adds the flight. The
- * other pages (fact-checks…) use Tailwind and shadcn/ui instead (global.css), light by default.
+ * Home page, shared part: fonts and colour tokens; the navigation bar, buttons, links and footer come from chrome.css
+ * (shared with the other pages); home.css adds the flight. The other pages use Tailwind and shadcn/ui (global.css).
  * Rules (docs/decisions.md): no all-caps text, single-colour titles, no frosted glass, no blur-in reveals.
  */
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
+@import './chrome.css';
 
 :root {
   color-scheme: dark;
@@ -23,86 +24,3 @@ img { max-width: 100%; }
 [hidden] { display: none !important; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* ---------- Navigation bar ---------- */
-.nav {
-  position: fixed; z-index: 5; top: calc(14px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%);
-  width: min(1180px, calc(100% - 32px)); display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 9px 9px 9px 16px; border-radius: 99px;
-  transition: width .6s var(--ease), background-color .4s var(--ease), box-shadow .4s var(--ease);
-}
-.nav.solid { width: min(880px, calc(100% - 32px)); background: #0B1030; box-shadow: inset 0 0 0 1px var(--line); }
-.brand { display: flex; align-items: center; color: var(--white); text-decoration: none; }
-.brand svg { height: 24px; width: auto; display: block; }
-.nav-links { display: flex; gap: 4px; }
-.nav-links a { color: var(--soft); text-decoration: none; font: 500 14px/1 var(--sans); padding: 10px 12px; border-radius: 99px; transition: color .2s; }
-.nav-links a:hover { color: var(--white); }
-.nav a:focus-visible, .btn:focus-visible, .link:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
-
-/* ---------- Buttons and links ----------
-   On hover, the button turns pale sky blue and a pixel glint (a thick band and a thin one, drawn as a staircase on the
-   cell grid) runs across it in steps, again and again, like a sticker that shines. A bit kitsch, on purpose.
-   Links: dashes that scroll like runway markings. */
-.btn {
-  appearance: none; border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font: 500 14px/1 var(--sans); padding: 13px 20px; border-radius: 99px; background: var(--white); color: var(--ink);
-  position: relative; isolation: isolate; overflow: hidden; transition: transform .25s steps(2), background-color .2s steps(2);
-}
-.btn.small { padding: 11px 16px; }
-.btn::after {
-  content: ""; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none;
-  width: calc(12 * var(--cell, 3px)); height: calc(16 * var(--cell, 3px));
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 16' shape-rendering='crispEdges' fill='%23fff'%3E%3Crect x='7' y='0' width='3' height='1'/%3E%3Crect x='11' y='0' width='1' height='1'/%3E%3Crect x='7' y='1' width='3' height='1'/%3E%3Crect x='11' y='1' width='1' height='1'/%3E%3Crect x='6' y='2' width='3' height='1'/%3E%3Crect x='10' y='2' width='1' height='1'/%3E%3Crect x='6' y='3' width='3' height='1'/%3E%3Crect x='10' y='3' width='1' height='1'/%3E%3Crect x='5' y='4' width='3' height='1'/%3E%3Crect x='9' y='4' width='1' height='1'/%3E%3Crect x='5' y='5' width='3' height='1'/%3E%3Crect x='9' y='5' width='1' height='1'/%3E%3Crect x='4' y='6' width='3' height='1'/%3E%3Crect x='8' y='6' width='1' height='1'/%3E%3Crect x='4' y='7' width='3' height='1'/%3E%3Crect x='8' y='7' width='1' height='1'/%3E%3Crect x='3' y='8' width='3' height='1'/%3E%3Crect x='7' y='8' width='1' height='1'/%3E%3Crect x='3' y='9' width='3' height='1'/%3E%3Crect x='7' y='9' width='1' height='1'/%3E%3Crect x='2' y='10' width='3' height='1'/%3E%3Crect x='6' y='10' width='1' height='1'/%3E%3Crect x='2' y='11' width='3' height='1'/%3E%3Crect x='6' y='11' width='1' height='1'/%3E%3Crect x='1' y='12' width='3' height='1'/%3E%3Crect x='5' y='12' width='1' height='1'/%3E%3Crect x='1' y='13' width='3' height='1'/%3E%3Crect x='5' y='13' width='1' height='1'/%3E%3Crect x='0' y='14' width='3' height='1'/%3E%3Crect x='4' y='14' width='1' height='1'/%3E%3Crect x='0' y='15' width='3' height='1'/%3E%3Crect x='4' y='15' width='1' height='1'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
-  transform: translateX(-100%);
-}
-.btn:hover, .btn:focus-visible { background-color: #CFDDFF; }
-.btn:hover::after, .btn:focus-visible::after { animation: glint 1.5s infinite; }
-@keyframes glint {
-  0% { left: 0; transform: translateX(-100%); animation-timing-function: steps(9, end); }
-  45%, 100% { left: 100%; transform: translateX(0); }
-}
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: translateY(1px); }
-.link {
-  color: var(--white); text-decoration: none; font: 500 14px/1 var(--sans); padding-bottom: 4px;
-  background: linear-gradient(90deg, currentColor 50%, transparent 0) 0 100% / 6px 1px repeat-x;
-}
-.link:hover { animation: runway .5s steps(3) infinite; }
-button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; background-color: transparent; }
-@keyframes runway { to { background-position: 6px 100%; } }
-
-/* ---------- Footer ---------- */
-.foot {
-  position: relative; z-index: 2; background: #070A1A;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 56px calc(32px + env(safe-area-inset-bottom, 0px));
-}
-.foot::before {                                     /* a dithered edge, like the rest of the scene */
-  content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px;
-  background:
-    repeating-conic-gradient(#070A1A 0 25%, transparent 0 50%) 0 6px / 6px 6px no-repeat,
-    repeating-conic-gradient(#070A1A 0 25%, transparent 0 50%) 0 0 / 12px 12px;
-  background-repeat: repeat-x;
-}
-.foot-in { max-width: 1120px; margin: 0 auto; display: grid; gap: 36px; }
-.foot-brand p { margin: 0; max-width: 48ch; font-size: 14px; line-height: 1.55; color: var(--soft); }
-.foot-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-.foot-cols div { display: grid; gap: 10px; align-content: start; min-width: 0; }
-.foot-cols h2 { margin: 0 0 2px; font: 500 13px/1 var(--sans); color: var(--white); }
-.foot-cols a { color: rgba(255, 255, 255, .62); text-decoration: none; font-size: 14px; transition: color .2s; }
-.foot-cols a:hover { color: var(--white); }
-.foot-cols a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
-.foot-base {
-  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, .08); font: 400 12px/1.4 var(--mono); color: rgba(255, 255, 255, .5);
-}
-
-@media (max-width: 760px) {
-  .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .nav-links { display: none; }
-  .brand svg { height: 20px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .btn:hover::after, .btn:focus-visible::after { animation: none; }
-  .link:hover { animation: none; }
-  .nav { transition: none; }
-}

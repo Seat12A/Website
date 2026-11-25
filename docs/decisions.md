@@ -160,10 +160,17 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
 
 ## Les autres pages (fact-checks…)
 
-- **Minimalistes, shadcn/ui obligatoire, clair par défaut et sombre si l'ordinateur l'est** (Jules, 25/11/2026). Même
-  typo que l'accueil (Geist, Geist Mono), le bleu nuit `#0B1030` pour la continuité, de petits rappels au pixel
-  (pictogrammes, points carrés, ligne tramée). **Ne pas recopier un style avion** sur ces pages : une première version
-  sombre en « tableau des arrivées », avec un « parcours » façon vol, a été remplacée. Détails : `fact-checks.md`.
+- **Minimalistes, shadcn/ui obligatoire, clair par défaut et sombre si l'ordinateur l'est** (Jules, 25/11/2026).
+  **Ne pas recopier un style avion** : une première version sombre en « tableau des arrivées » a été remplacée.
+- **Deuxième refonte le même jour** : la première version shadcn (style new-york, tableau, pictogrammes pixel partout,
+  ligne tramée sous un en-tête à part) a été jugée « absolument catastrophique ». Demandes de Jules :
+  - **l'en-tête doit être le même que sur l'accueil**, tout en continuité dans le site : en-tête et pied de page sont
+    maintenant les composants de l'accueil (`chrome.css`) ;
+  - **composants officiels shadcn/ui, style Maia**, **thème bleu** en couleur d'accent ;
+  - **inspiration Bluesky** (un seul bleu pour l'action, pilules, cartes arrondies, filets, pas d'ombres) ;
+  - **filtres en chips** sur le modèle du dashboard Moddy ;
+  - « moderne et minimaliste ».
+  Détails : `fact-checks.md`.
 - L'affirmation vérifiée toujours entre guillemets : sinon le titre se lit comme une affirmation de Seat 12A.
 
 ## Points à valider avec Jules ou l'équipe

@@ -9,14 +9,14 @@ export const prerender = false;
 
 import Page from '../../../layouts/Page.astro';
 import PostEmbed from '../../../components/PostEmbed.astro';
-import { PixelIcon } from '../../../components/fc/PixelIcon';
-import { SearchForm } from '../../../components/fc/SearchForm';
+import BackLink from '../../../components/fc/BackLink.astro';
+import { Sources } from '../../../components/fc/Sources';
+import { SearchBox } from '../../../components/fc/SearchBox';
 import { VerdictBadge } from '../../../components/fc/VerdictBadge';
-import { cn } from '../../../lib/utils';
-import { badgeVariants } from '../../../components/ui/badge';
-import { Separator } from '../../../components/ui/separator';
+import { Badge } from '../../../components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { ApiError, postVerdict, CACHE_NONE, CACHE_NOT_FOUND, CACHE_OK } from '../../../lib/tower.js';
-import { CONTEXT_NEED, CONTEXT_TYPES, PLATFORMS, longDate, quote, safeUrl, sourceLabel } from '../../../lib/labels.js';
+import { CONTEXT_NEED, CONTEXT_TYPES, PLATFORMS, longDate, quote, safeUrl } from '../../../lib/labels.js';
 
 const { platform = '', id = '' } = Astro.params;
 const known = platform in PLATFORMS && /^[A-Za-z0-9_.:-]{1,64}$/.test(id) && (platform !== 'x' || /^\d{1,20}$/.test(id));
@@ -41,80 +41,62 @@ const claims = post?.claims ?? [];
 const heading = failed ? 'La vérification de ce post n’est pas disponible pour le moment.'
   : claims.length ? (claims.length > 1 ? `Ce post contient ${claims.length} affirmations vérifiées.` : 'Ce post a été vérifié.')
   : known ? 'Ce post n’a pas (encore) été vérifié par Seat 12A.' : 'Ce lien n’est pas reconnu.';
-const h3 = 'text-sm font-medium text-muted-foreground';
 ---
 <Page title={`${heading} · Seat 12A`} description="Ce post a-t-il été vérifié par Seat 12A ?" current="/fact-checks" noindex>
-  <a href="/fact-checks" class="group mb-10 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-    <PixelIcon name="arrow-left" className="size-3 transition-transform duration-200 ease-[steps(2)] group-hover:-translate-x-1" />
-    Tous les fact-checks
-  </a>
+  <BackLink />
 
-  <header class="grid max-w-3xl gap-3">
-    <h1 class="text-4xl font-medium tracking-tight md:text-5xl">{heading}</h1>
-    {failed && <p class="text-lg text-muted-foreground">Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.</p>}
-    {none && known && <p class="text-lg leading-relaxed text-muted-foreground">Seuls les verdicts en vigueur sont affichés : une vérification ancienne ou remplacée par une plus récente n'apparaît pas ici. Vous pouvez aussi chercher l'affirmation avec quelques mots.</p>}
-    {!known && <p class="text-lg text-muted-foreground">Collez le lien complet d'un post X, du type https://x.com/compte/status/1234…</p>}
+  <header class="mb-8 flex flex-col gap-3 px-1">
+    <h1 class="type-display">{heading}</h1>
+    {failed && <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.</p>}
+    {none && known && <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Seuls les verdicts en vigueur sont affichés : une vérification ancienne ou remplacée par une plus récente n'apparaît pas ici. Vous pouvez aussi chercher l'affirmation avec quelques mots.</p>}
+    {!known && <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Collez le lien complet d'un post X, du type https://x.com/compte/status/1234…</p>}
   </header>
 
-  {(none || !known) && <div class="mt-10"><SearchForm label="Cherchez une affirmation, ou collez le lien d’un autre post X." /></div>}
+  {(none || !known) && <div class="mb-8"><SearchBox label="Chercher une affirmation, ou coller un autre lien X" /></div>}
 
-  <Separator className="my-10" />
-
-  {claims.length > 0 ? (
-    <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-16">
-      <div class="grid min-w-0 gap-12">
-        {claims.map((cl) => {
-          const need = CONTEXT_NEED[cl.context_need ?? 'none'];
-          const links = (cl.note?.links ?? []).map(safeUrl).filter(Boolean);
-          return (
-            <article class="grid gap-5">
-              <h2 class="text-2xl leading-tight font-medium tracking-tight md:text-4xl">{quote(cl.text)}</h2>
+  <div class="flex flex-col gap-6">
+    {claims.map((cl) => {
+      const need = CONTEXT_NEED[cl.context_need ?? 'none'];
+      const links = (cl.note?.links ?? []).map(safeUrl).filter(Boolean);
+      return (
+        <article class="flex flex-col gap-6">
+          <Card>
+            <CardHeader className="gap-4">
               <div class="flex flex-wrap items-center gap-2">
                 <VerdictBadge veracity={cl.veracity} size="lg" />
-                {need && <span class={cn(badgeVariants({ variant: 'outline' }), 'rounded-md px-3 py-1.5 text-sm font-normal text-muted-foreground')}>{need}</span>}
+                {need && <Badge variant="outline" className="h-8 px-3.5 text-sm font-normal text-muted-foreground">{need}</Badge>}
               </div>
-              {cl.validated_at && <p class="font-mono text-xs text-muted-foreground">Vérifié le <time datetime={cl.validated_at}>{longDate(cl.validated_at)}</time></p>}
-              {cl.inherited && (
-                <p class="text-sm text-muted-foreground">
-                  {cl.inherited.rule === 'band' ? 'Le même chiffre a déjà été vérifié dans un autre post.' : 'La même affirmation a déjà été vérifiée dans un autre post.'}
-                  {safeUrl(cl.inherited.origin_url) && <> <a class="link-dash font-medium text-foreground" href={safeUrl(cl.inherited.origin_url)} rel="noopener noreferrer" target="_blank">Voir le post d'origine</a></>}
-                </p>
-              )}
-              {cl.note?.text && <p class="max-w-[62ch] text-lg leading-relaxed">{cl.note.text}</p>}
-              {cl.note?.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
-              {cl.context_types?.length > 0 && (
-                <ul class="flex flex-wrap gap-2">
-                  {cl.context_types.map((t) => <li class={cn(badgeVariants({ variant: 'secondary' }), 'gap-2 rounded-md px-2.5 py-1 text-[13px] font-normal')}><span class="dot size-1.5 opacity-50" aria-hidden="true"></span>{CONTEXT_TYPES[t] ?? t}</li>)}
-                </ul>
-              )}
-              {links.length > 0 && (
-                <section class="grid gap-2">
-                  <h3 class={h3}>Sources</h3>
-                  <ol class="grid gap-1">
-                    {links.map((s, i) => { const l = sourceLabel(s); return (
-                      <li><a href={s} rel="noopener noreferrer" target="_blank" class="-mx-3 grid grid-cols-[2rem_minmax(0,1fr)] items-baseline rounded-md px-3 py-2 transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none">
-                        <span class="font-mono text-xs text-muted-foreground tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                        <span class="min-w-0"><span class="block font-medium [overflow-wrap:anywhere]">{l.host}</span>{l.path && <span class="block font-mono text-xs text-muted-foreground [overflow-wrap:anywhere]">{l.path}</span>}</span>
-                      </a></li>
-                    ); })}
-                  </ol>
-                </section>
-              )}
-            </article>
-          );
-        })}
-      </div>
-      {postUrl && (
-        <aside class="grid gap-3">
-          <h2 class={h3}>Le post</h2>
-          <PostEmbed url={postUrl} platform={platform} externalId={id} />
-        </aside>
-      )}
-    </div>
-  ) : postUrl && (
-    <section class="grid max-w-md gap-3">
-      <h2 class={h3}>Le post</h2>
-      <PostEmbed url={postUrl} platform={platform} externalId={id} />
-    </section>
-  )}
+              <h2 class="type-title">{quote(cl.text)}</h2>
+              {cl.validated_at && <p class="text-sm text-muted-foreground">Vérifié le <time datetime={cl.validated_at}>{longDate(cl.validated_at)}</time></p>}
+            </CardHeader>
+            {(cl.note?.text || cl.inherited || cl.context_types?.length > 0) && (
+              <CardContent className="flex flex-col gap-4">
+                {cl.note?.text && <p class="text-base leading-relaxed">{cl.note.text}</p>}
+                {cl.note?.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
+                {cl.inherited && (
+                  <p class="text-sm text-muted-foreground">
+                    {cl.inherited.rule === 'band' ? 'Le même chiffre a déjà été vérifié dans un autre post.' : 'La même affirmation a déjà été vérifiée dans un autre post.'}
+                    {safeUrl(cl.inherited.origin_url) && <> <a class="font-medium text-primary underline-offset-4 hover:underline" href={safeUrl(cl.inherited.origin_url)} rel="noopener noreferrer" target="_blank">Voir le post d'origine</a></>}
+                  </p>
+                )}
+                {cl.context_types?.length > 0 && (
+                  <ul class="flex flex-wrap gap-2">
+                    {cl.context_types.map((t) => <li><Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{CONTEXT_TYPES[t] ?? t}</Badge></li>)}
+                  </ul>
+                )}
+              </CardContent>
+            )}
+          </Card>
+          {links.length > 0 && <Sources links={links} />}
+        </article>
+      );
+    })}
+
+    {postUrl && (
+      <Card>
+        <CardHeader><CardTitle>Le post</CardTitle></CardHeader>
+        <CardContent><PostEmbed url={postUrl} platform={platform} externalId={id} /></CardContent>
+      </Card>
+    )}
+  </div>
 </Page>

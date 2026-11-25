@@ -19,11 +19,11 @@ const xId = platform === 'x' && /^\d{1,20}$/.test(externalId ?? '') ? externalId
 ---
 {link && (
   <div class="post" data-x-id={xId}>
-    <div class="grid gap-4 rounded-lg border bg-card p-4" data-frame>
-      <p class="text-sm leading-relaxed text-muted-foreground">Le post n'est pas recopié ici : son texte et son auteur restent sur {name}.</p>
-      <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
-        {xId && <button type="button" data-load class={buttonVariants({ size: 'sm' })}>Afficher le post ici</button>}
-        <a href={link} rel="noopener noreferrer" target="_blank" class="link-dash text-sm font-medium">Ouvrir sur {name}</a>
+    <div class="flex flex-col gap-4" data-frame>
+      <p class="text-sm leading-relaxed text-muted-foreground">Le post n'est pas recopié ici : son texte et son auteur restent sur {name}.</p>
+      <div class="flex flex-wrap items-center gap-2">
+        {xId && <button type="button" data-load class={buttonVariants()}>Afficher le post ici</button>}
+        <a href={link} rel="noopener noreferrer" target="_blank" class={buttonVariants({ variant: 'outline' })}>Ouvrir sur {name}</a>
       </div>
       {xId && <p class="text-xs leading-relaxed text-muted-foreground">L'affichage charge un script de X, qui peut déposer des cookies.</p>}
     </div>
@@ -44,7 +44,7 @@ const xId = platform === 'x' && /^\d{1,20}$/.test(externalId ?? '') ? externalId
     const a = document.createElement('a');
     a.href = `https://twitter.com/i/status/${id}`;
     a.textContent = 'Chargement du post…';
-    a.className = 'link-dash text-sm';
+    a.className = 'text-sm text-primary underline-offset-4 hover:underline';
     quote.append(a);
     frame.replaceWith(quote);
     const w = window as unknown as { twttr?: { widgets?: { load: (el?: Element) => void } } };

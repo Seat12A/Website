@@ -1,130 +1,44 @@
 ---
 /*
- * The list of fact-checks: search, filters, a table, pages. Rendered on the server at each request (cached 5 minutes by
- * Vercel's CDN): the filters live in the URL and work without JavaScript (a plain GET form; a small script only submits
- * it when a filter changes). Data: GET /v1/cases/search and /v1/cases/stats (docs/api-tower.md). UI: shadcn/ui
- * components in src/components/fc, rendered on the server (no React in the browser).
+ * The list of fact-checks. Rendered on the server at each request (cached 5 minutes by Vercel's CDN) from the filters
+ * of the address (src/lib/factchecks.js); then the search and the filter chips run in the browser
+ * (FactCheckBrowser.tsx, client:load), through /api/fact-checks. The browser never calls Tower.
  *
  * A pasted X link is not a search: it redirects to /post/x/{id}, which asks Tower for the verdicts on that post.
  */
 export const prerender = false;
 
 import Page from '../../layouts/Page.astro';
-import { CasesTable } from '../../components/fc/CasesTable';
-import { Pager } from '../../components/fc/Pager';
-import { SearchForm } from '../../components/fc/SearchForm';
-import { buttonVariants } from '../../components/ui/button';
-import { ApiError, caseStats, searchCases, CACHE_NONE, CACHE_OK } from '../../lib/tower.js';
-import { CLAIM_TYPES, VERACITY, jurisdiction, plural, quote, xPostId } from '../../lib/labels.js';
+import { FactCheckBrowser } from '../../components/fc/FactCheckBrowser';
+import { loadList, readFilters } from '../../lib/factchecks.js';
+import { CACHE_NONE, CACHE_OK } from '../../lib/tower.js';
+import { xPostId } from '../../lib/labels.js';
 
-const params = Astro.url.searchParams;
-const q = (params.get('q') ?? '').trim().replace(/\s+/g, ' ').slice(0, 200);
-const postId = xPostId(q);
+const f = readFilters(Astro.url.searchParams);
+const postId = xPostId(f.q);
 if (postId) return Astro.redirect(`/post/x/${postId}`, 302);
 
-/* Only values the API accepts reach it: anything else is dropped instead of producing a 422. */
-const veracity = [...new Set(params.getAll('veracity'))].filter((v) => v in VERACITY);
-const claimType = (params.get('claim_type') ?? '') in CLAIM_TYPES ? params.get('claim_type') ?? '' : '';
-const juris = /^[A-Za-z]{2,3}$/.test(params.get('jurisdiction') ?? '') ? (params.get('jurisdiction') ?? '').toUpperCase() : '';
-const defaultSort = q ? 'relevance' : 'newest';
-const sort = ['newest', 'oldest', 'relevance'].includes(params.get('sort') ?? '') ? params.get('sort') ?? defaultSort : defaultSort;
-const PER_PAGE = 20, MAX_PAGE = 500;                               // (page - 1) × per_page must stay under 10 000
-const page = Math.min(MAX_PAGE, Math.max(1, Number.parseInt(params.get('page') ?? '1', 10) || 1));
+const data = await loadList(f);
+Astro.response.headers.set('Cache-Control', data.failed ? CACHE_NONE : CACHE_OK);
+if (data.failed) Astro.response.status = 503;
 
-const filters = { q, veracity, claim_type: claimType, jurisdiction: juris };
-const filtered = Boolean(q || veracity.length || claimType || juris);
-
-let result = null, stats = null, statsAll = null, failed = false;
-try {
-  [result, stats, statsAll] = await Promise.all([
-    searchCases({ ...filters, sort, page, per_page: PER_PAGE }),
-    caseStats({ ...filters, veracity: [] }),                       // counts on the verdict filters
-    caseStats({ q }),                                              // the types and countries offered in the menus
-  ]);
-} catch (e) {
-  failed = true;
-  console.error('Tower unavailable for /fact-checks', e instanceof ApiError ? `${e.status} ${e.code} ${e.requestId}` : e);
-}
-Astro.response.headers.set('Cache-Control', failed ? CACHE_NONE : CACHE_OK);
-if (failed) Astro.response.status = 503;
-
-const legacy = result?.legacy ?? false;                            // this Tower has no search yet (src/lib/tower.js)
-const items = result?.items ?? [];
-const total = result?.total ?? 0, pages = Math.min(result?.pages ?? 0, MAX_PAGE);
-
-const types = Object.keys(CLAIM_TYPES).filter((t) => statsAll?.by_claim_type?.[t] || t === claimType);
-const countries = [...new Set([...Object.keys(statsAll?.by_jurisdiction ?? {}), ...(juris ? [juris] : [])])]
-  .sort((a, b) => jurisdiction(a).localeCompare(jurisdiction(b), 'fr'));
-
-/* Same filters, another page: links keep everything else. */
-function href(n) {
-  const p = new URLSearchParams();
-  const next = { q, veracity, claim_type: claimType, jurisdiction: juris, sort: sort === defaultSort ? '' : sort, page: n > 1 ? n : '' };
-  for (const [k, v] of Object.entries(next)) for (const x of [].concat(v)) if (x !== '' && x != null) p.append(k, String(x));
-  const s = p.toString();
-  return `/fact-checks${s ? `?${s}` : ''}`;
-}
-const hrefs = Object.fromEntries(Array.from({ length: pages }, (_, i) => [i + 1, href(i + 1)]));
-
-const searched = filtered && !legacy;
-const countLine = failed ? '' : searched
-  ? plural(total, 'vérification correspond', 'vérifications correspondent', 'Aucune vérification ne correspond')
-  : plural(total, 'vérification publiée', 'vérifications publiées', 'Aucune vérification publiée pour l’instant');
-const title = page > 1 ? `Les fact-checks, page ${page} · Seat 12A` : 'Les fact-checks · Seat 12A';
-const box = 'max-w-3xl rounded-lg border bg-muted/50 px-5 py-4 text-sm leading-relaxed text-muted-foreground';
+const values = {
+  ...(f.veracity.length ? { veracity: f.veracity } : {}),
+  ...(f.claimType ? { type: f.claimType } : {}),
+  ...(f.juris ? { country: f.juris } : {}),
+  ...(f.datePreset ? { datePreset: f.datePreset } : {}),
+  ...(f.since ? { since: f.since } : {}),
+  ...(f.until ? { until: f.until } : {}),
+};
+const initial = { q: f.q, values, activeKeys: data.legacy ? [] : f.order, sort: f.sort, page: f.page };
+const filtered = Boolean(f.q || f.order.length);
+const title = f.page > 1 ? `Les fact-checks, page ${f.page} · Seat 12A` : 'Les fact-checks · Seat 12A';
 ---
-<Page title={title} description="Les posts vérifiés par Seat 12A : un verdict, le contexte qui manque et les sources, pour chacun." current="/fact-checks" noindex={filtered || page > 1}>
-  <header class="mb-10 grid max-w-3xl gap-3">
-    <h1 class="text-4xl font-medium tracking-tight md:text-5xl">Les fact-checks</h1>
-    <p class="text-lg leading-relaxed text-muted-foreground">Les posts vérifiés par Seat 12A, du plus récent au plus ancien. Pour chacun : un verdict, le contexte qui manque et les sources.</p>
+<Page title={title} description="Les posts vérifiés par Seat 12A : un verdict, le contexte qui manque et les sources, pour chacun." current="/fact-checks" noindex={filtered || f.page > 1}>
+  <header class="mb-8 flex flex-col gap-3 px-1">
+    <h1 class="type-display">Les fact-checks</h1>
+    <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Les posts vérifiés par Seat 12A. Pour chacun&nbsp;: un verdict, le contexte qui manque et les sources.</p>
   </header>
 
-  <SearchForm
-    q={q}
-    filters={legacy || failed ? null : { veracity, claimType, juris, sort, counts: stats?.by_veracity ?? null, types, countries }}
-  />
-
-  {failed && (
-    <div class:list={[box, 'mt-8']} role="status"><strong class="font-medium text-foreground">Les vérifications ne sont pas disponibles pour le moment.</strong> Le service qui les fournit ne répond pas. Réessayez dans quelques minutes.</div>
-  )}
-  {legacy && q && (
-    <div class:list={[box, 'mt-8']} role="status">La recherche par mots n'est pas encore disponible. Vous pouvez déjà coller le lien d'un post X pour savoir s'il a été vérifié.</div>
-  )}
-
-  {!failed && (
-    <section class="mt-10" aria-label="Résultats">
-      <div class="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-        <p class="font-mono text-xs text-muted-foreground" aria-live="polite">{countLine}{q && searched && total > 0 && <> pour {quote(q)}</>}.</p>
-        {searched && <a href="/fact-checks" class="link-dash text-sm">Tout effacer</a>}
-      </div>
-
-      {items.length > 0 && <div class="border-t"><CasesTable items={items} caption={`Fact-checks, ${countLine}`} /></div>}
-
-      {items.length === 0 && filtered && !legacy && <p class={box}>Rien ne correspond à ces critères. Essayez un autre mot, ou retirez un filtre.</p>}
-      {items.length === 0 && !filtered && page === 1 && <p class={box}>Les premières vérifications arrivent bientôt.</p>}
-      {items.length === 0 && page > 1 && (
-        <p class={box}>Cette page est vide. <a href={href(1)} class={buttonVariants({ variant: 'link', className: 'h-auto p-0' })}>Revenir à la première page</a></p>
-      )}
-
-      {pages > 1 && <Pager page={page} pages={pages} hrefs={hrefs} />}
-      {(result?.pages ?? 0) > MAX_PAGE && page === MAX_PAGE && <p class="mt-4 text-center text-sm text-muted-foreground">Pour aller plus loin, précisez la recherche ou ajoutez un filtre.</p>}
-    </section>
-  )}
-
-  <script>
-    /* Submit the form as soon as a filter changes, and leave empty fields (and the default order) out of the address. */
-    const form = document.getElementById('finder') as HTMLFormElement | null;
-    const qInput = document.getElementById('q') as HTMLInputElement | null;
-    const firstQ = qInput?.value ?? '';
-    form?.addEventListener('change', (e) => { if ((e.target as HTMLElement).matches('.filters input, .filters select')) form.requestSubmit(); });
-    form?.addEventListener('submit', () => {
-      const q = qInput?.value.trim() ?? '';
-      form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input[name], select[name]').forEach((el) => {
-        /* a new search starts with the default order (relevance with words, newest without) */
-        const defaultSort = el.name === 'sort' && (q !== firstQ || el.value === (q ? 'relevance' : 'newest'));
-        if (!el.value || defaultSort) el.disabled = true;
-      });
-    });
-    addEventListener('pageshow', () => form?.querySelectorAll<HTMLInputElement>('[disabled]').forEach((el) => { el.disabled = false; }));
-  </script>
+  <FactCheckBrowser client:load initial={initial} data={data} />
 </Page>

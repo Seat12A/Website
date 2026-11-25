@@ -58,7 +58,8 @@ function details(c) {
 function search(qs) {
   const q = (qs.get('q') ?? '').toLowerCase(), ver = qs.getAll('veracity'), type = qs.get('claim_type'), juris = qs.get('jurisdiction');
   let items = CASES.filter((c) => (!q || c.title.toLowerCase().includes(q)) && (!ver.length || ver.includes(c.veracity))
-    && (!type || c.claim_type === type) && (!juris || c.jurisdictions.includes(juris.toUpperCase())));
+    && (!type || c.claim_type === type) && (!juris || c.jurisdictions.includes(juris.toUpperCase()))
+    && (!qs.get('since') || c.published_at >= qs.get('since')) && (!qs.get('until') || c.published_at < qs.get('until')));
   if (qs.get('sort') === 'oldest') items = [...items].reverse();
   return items;
 }

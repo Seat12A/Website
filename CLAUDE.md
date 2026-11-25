@@ -11,7 +11,8 @@ ne jamais écrire « association » sur le site.
 
 Pile : **Astro**, déployé sur **Vercel** (adaptateur `@astrojs/vercel`) : l'accueil est statique, les pages des
 fact-checks sont rendues côté serveur depuis l'API de Tower (`docs/fact-checks.md`, `docs/api-tower.md`). Ces pages-là
-utilisent **shadcn/ui** (Tailwind 4, React rendu sur le serveur), en clair par défaut. Pas de CDN externe au
+utilisent **shadcn/ui** (style Maia, thème bleu ; Tailwind 4, React), en clair par défaut, avec le même en-tête et le
+même pied de page que l'accueil (`src/styles/chrome.css`). Pas de CDN externe au
 chargement : polices (Fontsource) et Lenis viennent de npm. Voir `docs/deploiement.md`.
 
 Le développeur principal s'appelle Jules. Il parle français ; répondre en français, honnêtement, et dire quand on ne
@@ -39,7 +40,9 @@ sait pas.
 - Soleil et lune : jamais de position écrite à l'écran, une hauteur au-dessus de l'horizon (`flightPlan.js`).
 - Vérifier chaque changement visuel avec `npm run build` puis `node tools/captures.js <points du vol>` (accueil) ou
   `node tools/pages.js <adresses>` (fact-checks, en clair et avec `SOMBRE=1`), et regarder les images.
-- Les pages autres que l'accueil : shadcn/ui, minimalistes, sans style avion recopié (`docs/decisions.md`).
+- Les pages autres que l'accueil : composants officiels shadcn/ui (style Maia, thème bleu), minimalistes, inspirées de
+  Bluesky, sans style avion recopié (`docs/decisions.md`, `docs/fact-checks.md`). Après un `shadcn add`, remplacer
+  `from "cn"` par `from "@/lib/utils"`.
 - Chaque session se termine par un résumé dans `docs/sessions/AAAA-MM-JJ-sujet.md`.
 
 ## Vérifier
@@ -50,6 +53,7 @@ node tools/captures.js                  # vol complet en 11 images, dans tools/c
 node tools/captures.js 0.16 0.18 0.2    # zoom sur un passage
 LARGEUR=390 HAUTEUR=844 node tools/captures.js 0 0.55 1   # téléphone
 node tools/pages.js                     # pages des fact-checks (faux Tower local ; REEL=1 pour la vraie API)
+node tools/filtres.js                   # clique dans les filtres en chips de /fact-checks
 ```
 
 Playwright et Chromium sont nécessaires (`require('playwright')`). Le rendu passe par SwiftShader : lent mais fidèle.

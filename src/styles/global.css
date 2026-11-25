@@ -1,83 +1,104 @@
 /*
- * Pages other than the home page (fact-checks, a post): Tailwind + shadcn/ui. Minimal, light by default, dark when the
- * visitor's computer is set to dark (prefers-color-scheme; no toggle). Same fonts as the home page (Geist, Geist Mono),
- * the home page's navy as ink in light mode and as the background in dark mode, and small pixel touches: pixel icons,
- * square dots, a dithered rule under the header. No aviation dressing here (Jules, 25/11/2026).
+ * Pages other than the home page (fact-checks, a post): Tailwind + shadcn/ui, style radix-maia, theme "blue" on the
+ * "mist" base (preset applied with the shadcn CLI, see docs/fact-checks.md). Light by default, dark when the visitor's
+ * computer is (prefers-color-scheme; no toggle). Inspired by Bluesky's restraint: one saturated blue for the action,
+ * a cool slate ink ladder, hairlines, pills, rounded cards, no shadows on surfaces.
+ * The navigation bar and the footer are the home page's (chrome.css): the site reads as one.
  * Rules (docs/decisions.md): no all-caps text, single-colour titles, no frosted glass, no glow.
  */
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
+@import "./chrome.css";
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
 :root {
-  color-scheme: light dark;
-  --radius: 0.5rem;
-  --background: #FFFFFF;
-  --foreground: #0B1030;
-  --card: #FFFFFF;
-  --card-foreground: #0B1030;
-  --popover: #FFFFFF;
-  --popover-foreground: #0B1030;
-  --primary: #0B1030;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F2F3F7;
-  --secondary-foreground: #0B1030;
-  --muted: #F4F5F8;
-  --muted-foreground: #5C6178;
-  --accent: #EEF0F5;
-  --accent-foreground: #0B1030;
-  --destructive: #C2412F;
-  --border: #E3E5EC;
-  --input: #D9DCE5;
-  --ring: #7A8099;
-  /* verdicts: darker shades on white, lighter ones on the night (same hues as docs/fact-checks.md) */
+  color-scheme: light;
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.148 0.004 228.8);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.148 0.004 228.8);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.148 0.004 228.8);
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.963 0.002 197.1);
+  --muted-foreground: oklch(0.56 0.021 213.5);
+  --accent: oklch(0.963 0.002 197.1);
+  --accent-foreground: oklch(0.218 0.008 223.9);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.925 0.005 214.3);
+  --input: oklch(0.925 0.005 214.3);
+  --ring: oklch(0.723 0.014 214.4);
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  /* the blue accent of active filters (chips, filter button): a soft tint of the theme's primary */
+  --filter: color-mix(in oklab, var(--primary) 9%, var(--background));
+  --filter-hover: color-mix(in oklab, var(--primary) 15%, var(--background));
+  --filter-border: color-mix(in oklab, var(--primary) 30%, var(--background));
+  --filter-foreground: var(--primary);
+  /* verdicts: darker shades on white, lighter ones on the night; never shown by colour alone */
   --v-true: #0E7C68;
   --v-mostly_true: #4C7A2C;
   --v-misleading: #A35F00;
   --v-false: #BF3E2C;
   --v-unverifiable: #5A6176;
-  --amber: #B86E00;
 }
 
+/* Dark: the home page's night blue as the floor, so both halves of the site meet. */
 @media (prefers-color-scheme: dark) {
   :root {
+    color-scheme: dark;
     --background: #0B1030;
-    --foreground: #F1F2F7;
+    --foreground: oklch(0.987 0.002 197.1);
     --card: #10163A;
-    --card-foreground: #F1F2F7;
-    --popover: #10163A;
-    --popover-foreground: #F1F2F7;
-    --primary: #FFFFFF;
-    --primary-foreground: #0B1030;
-    --secondary: #161D45;
-    --secondary-foreground: #F1F2F7;
-    --muted: #131A40;
-    --muted-foreground: #9BA1BD;
-    --accent: #1A2250;
-    --accent-foreground: #F1F2F7;
-    --destructive: #F27A68;
-    --border: #222A56;
-    --input: #2A3262;
-    --ring: #8A90B0;
+    --card-foreground: oklch(0.987 0.002 197.1);
+    --popover: #121940;
+    --popover-foreground: oklch(0.987 0.002 197.1);
+    --primary: oklch(0.623 0.214 259.815);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: #182050;
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: #151C46;
+    --muted-foreground: oklch(0.74 0.03 262);
+    --accent: #1A2252;
+    --accent-foreground: oklch(0.987 0.002 197.1);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.6 0.05 262);
+    --filter: color-mix(in oklab, var(--primary) 18%, var(--background));
+    --filter-hover: color-mix(in oklab, var(--primary) 26%, var(--background));
+    --filter-border: color-mix(in oklab, var(--primary) 45%, var(--background));
+    --filter-foreground: oklch(0.82 0.1 255);
     --v-true: #3FC1A6;
     --v-mostly_true: #9BCB7C;
     --v-misleading: #F0B043;
     --v-false: #F27A68;
     --v-unverifiable: #A3ABBD;
-    --amber: #FFB020;
   }
 }
 
 @theme inline {
   --font-sans: "Geist Variable", "SF Pro Text", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Geist Mono Variable", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-heading: var(--font-sans);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -96,43 +117,46 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-amber: var(--amber);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-filter: var(--filter);
+  --color-filter-hover: var(--filter-hover);
+  --color-filter-border: var(--filter-border);
+  --color-filter-foreground: var(--filter-foreground);
+}
+
+/* Type scale (Bluesky-like: one face, weight and size do the work; tracking only on the large tiers). */
+@utility type-display {
+  font-size: clamp(30px, 2.4vw + 18px, 44px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+}
+@utility type-title {
+  font-size: clamp(24px, 1.6vw + 16px, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.018em;
 }
 
 @layer base {
   * { @apply border-border outline-ring/50; }
-  body { @apply bg-background text-foreground font-sans antialiased; }
+  html { @apply font-sans; }
+  body { @apply bg-background text-foreground antialiased; }
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
 }
 
-/* ---------- Pixel touches ---------- */
 @layer components {
-  /* icons drawn on a cell grid (PixelIcon.tsx) */
+  /* icons drawn on a cell grid (PixelIcon.tsx): the verdicts keep this small reminder of the home page */
   .pixel { shape-rendering: crispEdges; fill: currentColor; flex: none; }
-  /* a dithered rule: two rows of a 2-cell checkerboard fading the border colour in */
-  .dither {
-    height: 4px;
-    background:
-      conic-gradient(var(--border) 25%, transparent 0 50%, var(--border) 0 75%, transparent 0) 0 0 / 4px 4px;
-  }
-  /* a square dot, a pixel of a colour */
-  .dot { display: inline-block; width: 8px; height: 8px; background: currentColor; flex: none; }
-  /* links: dashed underline that steps along on hover, like on the home page */
-  .link-dash {
-    text-decoration: none; padding-bottom: 3px;
-    background: linear-gradient(90deg, currentColor 50%, transparent 0) 0 100% / 6px 1px repeat-x;
-  }
-  .link-dash:hover { animation: dash .5s steps(3) infinite; }
-  @keyframes dash { to { background-position: 6px 100%; } }
   /* verdict colour from data-veracity */
   [data-veracity] { --v: var(--v-unverifiable); }
   [data-veracity="true"] { --v: var(--v-true); }
   [data-veracity="mostly_true"] { --v: var(--v-mostly_true); }
   [data-veracity="misleading"] { --v: var(--v-misleading); }
   [data-veracity="false"] { --v: var(--v-false); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .link-dash:hover { animation: none; }
 }
