@@ -1,10 +1,11 @@
 ---
 /*
  * The verified post. Tower never gives its text or its author: the page shows it through the platform's official
- * embed. For X, the embed loads a script from X (which can set cookies), so nothing is loaded until the visitor asks
- * for it; until then, a plain link. No external request on page load (docs/deploiement.md).
+ * embed. For X, the embed loads automatically (Jules, 25/11/2026): widgets.js comes from X and can set cookies, which
+ * is said under the post. Until it has loaded (or if it is blocked), a plain link. Other platforms: a link.
  */
 import { buttonVariants } from './ui/button';
+import { OpenInNewIcon } from './icons';
 import { PLATFORMS, safeUrl } from '../lib/labels.js';
 
 interface Props {
@@ -18,44 +19,32 @@ const name = PLATFORMS[platform ?? ''] ?? 'la plateforme';
 const xId = platform === 'x' && /^\d{1,20}$/.test(externalId ?? '') ? externalId : null;
 ---
 {link && (
-  <div class="post" data-x-id={xId}>
-    <div class="flex flex-col gap-4" data-frame>
-      <p class="text-sm leading-relaxed text-muted-foreground">Le post n'est pas recopié ici : son texte et son auteur restent sur {name}.</p>
-      <div class="flex flex-wrap items-center gap-2">
-        {xId && <button type="button" data-load class={buttonVariants()}>Afficher le post ici</button>}
-        <a href={link} rel="noopener noreferrer" target="_blank" class={buttonVariants({ variant: 'outline' })}>Ouvrir sur {name}</a>
-      </div>
-      {xId && <p class="text-xs leading-relaxed text-muted-foreground">L'affichage charge un script de X, qui peut déposer des cookies.</p>}
-    </div>
+  <div class="post flex flex-col gap-2">
+    {xId ? (
+      <blockquote class="twitter-tweet m-0 flex min-h-32 items-center justify-center rounded-2xl bg-muted/60 p-4 text-sm text-muted-foreground" data-dnt="true" data-lang="fr" data-conversation="none">
+        <a href={`https://twitter.com/i/status/${xId}`} data-fallback>Chargement du post…</a>
+      </blockquote>
+    ) : (
+      <a href={link} rel="noopener noreferrer" target="_blank" class={buttonVariants({ variant: 'outline', className: 'self-start' })}>Ouvrir sur {name}<OpenInNewIcon data-icon="inline-end" /></a>
+    )}
+    {xId && (
+      <p class="text-xs text-muted-foreground">
+        Affiché par X, qui peut déposer des cookies. <a href={link} rel="noopener noreferrer" target="_blank" class="font-medium text-foreground underline-offset-4 hover:underline">Ouvrir sur X</a>
+      </p>
+    )}
   </div>
 )}
 
 <script>
-  /* Official X embed, on demand only, in the colours of the visitor's theme. */
-  function loadX(box: HTMLElement) {
-    const id = box.dataset.xId;
-    const frame = box.querySelector<HTMLElement>('[data-frame]');
-    if (!id || !frame) return;
-    const quote = document.createElement('blockquote');
-    quote.className = 'twitter-tweet';
-    quote.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    quote.dataset.lang = 'fr';
-    quote.dataset.dnt = 'true';
-    const a = document.createElement('a');
-    a.href = `https://twitter.com/i/status/${id}`;
-    a.textContent = 'Chargement du post…';
-    a.className = 'text-sm text-primary underline-offset-4 hover:underline';
-    quote.append(a);
-    frame.replaceWith(quote);
-    const w = window as unknown as { twttr?: { widgets?: { load: (el?: Element) => void } } };
-    if (w.twttr?.widgets) { w.twttr.widgets.load(box); return; }
+  /* Official X embed, in the colours of the visitor's theme; widgets.js is loaded once for the whole page. */
+  const quotes = document.querySelectorAll<HTMLElement>('.post .twitter-tweet');
+  if (quotes.length) {
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    quotes.forEach((q) => { q.dataset.theme = dark ? 'dark' : 'light'; });
     const s = document.createElement('script');
     s.src = 'https://platform.twitter.com/widgets.js';
     s.async = true;
-    s.onerror = () => { a.textContent = 'Le post n’a pas pu être chargé. Ouvrir sur X'; };
+    s.onerror = () => quotes.forEach((q) => { const a = q.querySelector('[data-fallback]'); if (a) a.textContent = 'Le post n’a pas pu être chargé. Ouvrir sur X'; });
     document.head.append(s);
   }
-  document.querySelectorAll<HTMLElement>('.post[data-x-id]').forEach((box) => {
-    box.querySelector('[data-load]')?.addEventListener('click', () => loadX(box));
-  });
 </script>

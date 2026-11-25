@@ -103,7 +103,7 @@ affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
 
 - **Vous pouvez détacher votre ceinture.** (avec le « ding » de la ceinture si le son de cabine est allumé)
 - « Avant de partager un post surprenant, prenez une minute pour le vérifier. Il l'a peut-être déjà été. »
-- Boutons : Ajouter l'extension · Voir les fact-checks. « Redécoller » est passé dans le pied de page.
+- Boutons : Ajouter l'extension · Voir les fact-checks. « Redécoller » a disparu avec le pied de page (25/11/2026).
 - Remplace « Une erreur dans une case ? Dites-le-nous » (refusé par Jules le 25/11/2026). Le signalement d'erreurs
   pourra revenir dans la page Méthode ou sur chaque fact-check.
 
@@ -113,6 +113,6 @@ Chaque texte est centré à l'écran au moment où sa scène est à son maximum 
 
 - Description (Google, aperçus de liens) : « Seat 12A vérifie et remet en contexte ce qui circule sur X, en français,
   avec ses sources. Gratuit, sans publicité, code ouvert. »
-- Pied de page : « Seat 12A vérifie et remet en contexte ce qui circule sur X, en français, sources à l'appui.
+- Pied de page (supprimé le 25/11/2026) : « Seat 12A vérifie et remet en contexte ce qui circule sur X, en français, sources à l'appui.
   Gratuit, sans publicité, et tout le code est public. Indépendant de X et de tout parti politique. » La colonne
   « L'association » est devenue « Le projet » (À propos, Le code source, Nous contacter).

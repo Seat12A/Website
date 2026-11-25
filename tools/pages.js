@@ -10,6 +10,7 @@
  *   REEL=1 node tools/pages.js /fact-checks               # the real API
  *   PLEINE=0 ...                                         # only the first screen, not the full page
  *   SOMBRE=1 ...                                         # the computer in dark mode (light by default)
+ *   ATTENTE=6000 ...                                     # wait (ms) after loading, e.g. for the X embed
  *
  * Images go to tools/captures/ (ignored by git).
  */
@@ -48,6 +49,7 @@ page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => m.type() === 'error' && !/status of 404|status of 503/.test(m.text()) && errors.push(m.text()));
 for (const p of list) {
   const res = await page.goto(base + p, { waitUntil: 'networkidle' });
+  if (process.env.ATTENTE) await page.waitForTimeout(Number(process.env.ATTENTE));   // e.g. let the X embed render
   const name = `page${p.replace(/[^a-z0-9]+/gi, '-').replace(/-$/, '')}-${width}${dark ? '-sombre' : ''}.png`;
   await page.screenshot({ path: path.join(out, name), fullPage: full });
   console.log(res?.status(), name);

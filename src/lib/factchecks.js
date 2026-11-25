@@ -65,14 +65,19 @@ export async function loadList(f) {
   const range = f.datePreset ? presetRange(f.datePreset) : { since: f.since, until: f.until ? nextDay(f.until) : '' };
   const filters = { q: f.q, veracity: f.veracity, claim_type: f.claimType, jurisdiction: f.juris, ...range };
   try {
-    const [result, stats, statsAll] = await Promise.all([
+    /* each facet counts with every filter but its own (so its other values stay visible and countable) */
+    const [result, byVerdict, byType, byCountry] = await Promise.all([
       searchCases({ ...filters, sort: f.sort, page: f.page, per_page: PER_PAGE }),
-      caseStats({ ...filters, veracity: [] }),                     // counts next to each verdict
-      caseStats({ q: f.q }),                                        // the types and countries worth offering
+      caseStats({ ...filters, veracity: [] }),
+      caseStats({ ...filters, claim_type: '' }),
+      caseStats({ ...filters, jurisdiction: '' }),
     ]);
-    const types = Object.keys(CLAIM_TYPES).filter((t) => statsAll?.by_claim_type?.[t] || t === f.claimType);
-    const countries = [...new Set([...Object.keys(statsAll?.by_jurisdiction ?? {}), ...(f.juris ? [f.juris] : [])])]
-      .sort((a, b) => jurisdiction(a).localeCompare(jurisdiction(b), 'fr'));
+    const typeCounts = byType?.by_claim_type ?? {};
+    const countryCounts = byCountry?.by_jurisdiction ?? {};
+    const types = Object.keys(CLAIM_TYPES).filter((t) => typeCounts[t] || t === f.claimType)
+      .sort((a, b) => (typeCounts[b] ?? 0) - (typeCounts[a] ?? 0));
+    const countries = [...new Set([...Object.keys(countryCounts), ...(f.juris ? [f.juris] : [])])]
+      .sort((a, b) => (countryCounts[b] ?? 0) - (countryCounts[a] ?? 0) || jurisdiction(a).localeCompare(jurisdiction(b), 'fr'));
     return {
       failed: false,
       legacy: result.legacy ?? false,
@@ -81,12 +86,14 @@ export async function loadList(f) {
       page: f.page,
       pages: Math.min(result.pages ?? 0, MAX_PAGE),
       more: (result.pages ?? 0) > MAX_PAGE,
-      counts: stats?.by_veracity ?? null,
+      counts: byVerdict?.by_veracity ?? null,
+      typeCounts,
+      countryCounts,
       types,
       countries,
     };
   } catch (e) {
     console.error('Tower unavailable for the fact-check list', e instanceof ApiError ? `${e.status} ${e.code} ${e.requestId}` : e);
-    return { failed: true, legacy: false, items: [], total: 0, page: f.page, pages: 0, more: false, counts: null, types: [], countries: [] };
+    return { failed: true, legacy: false, items: [], total: 0, page: f.page, pages: 0, more: false, counts: null, typeCounts: {}, countryCounts: {}, types: [], countries: [] };
   }
 }

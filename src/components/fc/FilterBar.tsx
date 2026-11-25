@@ -10,7 +10,7 @@
  * 160 ms after being added, closings are ignored for 250 ms after an opening, and the menu is not modal.
  */
 import * as React from 'react';
-import { CheckIcon, ChevronDownIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { AddIcon, CheckIcon, ChevronDownIcon, DeleteIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -46,7 +46,7 @@ export function FilterChips({
       {unused.length > 0 && (
         <AddFilterMenu keys={unused} onAdd={onAdd}>
           <Button variant="ghost" size="xs" className="text-muted-foreground">
-            <PlusIcon data-icon="inline-start" />
+            <AddIcon data-icon="inline-start" />
             Filtrer
           </Button>
         </AddFilterMenu>
@@ -121,7 +121,7 @@ function FilterChip({
           <ChevronDownIcon data-icon="inline-end" className="opacity-70" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className={cn('gap-1 p-2', wide ? 'w-72' : 'w-60')}>
+      <PopoverContent align="start" className={cn('gap-1 p-2', filterKey === 'date' ? 'w-80' : wide ? 'w-72' : 'w-60')}>
         <p className="flex items-center gap-1.5 px-2 pt-1 pb-1.5 text-xs font-medium text-muted-foreground"><Icon className="size-3.5" />{label}</p>
         {filterKey === 'veracity' && <VerdictEditor value={values.veracity ?? []} counts={options.counts} onChange={(veracity) => onPatch({ veracity })} />}
         {filterKey === 'type' && (
@@ -139,7 +139,7 @@ function FilterChip({
         {filterKey === 'date' && <DateEditor values={values} onPreset={(datePreset) => choose({ datePreset, since: undefined, until: undefined })} onRange={(r) => onPatch({ ...r, datePreset: undefined })} />}
         <Separator className="my-1" />
         <Button variant="ghost" size="sm" className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => { setOpen(false); onRemove(); }}>
-          <Trash2Icon data-icon="inline-start" />
+          <DeleteIcon data-icon="inline-start" />
           Retirer le filtre
         </Button>
       </PopoverContent>

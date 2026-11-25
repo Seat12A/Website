@@ -17,6 +17,7 @@
 
 :root {
   color-scheme: light;
+  --top: 82px;                    /* under the fixed navigation bar (layouts/Page.astro) */
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.148 0.004 228.8);
@@ -151,8 +152,8 @@
 }
 
 @layer components {
-  /* icons drawn on a cell grid (PixelIcon.tsx): the verdicts keep this small reminder of the home page */
-  .pixel { shape-rendering: crispEdges; fill: currentColor; flex: none; }
+  /* the X embed: widgets.js adds its own margins around the iframe */
+  .post .twitter-tweet, .post .twitter-tweet-rendered { margin: 0 !important; }
   /* verdict colour from data-veracity */
   [data-veracity] { --v: var(--v-unverifiable); }
   [data-veracity="true"] { --v: var(--v-true); }

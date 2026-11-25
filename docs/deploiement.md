@@ -55,7 +55,7 @@ deviennent des fonctions Vercel. Conséquences :
   n'a pas encore de statut juridique : l'éditeur est donc une ou plusieurs personnes physiques (à vérifier : un
   particulier non professionnel peut ne donner son identité qu'à l'hébergeur). La page n'existe pas encore.
 - **Confidentialité** : à rédiger, même si le site ne pose aucun cookie aujourd'hui.
-- Les liens du menu et du pied de page (`data-soon`) ne mènent nulle part, et le formulaire « Vérifier » ne fait
+- Les liens du menu (`data-soon`) ne mènent nulle part, et le formulaire « Vérifier » ne fait
   rien : soit on crée les pages, soit on les masque pour la bêta.
 - Image Open Graph (aperçu quand on partage le lien) : à créer (1200×630, pixel art).
 - Droits d'image de l'éclairage de la tour Eiffel : à vérifier (voir `decisions.md`).

@@ -1,7 +1,7 @@
 ---
 /*
  * The page of one fact-check: the claim, the verdict, the context note, what the post leaves out, the detailed sheet,
- * the sources, the post (on demand), the facts of the claim and its history. Rendered on the server (cached 5 minutes
+ * the sources (left), the post (loaded automatically), the facts of the claim and its history (right column). Rendered on the server (cached 5 minutes
  * by Vercel's CDN) from GET /v1/cases/{public_id}/details?lang=fr (docs/api-tower.md §3.2). Unknown or unpublished:
  * a real 404.
  *
@@ -16,9 +16,9 @@ import { Sources } from '../../components/fc/Sources';
 import { VerdictBadge } from '../../components/fc/VerdictBadge';
 import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert';
 import { Badge } from '../../components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button, buttonVariants } from '../../components/ui/button';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '../../components/ui/empty';
-import { Separator } from '../../components/ui/separator';
+import { CopyIcon, OpenInNewIcon } from '../../components/icons';
 import { ApiError, caseDetails, isNotFound, CACHE_NONE, CACHE_NOT_FOUND, CACHE_OK } from '../../lib/tower.js';
 import {
   CLAIM_TYPES, CONTEXT_NEED, CONTEXT_TYPES, STATUSES, VERACITY, clock, jurisdiction, language, longDate, period, quote,
@@ -57,6 +57,8 @@ const juris = c?.claim?.jurisdictions?.length ? c.claim.jurisdictions : (c?.juri
 const claimType = c?.claim?.claim_type ?? c?.claim_type ?? null;
 const claimLang = c?.claim_lang ?? c?.content?.lang ?? null;
 const published = c && !c.legacy ? safeUrl(c.published_url) : null;
+const h2 = 'text-[13px] font-medium text-muted-foreground';
+const h2Main = 'text-lg font-semibold tracking-tight';     /* the sections of the verdict itself */
 
 const facts = c ? [
   claimType && ['Type', CLAIM_TYPES[claimType] ?? claimType],
@@ -77,136 +79,145 @@ const description = note?.text ? (note.text.length > 155 ? `${note.text.slice(0,
 
 ---
 <Page title={title} description={description} current="/fact-checks" noindex={missing || failed}>
-  <BackLink />
-
   {(missing || failed) && (
-    <Empty className="rounded-3xl border border-dashed py-16">
-      <EmptyHeader>
-        <EmptyTitle className="type-title">{missing ? "Cette vérification n'existe pas." : "Cette vérification n'est pas disponible pour le moment."}</EmptyTitle>
-        <EmptyDescription>{missing ? "Le lien est peut-être incomplet, ou la vérification n'est pas encore publiée." : 'Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.'}</EmptyDescription>
-      </EmptyHeader>
-    </Empty>
+    <>
+      <BackLink label={missing ? 'Introuvable' : 'Indisponible'} />
+      <Empty className="py-24">
+        <EmptyHeader>
+          <EmptyTitle>{missing ? "Cette vérification n'existe pas." : "Cette vérification n'est pas disponible pour le moment."}</EmptyTitle>
+          <EmptyDescription>{missing ? "Le lien est peut-être incomplet, ou la vérification n'est pas encore publiée." : 'Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.'}</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    </>
   )}
 
   {c && (
-    <article class="flex flex-col gap-6">
-      <header class="flex flex-col gap-4 px-1">
-        {(v || need) && (
-          <div class="flex flex-wrap items-center gap-2">
-            {v && <VerdictBadge veracity={veracity} size="lg" />}
-            {need && <Badge variant="outline" className="h-8 px-3.5 text-sm font-normal text-muted-foreground">{need}</Badge>}
-          </div>
-        )}
-        <h1 class="type-title">{heading}</h1>
-        <p class="text-sm text-muted-foreground">
-          {verdict?.validated_at && <>Vérifié le <time datetime={verdict.validated_at}>{longDate(verdict.validated_at)}</time></>}
-          {verdict?.validated_at && c.published_at && ' · '}
-          {c.published_at && <>{verdict?.validated_at ? 'publié' : 'Publié'} le <time datetime={c.published_at}>{longDate(c.published_at)}</time></>}
-          {!verdict?.validated_at && !c.published_at && c.updated_at && <>Mis à jour le <time datetime={c.updated_at}>{longDate(c.updated_at)}</time></>}
-        </p>
-      </header>
-
-      {state === 'expired' && (
-        <Alert>
-          <AlertTitle>Vérification susceptible d'être dépassée</AlertTitle>
-          <AlertDescription>Elle date du {shortDate(verdict?.validated_at ?? c.published_at)} : la situation a pu changer depuis.</AlertDescription>
-        </Alert>
-      )}
-      {state === 'superseded' && (
-        <Alert>
-          <AlertTitle>Ce verdict a été mis à jour</AlertTitle>
-          <AlertDescription>Une vérification plus récente le remplace.</AlertDescription>
-        </Alert>
-      )}
-
-      {c.legacy && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Le détail arrive bientôt</CardTitle>
-            <CardDescription>Le verdict, le contexte et les sources de cette vérification seront bientôt affichés ici.</CardDescription>
-          </CardHeader>
-          {safeUrl(c.published_url) && <CardContent><a class="text-sm font-medium text-primary underline-offset-4 hover:underline" href={safeUrl(c.published_url)} rel="noopener noreferrer" target="_blank">Voir la publication sur X</a></CardContent>}
-        </Card>
-      )}
-      {c.kind === 'moderation' && !c.legacy && <p class="px-1 text-base leading-relaxed">Ce dossier concerne une décision de modération : il n'a pas de verdict.</p>}
-
-      {(note?.text || verdict?.context_types?.length > 0 || sheet.length > 0) && (
-        <Card>
-          {note?.text && (
-            <CardHeader>
-              <CardTitle>Ce qu'il faut savoir</CardTitle>
-            </CardHeader>
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_28rem]">
+      <article class="min-w-0 lg:border-r">
+        <BackLink label="Vérification">
+          <Button variant="ghost" size="sm" className="text-muted-foreground" data-copy>
+            <CopyIcon data-icon="inline-start" /><span data-copy-label class="max-sm:hidden">Copier le lien</span>
+          </Button>
+          {published && (
+            <a href={published} rel="noopener noreferrer" target="_blank" class={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-muted-foreground' })}>
+              <span class="max-sm:hidden">Notre publication</span><span class="sm:hidden">Sur X</span><OpenInNewIcon data-icon="inline-end" />
+            </a>
           )}
+        </BackLink>
+
+        <div class="flex flex-col gap-10 px-4 pt-8 pb-16 md:px-6 xl:px-10">
+          <header class="flex flex-col gap-4">
+            {(v || need) && (
+              <div class="flex flex-wrap items-center gap-2">
+                {v && <VerdictBadge veracity={veracity} size="lg" />}
+                {need && <Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{need}</Badge>}
+              </div>
+            )}
+            <h1 class:list={[heading.length > 110 ? 'text-2xl leading-snug font-semibold tracking-tight text-pretty' : 'type-title text-pretty']}>{heading}</h1>
+            <p class="text-sm text-muted-foreground">
+              {verdict?.validated_at && <>Vérifié le <time datetime={verdict.validated_at}>{longDate(verdict.validated_at)}</time></>}
+              {verdict?.validated_at && c.published_at && ' · '}
+              {c.published_at && <>{verdict?.validated_at ? 'publié' : 'Publié'} le <time datetime={c.published_at}>{longDate(c.published_at)}</time></>}
+              {!verdict?.validated_at && !c.published_at && c.updated_at && <>Mis à jour le <time datetime={c.updated_at}>{longDate(c.updated_at)}</time></>}
+            </p>
+          </header>
+
+          {state === 'expired' && (
+            <Alert>
+              <AlertTitle>Vérification susceptible d'être dépassée</AlertTitle>
+              <AlertDescription>Elle date du {shortDate(verdict?.validated_at ?? c.published_at)}{'\u00A0'}: la situation a pu changer depuis.</AlertDescription>
+            </Alert>
+          )}
+          {state === 'superseded' && (
+            <Alert>
+              <AlertTitle>Ce verdict a été mis à jour</AlertTitle>
+              <AlertDescription>Une vérification plus récente le remplace.</AlertDescription>
+            </Alert>
+          )}
+
+          {c.legacy && (
+            <p class="text-base leading-relaxed">Le verdict, le contexte et les sources de cette vérification seront bientôt affichés ici.{safeUrl(c.published_url) && <> En attendant, <a class="font-medium text-primary underline-offset-4 hover:underline" href={safeUrl(c.published_url)} rel="noopener noreferrer" target="_blank">elle est publiée sur X</a>.</>}</p>
+          )}
+          {c.kind === 'moderation' && !c.legacy && <p class="text-base leading-relaxed">Ce dossier concerne une décision de modération{'\u00A0'}: il n'a pas de verdict.</p>}
+
           {note?.text && (
-            <CardContent className="flex flex-col gap-2">
-              <p class="text-base leading-relaxed">{note.text}</p>
+            <section class="flex flex-col gap-3">
+              <h2 class={h2Main}>Ce qu'il faut savoir</h2>
+              <p class="text-[17px] leading-relaxed">{note.text}</p>
               {note.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
-            </CardContent>
+            </section>
           )}
+          {!note && verdict && <p class="text-sm text-muted-foreground">La note de contexte de cette vérification n'est plus affichée{'\u00A0'}: seul le verdict reste.</p>}
+
           {verdict?.context_types?.length > 0 && (
-            <CardContent className="flex flex-col gap-3">
-              <h2 class="text-sm font-medium text-muted-foreground">Ce qui manque au post</h2>
+            <section class="flex flex-col gap-3">
+              <h2 class={h2}>Ce qui manque au post</h2>
               <ul class="flex flex-wrap gap-2">
                 {verdict.context_types.map((t) => <li><Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{CONTEXT_TYPES[t] ?? t}</Badge></li>)}
               </ul>
-            </CardContent>
+            </section>
           )}
+
           {sheet.length > 0 && (
-            <CardContent className="flex flex-col gap-3">
-              <Separator />
-              <h2 class="pt-3 text-sm font-medium text-muted-foreground">En savoir plus</h2>
-              {sheet.map((p) => <p class="leading-relaxed whitespace-pre-line text-muted-foreground">{p}</p>)}
-            </CardContent>
+            <section class="flex flex-col gap-3">
+              <h2 class={h2Main}>En savoir plus</h2>
+              {sheet.map((p) => <p class="text-base leading-7 whitespace-pre-line">{p}</p>)}
+            </section>
           )}
-        </Card>
-      )}
-      {!note && verdict && <p class="px-1 text-sm text-muted-foreground">La note de contexte de cette vérification n'est plus affichée : seul le verdict reste.</p>}
 
-      {sources.length > 0 && <Sources links={sources} />}
-
-      {(c.content?.url || c.url) && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Le post vérifié</CardTitle>
-            {c.posts_count > 1 && <CardDescription>Cette affirmation circule dans {c.posts_count} posts.</CardDescription>}
-          </CardHeader>
-          <CardContent>
-            <PostEmbed url={c.content?.url ?? c.url} platform={c.content?.platform ?? c.platform} externalId={c.content?.external_id ?? c.external_id ?? c.x_post_id} />
-          </CardContent>
-        </Card>
-      )}
-
-      {(facts.length > 0 || published || timeline.length > 0) && (
-        <div class="grid gap-6 md:grid-cols-2">
-          {(facts.length > 0 || published) && (
-            <Card size="sm">
-              <CardHeader><CardTitle>L'affirmation</CardTitle></CardHeader>
-              <CardContent>
-                <dl class="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-5 gap-y-2.5 text-sm">
-                  {facts.map(([k, val]) => <><dt class="text-muted-foreground">{k}</dt><dd class="[overflow-wrap:anywhere]">{val}</dd></>)}
-                  {published && <><dt class="text-muted-foreground">Sur X</dt><dd><a class="font-medium text-primary underline-offset-4 hover:underline" href={published} rel="noopener noreferrer" target="_blank">Notre publication</a></dd></>}
-                </dl>
-              </CardContent>
-            </Card>
-          )}
-          {timeline.length > 0 && (
-            <Card size="sm">
-              <CardHeader><CardTitle>Historique</CardTitle></CardHeader>
-              <CardContent>
-                <ol class="flex flex-col gap-2.5 text-sm">
-                  {timeline.map((t, i) => (
-                    <li class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
-                      <span class:list={['size-2 rounded-full', i === timeline.length - 1 ? 'bg-primary' : 'bg-border']} aria-hidden="true"></span>
-                      <span>{STATUSES[t.status]}</span>
-                      <time class="text-xs text-muted-foreground tabular-nums" datetime={t.at}>{shortDate(t.at)} {clock(t.at)}</time>
-                    </li>
-                  ))}
-                </ol>
-              </CardContent>
-            </Card>
+          {sources.length > 0 && (
+            <section class="flex flex-col gap-3">
+              <h2 class={h2Main}>Sources <span class="font-normal text-muted-foreground tabular-nums">{sources.length}</span></h2>
+              <Sources links={sources} />
+            </section>
           )}
         </div>
-      )}
-    </article>
+      </article>
+
+      <aside class="max-lg:border-t lg:sticky lg:top-(--top) lg:max-h-[calc(100svh-var(--top))] lg:self-start lg:overflow-y-auto">
+        <div class="flex flex-col gap-8 px-4 py-6 md:px-6">
+          {(c.content?.url || c.url) && (
+            <section class="flex flex-col gap-3">
+              <h2 class={h2}>Le post vérifié{c.posts_count > 1 && <span class="font-normal"> · l'affirmation circule dans {c.posts_count} posts</span>}</h2>
+              <PostEmbed url={c.content?.url ?? c.url} platform={c.content?.platform ?? c.platform} externalId={c.content?.external_id ?? c.external_id ?? c.x_post_id} />
+            </section>
+          )}
+
+          {facts.length > 0 && (
+            <section class="flex flex-col gap-2">
+              <h2 class={h2}>Détails</h2>
+              <dl class="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-3 text-sm">
+                {facts.map(([k, val]) => <><dt class="py-1.5 text-muted-foreground">{k}</dt><dd class="py-1.5 [overflow-wrap:anywhere]">{val}</dd></>)}
+              </dl>
+            </section>
+          )}
+
+          {timeline.length > 0 && (
+            <section class="flex flex-col gap-3">
+              <h2 class={h2}>Historique</h2>
+              <ol class="ml-1 flex flex-col gap-3 border-l pl-4 text-sm">
+                {timeline.map((t, i) => (
+                  <li class="relative flex items-baseline justify-between gap-3">
+                    <span class:list={['absolute top-1.5 -left-[21px] size-2.5 rounded-full ring-4 ring-background', i === timeline.length - 1 ? 'bg-primary' : 'bg-muted-foreground/40']} aria-hidden="true"></span>
+                    <span>{STATUSES[t.status]}</span>
+                    <time class="text-[13px] text-muted-foreground tabular-nums" datetime={t.at}>{shortDate(t.at)} à {clock(t.at)}</time>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+        </div>
+      </aside>
+    </div>
   )}
+
+  <script>
+    /* "Copier le lien": the address of this page, then "Lien copié" for two seconds */
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
+      const label = b.querySelector('[data-copy-label]');
+      try { await navigator.clipboard.writeText(location.href); if (label) label.textContent = 'Lien copié'; }
+      catch { if (label) label.textContent = 'Copie impossible'; }
+      setTimeout(() => { if (label) label.textContent = 'Copier le lien'; }, 2000);
+    }));
+  </script>
 </Page>

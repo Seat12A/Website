@@ -35,10 +35,5 @@ const filtered = Boolean(f.q || f.order.length);
 const title = f.page > 1 ? `Les fact-checks, page ${f.page} · Seat 12A` : 'Les fact-checks · Seat 12A';
 ---
 <Page title={title} description="Les posts vérifiés par Seat 12A : un verdict, le contexte qui manque et les sources, pour chacun." current="/fact-checks" noindex={filtered || f.page > 1}>
-  <header class="mb-8 flex flex-col gap-3 px-1">
-    <h1 class="type-display">Les fact-checks</h1>
-    <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Les posts vérifiés par Seat 12A. Pour chacun&nbsp;: un verdict, le contexte qui manque et les sources.</p>
-  </header>
-
   <FactCheckBrowser client:load initial={initial} data={data} />
 </Page>

@@ -3,7 +3,7 @@
  * you scroll; on top, a navigation bar and sharp text sections placed in calm areas of the sky.
  * A single universe, so no light/dark variant.
  * Rules (docs/decisions.md): no all-caps text, single-colour titles, no frosted glass, no blur-in reveals.
- * Shared parts (tokens, navigation bar, buttons, links, footer) are in site.css, imported first by the page.
+ * Shared parts (tokens, navigation bar, buttons, links) are in site.css / chrome.css, imported first by the page.
  */
 
 html, body { overflow-x: clip; }
@@ -64,7 +64,6 @@ html.static .sec, html:not(.js) .sec {
 html.static .sec.left, html:not(.js) .sec.left { margin-left: clamp(16px, 9vw, 140px); }
 html.static .sec.light p, html:not(.js) .sec.light p { color: var(--soft); }
 html.static :is(.picto, #intro), html:not(.js) :is(.picto, #intro) { display: none; }
-html.static .foot-gap, html:not(.js) .foot-gap { height: 40px; }
 html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
 
 /* ---------- The arrival: the scene appears cell by cell (intro.js) ---------- */
@@ -99,9 +98,6 @@ html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
 .snd:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 .alt, .snd { transition: opacity .4s var(--ease); }
 .landed .alt, .landed .snd { opacity: 0; pointer-events: none; }
-
-/* ---------- Footer: under the scene, it only shows if you keep scrolling after the arrival ---------- */
-.foot-gap { height: 22vh; }
 
 @media (max-width: 760px) {
   .sec.left { left: 50%; justify-items: center; text-align: center; }

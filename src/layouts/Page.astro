@@ -1,12 +1,12 @@
 ---
 /*
- * Shell of the pages other than the home page. The navigation bar and the footer are the home page's own components
- * (Nav.astro, Footer.astro, styles/chrome.css): the site reads as one. In between, shadcn/ui (radix-maia, blue theme),
- * light by default and dark when the computer is (global.css).
+ * Shell of the pages other than the home page: full width, no footer (Jules, 25/11/2026). The navigation bar is the
+ * home page's own component (Nav.astro, styles/chrome.css), solid from the start; a band of the page colour sits behind
+ * it so that content scrolling up never shows around the pill. `--top` is the height under that band: sticky toolbars
+ * and columns stick there. In between, shadcn/ui (radix-maia, blue theme), light or dark like the computer.
  */
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -14,21 +14,19 @@ interface Props {
   description: string;
   noindex?: boolean;
   current?: string;
-  wide?: boolean;
 }
-const { title, description, noindex = false, current, wide = false } = Astro.props;
+const { title, description, noindex = false, current } = Astro.props;
 ---
 <Base title={title} description={description} noindex={noindex}>
   <slot name="head" slot="head" />
   <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-primary-foreground">Aller au contenu</a>
 
+  <div class="fixed inset-x-0 top-0 z-[4] h-(--top) bg-background" aria-hidden="true"></div>
   <Nav solid current={current} />
 
-  <main id="main" class:list={['mx-auto min-h-[70vh] px-4 pt-28 pb-32 md:pt-36', wide ? 'max-w-5xl' : 'max-w-3xl']}>
+  <main id="main" class="px-3 pt-(--top) md:px-5 xl:px-8">
     <slot />
   </main>
-
-  <Footer />
 
   <script>
     /* links to pages that do not exist yet do nothing */

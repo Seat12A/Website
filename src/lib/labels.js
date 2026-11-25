@@ -3,14 +3,14 @@
  * Visitors never see the word "case": it is a "fact-check" or a "vérification" (docs/decisions.md).
  */
 
-/* Verdicts. Each one is shown with a colour, a pixel icon and its label, never the colour alone. Colours avoid the
-   political red/blue pair: teal, sage, amber, coral, grey (they sit on the dark night background). */
+/* Verdicts. Each one is shown with a colour, an icon and its label, never the colour alone (VerdictBadge.tsx). The
+   colours (global.css, --v-*) avoid the political red/blue pair: teal, sage, amber, coral, grey. */
 export const VERACITY = {
-  true: { label: 'Vrai', color: '#3FC1A6', icon: 'check' },
-  mostly_true: { label: 'Plutôt vrai', color: '#9BCB7C', icon: 'check-part' },
-  misleading: { label: 'Trompeur', color: '#F0B043', icon: 'half' },
-  false: { label: 'Faux', color: '#F27A68', icon: 'cross' },
-  unverifiable: { label: 'Non vérifiable', color: '#A3ABBD', icon: 'question' },
+  true: { label: 'Vrai' },
+  mostly_true: { label: 'Plutôt vrai' },
+  misleading: { label: 'Trompeur' },
+  false: { label: 'Faux' },
+  unverifiable: { label: 'Non vérifiable' },
 };
 export const VERACITY_ORDER = ['false', 'misleading', 'mostly_true', 'true', 'unverifiable'];
 
@@ -135,6 +135,9 @@ export function sourceLabel(url) {
 
 /* A claim between French quotation marks, with non-breaking spaces so that a mark never ends up alone on a line. */
 export const quote = (text) => `«\u00A0${String(text).trim()}\u00A0»`;
+
+/* Tower cuts `title` at 200 characters (the full claim is in the details): mark the cut with an ellipsis. */
+export const title = (text) => { const t = String(text ?? '').trim(); return [...t].length >= 200 ? `${t.replace(/[\s,;:.]*$/, '')}…` : t; };
 
 /* Only http(s) links are rendered as links. */
 export const safeUrl = (url) => (/^https?:\/\//i.test(String(url ?? '')) ? url : null);

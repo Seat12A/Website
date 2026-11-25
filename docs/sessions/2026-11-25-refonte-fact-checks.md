@@ -43,3 +43,28 @@ minimaliste. »
 - Le bleu du thème (shadcn « blue ») à côté du bleu nuit de l'en-tête.
 - Les icônes lucide dans les pages (le pixel ne reste que sur les verdicts).
 - Les champs de date sont ceux du navigateur (aspect variable ; jj/mm/aaaa sur un navigateur en français).
+
+## Troisième passe (même session)
+
+Demandes de Jules : supprimer le pied de page partout ; vérifier que c'est bien Geist ; toute la largeur de la
+fenêtre ; l'embed X chargé tout seul ; plus de cartes à contour ; revoir les marges ; icônes Google Material ; un style
+plus travaillé, entre Bluesky, Twitter et Linear, « plus fonctionnel » ; éviter ce qui fait IA ; enlever les icônes
+pixel ; puis « pourquoi le texte ne prend pas la place » (largeur maximale retirée).
+
+- **Pied de page supprimé** : `Footer.astro`, son CSS, `.foot-gap`, « Redécoller », et le frein et le ressort de
+  `scroll.js` qui y menaient. `FOOTER` et `ABOUT` retirés de `links.js`. L'accueil s'arrête à l'arrivée (vérifié).
+- **Geist** : vérifié dans le navigateur (`Geist Variable` chargée et appliquée).
+- **Pleine largeur** et nouvelle mise en page (voir `fact-checks.md`, Design) : liste en lignes groupées par mois,
+  barre d'outils collante, colonne de répartition cliquable (verdict, type, pays, avec trois appels à `stats`) ;
+  fact-check avec barre du haut (Copier le lien, Notre publication) et colonne de droite (post, détails, historique).
+- **Embed X automatique** (`PostEmbed.astro`). Vérifié contre la vraie API : le post s'affiche.
+- **Icônes Material Symbols** (`src/components/icons.tsx`, `@material-symbols/svg-400`), y compris dans les composants
+  shadcn ; `PixelIcon.tsx` supprimé ; les verdicts ont chacun une icône de forme différente. Composant `Kbd` ajouté.
+- Constaté : **la production sert maintenant `search`, `stats` et `details`** (2 fact-checks publiés). Tower coupe
+  `title` à 200 caractères : « … » ajouté dans la liste.
+- Vérifié : build, captures 1440 en clair et en sombre, 390, vraie API, `tools/filtres.js` sans erreur, accueil à 0,9
+  et 1 sans erreur.
+- Ensuite : petites marges sur les côtés (rien ne colle au bord de l'écran) ; « En savoir plus » mis en avant (vrai
+  titre, texte de couleur normale, comme « Ce qu'il faut savoir » et « Sources »).
+- **À trancher** : l'embed automatique charge un script de X qui peut déposer des cookies sans consentement préalable
+  (question CNIL). Les mentions légales n'ont plus de lien nulle part depuis la suppression du pied de page.

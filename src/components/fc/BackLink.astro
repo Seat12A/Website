@@ -1,9 +1,16 @@
 ---
-/* "Tous les fact-checks": back to the list, as a ghost pill. */
-import { ArrowLeftIcon } from 'lucide-react';
+/* The bar at the top of a fact-check or a post: back to the list, where we are, and the page's actions (slot). */
+import { ArrowBackIcon } from '../icons';
 import { buttonVariants } from '../ui/button';
+interface Props { label: string }
+const { label } = Astro.props;
 ---
-<a href="/fact-checks" class={buttonVariants({ variant: 'ghost', size: 'sm', className: '-ml-2 mb-6 text-muted-foreground' })}>
-  <ArrowLeftIcon data-icon="inline-start" />
-  Tous les fact-checks
-</a>
+<div class="sticky top-(--top) z-20 flex h-12 items-center gap-1 border-b bg-background px-2 md:px-4">
+  <a href="/fact-checks" aria-label="Tous les fact-checks" class={buttonVariants({ variant: 'ghost', size: 'icon-sm' })}><ArrowBackIcon /></a>
+  <nav aria-label="Fil d'Ariane" class="flex min-w-0 flex-1 items-center gap-1.5 text-sm">
+    <a href="/fact-checks" class="text-muted-foreground hover:text-foreground">Fact-checks</a>
+    <span class="text-muted-foreground/60" aria-hidden="true">/</span>
+    <span class="truncate font-medium">{label}</span>
+  </nav>
+  <slot />
+</div>

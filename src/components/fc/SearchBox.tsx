@@ -2,7 +2,7 @@
  * A plain search form towards /fact-checks (works without JavaScript): used where the full list is not shown, e.g.
  * on the page of a post that has not been checked. A pasted X link redirects to that post's page (fact-checks/index).
  */
-import { SearchIcon } from 'lucide-react';
+import { SearchIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 

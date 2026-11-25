@@ -14,7 +14,7 @@ import { Sources } from '../../../components/fc/Sources';
 import { SearchBox } from '../../../components/fc/SearchBox';
 import { VerdictBadge } from '../../../components/fc/VerdictBadge';
 import { Badge } from '../../../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+
 import { ApiError, postVerdict, CACHE_NONE, CACHE_NOT_FOUND, CACHE_OK } from '../../../lib/tower.js';
 import { CONTEXT_NEED, CONTEXT_TYPES, PLATFORMS, longDate, quote, safeUrl } from '../../../lib/labels.js';
 
@@ -38,65 +38,73 @@ Astro.response.headers.set('Cache-Control', failed ? CACHE_NONE : post ? CACHE_O
 
 const postUrl = post?.url ?? (platform === 'x' && known ? `https://x.com/i/status/${id}` : null);
 const claims = post?.claims ?? [];
+const h3 = 'text-[13px] font-medium text-muted-foreground';
 const heading = failed ? 'La vérification de ce post n’est pas disponible pour le moment.'
   : claims.length ? (claims.length > 1 ? `Ce post contient ${claims.length} affirmations vérifiées.` : 'Ce post a été vérifié.')
   : known ? 'Ce post n’a pas (encore) été vérifié par Seat 12A.' : 'Ce lien n’est pas reconnu.';
 ---
 <Page title={`${heading} · Seat 12A`} description="Ce post a-t-il été vérifié par Seat 12A ?" current="/fact-checks" noindex>
-  <BackLink />
+  <div class="grid lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_28rem]">
+    <div class="min-w-0 lg:border-r">
+      <BackLink label="Un post" />
+      <div class="flex flex-col gap-10 px-4 pt-8 pb-16 md:px-6 xl:px-10">
+        <header class="flex flex-col gap-3">
+          <h1 class="type-title">{heading}</h1>
+          {failed && <p class="text-base leading-relaxed text-muted-foreground">Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.</p>}
+          {none && known && <p class="text-base leading-relaxed text-muted-foreground">Seuls les verdicts en vigueur sont affichés{'\u00A0'}: une vérification ancienne ou remplacée par une plus récente n'apparaît pas ici. Vous pouvez aussi chercher l'affirmation avec quelques mots.</p>}
+          {!known && <p class="text-base leading-relaxed text-muted-foreground">Collez le lien complet d'un post X, du type https://x.com/compte/status/1234…</p>}
+        </header>
 
-  <header class="mb-8 flex flex-col gap-3 px-1">
-    <h1 class="type-display">{heading}</h1>
-    {failed && <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.</p>}
-    {none && known && <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Seuls les verdicts en vigueur sont affichés : une vérification ancienne ou remplacée par une plus récente n'apparaît pas ici. Vous pouvez aussi chercher l'affirmation avec quelques mots.</p>}
-    {!known && <p class="text-base leading-relaxed text-muted-foreground md:text-lg">Collez le lien complet d'un post X, du type https://x.com/compte/status/1234…</p>}
-  </header>
+        {(none || !known) && <SearchBox label="Chercher une affirmation ou coller un autre lien X" />}
 
-  {(none || !known) && <div class="mb-8"><SearchBox label="Chercher une affirmation, ou coller un autre lien X" /></div>}
-
-  <div class="flex flex-col gap-6">
-    {claims.map((cl) => {
-      const need = CONTEXT_NEED[cl.context_need ?? 'none'];
-      const links = (cl.note?.links ?? []).map(safeUrl).filter(Boolean);
-      return (
-        <article class="flex flex-col gap-6">
-          <Card>
-            <CardHeader className="gap-4">
-              <div class="flex flex-wrap items-center gap-2">
-                <VerdictBadge veracity={cl.veracity} size="lg" />
-                {need && <Badge variant="outline" className="h-8 px-3.5 text-sm font-normal text-muted-foreground">{need}</Badge>}
+        {claims.map((cl, i) => {
+          const need = CONTEXT_NEED[cl.context_need ?? 'none'];
+          const links = (cl.note?.links ?? []).map(safeUrl).filter(Boolean);
+          return (
+            <article class:list={['flex flex-col gap-6', i > 0 && 'border-t pt-10']}>
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-wrap items-center gap-2">
+                  <VerdictBadge veracity={cl.veracity} size="lg" />
+                  {need && <Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{need}</Badge>}
+                </div>
+                <h2 class:list={[cl.text.length > 110 ? 'text-2xl leading-snug font-semibold tracking-tight text-pretty' : 'type-title text-pretty']}>{quote(cl.text)}</h2>
+                {cl.validated_at && <p class="text-sm text-muted-foreground">Vérifié le <time datetime={cl.validated_at}>{longDate(cl.validated_at)}</time></p>}
               </div>
-              <h2 class="type-title">{quote(cl.text)}</h2>
-              {cl.validated_at && <p class="text-sm text-muted-foreground">Vérifié le <time datetime={cl.validated_at}>{longDate(cl.validated_at)}</time></p>}
-            </CardHeader>
-            {(cl.note?.text || cl.inherited || cl.context_types?.length > 0) && (
-              <CardContent className="flex flex-col gap-4">
-                {cl.note?.text && <p class="text-base leading-relaxed">{cl.note.text}</p>}
-                {cl.note?.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
-                {cl.inherited && (
-                  <p class="text-sm text-muted-foreground">
-                    {cl.inherited.rule === 'band' ? 'Le même chiffre a déjà été vérifié dans un autre post.' : 'La même affirmation a déjà été vérifiée dans un autre post.'}
-                    {safeUrl(cl.inherited.origin_url) && <> <a class="font-medium text-primary underline-offset-4 hover:underline" href={safeUrl(cl.inherited.origin_url)} rel="noopener noreferrer" target="_blank">Voir le post d'origine</a></>}
-                  </p>
-                )}
-                {cl.context_types?.length > 0 && (
+              {cl.note?.text && <p class="text-[17px] leading-relaxed">{cl.note.text}</p>}
+              {cl.note?.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
+              {cl.inherited && (
+                <p class="text-sm text-muted-foreground">
+                  {cl.inherited.rule === 'band' ? 'Le même chiffre a déjà été vérifié dans un autre post.' : 'La même affirmation a déjà été vérifiée dans un autre post.'}
+                  {safeUrl(cl.inherited.origin_url) && <> <a class="font-medium text-primary underline-offset-4 hover:underline" href={safeUrl(cl.inherited.origin_url)} rel="noopener noreferrer" target="_blank">Voir le post d'origine</a></>}
+                </p>
+              )}
+              {cl.context_types?.length > 0 && (
+                <section class="flex flex-col gap-3">
+                  <h3 class={h3}>Ce qui manque au post</h3>
                   <ul class="flex flex-wrap gap-2">
                     {cl.context_types.map((t) => <li><Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{CONTEXT_TYPES[t] ?? t}</Badge></li>)}
                   </ul>
-                )}
-              </CardContent>
-            )}
-          </Card>
-          {links.length > 0 && <Sources links={links} />}
-        </article>
-      );
-    })}
+                </section>
+              )}
+              {links.length > 0 && (
+                <section class="flex flex-col gap-3">
+                  <h3 class={h3}>Sources <span class="tabular-nums">{links.length}</span></h3>
+                  <Sources links={links} />
+                </section>
+              )}
+            </article>
+          );
+        })}
+      </div>
+    </div>
 
     {postUrl && (
-      <Card>
-        <CardHeader><CardTitle>Le post</CardTitle></CardHeader>
-        <CardContent><PostEmbed url={postUrl} platform={platform} externalId={id} /></CardContent>
-      </Card>
+      <aside class="max-lg:border-t lg:sticky lg:top-(--top) lg:max-h-[calc(100svh-var(--top))] lg:self-start lg:overflow-y-auto">
+        <div class="flex flex-col gap-3 px-4 py-6 md:px-6">
+          <h2 class={h3}>Le post</h2>
+          <PostEmbed url={postUrl} platform={platform} externalId={id} />
+        </div>
+      </aside>
     )}
   </div>
 </Page>

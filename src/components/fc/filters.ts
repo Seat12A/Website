@@ -3,8 +3,7 @@
  * make. Two pieces of state: `activeKeys` (the chips shown, in the order they were added) and `values` (what is
  * actually filtered). A chip can exist without a value while it is being set; only values reach the address and Tower.
  */
-import type { LucideIcon } from 'lucide-react';
-import { CalendarIcon, CircleCheckIcon, GlobeIcon, TagIcon } from 'lucide-react';
+import { CalendarIcon, FactCheckIcon, GlobeIcon, TagIcon, type Icon } from '@/components/icons';
 
 export type FilterKey = 'veracity' | 'type' | 'country' | 'date';
 export type DatePreset = 'today' | 'yesterday' | 'thisWeek' | 'last7' | 'last30' | 'thisMonth';
@@ -21,8 +20,8 @@ export interface FilterValues {
 
 export const FILTER_KEYS: FilterKey[] = ['veracity', 'type', 'country', 'date'];
 
-export const FILTER_META: Record<FilterKey, { icon: LucideIcon; label: string; wide?: boolean }> = {
-  veracity: { icon: CircleCheckIcon, label: 'Verdict' },
+export const FILTER_META: Record<FilterKey, { icon: Icon; label: string; wide?: boolean }> = {
+  veracity: { icon: FactCheckIcon, label: 'Verdict' },
   type: { icon: TagIcon, label: 'Type', wide: true },
   country: { icon: GlobeIcon, label: 'Pays', wide: true },
   date: { icon: CalendarIcon, label: 'Date', wide: true },

@@ -10,16 +10,16 @@ Projet Astro, page `src/pages/index.astro`. La scène du vol est dessinée en We
 | `src/pages/index.astro` | Le HTML : sections de texte, altimètre, bouton son. |
 | `src/components/Nav.astro` | La barre de navigation de l'accueil. Liens partagés avec les autres pages : `src/lib/links.js`. |
 | `src/layouts/Base.astro` | Coquille commune : langue, balises meta, Open Graph, favicon. |
-| `src/components/Logo.astro`, `Footer.astro` | Le logo complet (SVG), le pied de page. |
+| `src/components/Logo.astro`, `Nav.astro` | Le logo complet (SVG), la barre de navigation (partagée avec les autres pages). |
 | `src/pages/404.astro` | Page introuvable. |
-| `src/styles/site.css` | Partie commune : polices (Fontsource), couleurs, barre de navigation, boutons, liens, pied de page. |
+| `src/styles/site.css`, `chrome.css` | Partie commune : polices (Fontsource), couleurs ; barre de navigation, boutons, liens (`chrome.css`, partagé avec les autres pages). |
 | `src/styles/home.css` | Le style propre à l'accueil (le vol, les sections, l'altimètre, le son). |
 | `src/scripts/home/main.js` | Point d'entrée : relie tout et fait tourner la boucle d'animation. |
 | `src/scripts/home/flightPlan.js` | **Le plan de vol** : images clés, altitude, tangage, horizon, soleil, lune. |
 | `src/scripts/home/palettes.js` | Les 8 échelles de 8 tons (OKLCH). |
 | `src/scripts/home/shaders/sky.frag.glsl` | Le shader de la scène (passe 1). |
 | `src/scripts/home/renderer.js` | WebGL2 : taille des cellules (`cellSize`, partagée), les deux passes. |
-| `src/scripts/home/scroll.js` | Piste du vol, placement des textes, Lenis, freinage, ressort avant le pied de page. |
+| `src/scripts/home/scroll.js` | Piste du vol, placement des textes, Lenis, freinage près des textes. |
 | `src/scripts/home/hud.js` | Altimètre, pictogrammes 16×16. |
 | `src/scripts/home/intro.js` | L'arrivée : la scène apparaît cellule par cellule, en tramage, depuis le milieu. |
 | `src/scripts/home/effects.js` | Étoiles filantes, stroboscope. |
@@ -37,7 +37,7 @@ défilement ──► f ∈ [0, 1] : avancement du vol
 ```
 
 Par-dessus le canvas : la barre de navigation, les sections `.sec` (placées par `scroll.js`), l'altimètre, le bouton
-son, puis le pied de page **après** la piste du vol.
+son. **Plus de pied de page** (retiré le 25/11/2026) : la page s'arrête à l'arrivée.
 
 ## 1. Rendu pixel (`renderer.js`)
 
@@ -162,7 +162,7 @@ traînée (`cX`, `cY`) et la position du stroboscope. Sur écran large, `zoom = 
 - Les sections `.sec` sont en `position: fixed` ; `placeTexts()` les place à chaque image : centrées quand le scroll
   atteint `sOf(--f)`, décalées de `data-y`. `.left` : alignées à gauche (bureau seulement). `.light` : encre sombre.
   `data-calm="1"` : zone calme derrière.
-- **Lenis** (`lerp: .1`) avec `virtualScroll` pour freiner : jusqu'à 28 % près d'un texte, 16 % avant le pied de page.
+- **Lenis** (`lerp: .1`) avec `virtualScroll` pour freiner : jusqu'à 28 % près d'un texte.
   Ressort qui ramène à l'arrivée si l'on s'arrête trop tôt. Au doigt : défilement natif, la scène suit avec un léger
   lissage.
 - `window.seat12a.goTo(f)` : saute à un point du vol (pour `tools/captures.js`).
@@ -195,8 +195,7 @@ traînée (`cX`, `cY`) et la position du stroboscope. Sur écran large, `zoom = 
 - **Boutons** : au survol, fond bleu ciel pâle et reflet en pixels (`.btn::after`, un petit SVG en escalier de 12×16
   cellules) qui traverse le bouton en 9 crans, en boucle toutes les 1,5 s. Liens : pointillés qui défilent comme un
   marquage de piste.
-- **Altimètre**, **son** (bruit brun filtré, souffle, vibration à 68 Hz), **pied de page** opaque après `.foot-gap`
-  (22 vh), avec « Redécoller » : comme dans le prototype.
+- **Altimètre**, **son** (bruit brun filtré, souffle, vibration à 68 Hz), plus de pied de page (retiré le 25/11/2026, avec « Redécoller »).
 
 ## Performances
 

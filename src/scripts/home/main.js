@@ -51,7 +51,6 @@ const meteor = createMeteors(reducedMotion);
 const nav = $('#nav');
 
 /* ---------- Buttons and links ---------- */
-$('#takeoff')?.addEventListener('click', () => scroll.go(0));
 $('#home')?.addEventListener('click', (e) => { e.preventDefault(); scroll.go(0); });
 document.querySelectorAll('[data-soon]').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
 $('#ask')?.addEventListener('submit', (e) => e.preventDefault());

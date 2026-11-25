@@ -11,8 +11,8 @@ ne jamais écrire « association » sur le site.
 
 Pile : **Astro**, déployé sur **Vercel** (adaptateur `@astrojs/vercel`) : l'accueil est statique, les pages des
 fact-checks sont rendues côté serveur depuis l'API de Tower (`docs/fact-checks.md`, `docs/api-tower.md`). Ces pages-là
-utilisent **shadcn/ui** (style Maia, thème bleu ; Tailwind 4, React), en clair par défaut, avec le même en-tête et le
-même pied de page que l'accueil (`src/styles/chrome.css`). Pas de CDN externe au
+utilisent **shadcn/ui** (style Maia, thème bleu ; Tailwind 4, React), en clair par défaut, avec le même en-tête que l'accueil
+(`src/styles/chrome.css`), en pleine largeur, sans pied de page, icônes Material Symbols. Pas de CDN externe au
 chargement : polices (Fontsource) et Lenis viennent de npm. Voir `docs/deploiement.md`.
 
 Le développeur principal s'appelle Jules. Il parle français ; répondre en français, honnêtement, et dire quand on ne

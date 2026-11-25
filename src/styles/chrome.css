@@ -1,10 +1,10 @@
 /*
  * The site's chrome, shared by the home page (site.css) and the other pages (global.css): navigation bar, buttons with
- * the pixel glint, dashed links, footer with its dithered edge. Same markup (components/Nav.astro, Footer.astro), same
+ * the pixel glint, dashed links. Same markup (components/Nav.astro), same
  * look everywhere: the site reads as one. Self-contained: its tokens are scoped to the chrome, so Tailwind pages and
  * the home page render it identically.
  */
-.nav, .foot, .btn, .link {
+.nav, .btn, .link {
   --white: #FFFFFF;
   --soft: rgba(255, 255, 255, .78);
   --ink: #161B36;
@@ -14,7 +14,7 @@
   --mono: "Geist Mono Variable", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   --ease: cubic-bezier(.22, 1, .36, 1);
 }
-.nav, .foot { color-scheme: dark; }
+.nav { color-scheme: dark; }
 
 /* ---------- Navigation bar ---------- */
 .nav {
@@ -64,34 +64,7 @@
 button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; background-color: transparent; }
 @keyframes runway { to { background-position: 6px 100%; } }
 
-/* ---------- Footer ---------- */
-.foot {
-  position: relative; z-index: 2; background: #070A1A;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 56px calc(32px + env(safe-area-inset-bottom, 0px));
-}
-.foot::before {                                     /* a dithered edge, like the rest of the scene */
-  content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px;
-  background:
-    repeating-conic-gradient(#070A1A 0 25%, transparent 0 50%) 0 6px / 6px 6px no-repeat,
-    repeating-conic-gradient(#070A1A 0 25%, transparent 0 50%) 0 0 / 12px 12px;
-  background-repeat: repeat-x;
-}
-.foot-in { max-width: 1120px; margin: 0 auto; display: grid; gap: 36px; }
-.foot-brand p { margin: 0; max-width: 48ch; font-size: 14px; line-height: 1.55; color: var(--soft); }
-.foot-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-.foot-cols div { display: grid; gap: 10px; align-content: start; min-width: 0; }
-.foot-cols h2 { margin: 0 0 2px; font: 500 13px/1 var(--sans); color: var(--white); }
-.foot-cols a { color: rgba(255, 255, 255, .62); text-decoration: none; font-size: 14px; transition: color .2s; }
-.foot-cols a:hover { color: var(--white); }
-.foot-cols a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
-.foot-base {
-  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, .08); font: 400 12px/1.4 var(--mono); color: rgba(255, 255, 255, .5);
-}
-
 @media (max-width: 760px) {
-  .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nav-links { display: none; }
   .brand svg { height: 20px; }
 }

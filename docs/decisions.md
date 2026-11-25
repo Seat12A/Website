@@ -129,7 +129,8 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
 - **Freinage près des textes** : la molette et le pavé tactile sont ralentis (jusqu'à ~28 %) quand un texte approche du
   centre ; texte et paysage ralentissent ensemble. Essayés et refusés : simple ralentissement trop léger, cran
   d'arrêt (bloque au pavé tactile), pause totale du paysage, texte qui glisse à une autre vitesse que la page.
-- **Pied de page** : après l'arrivée, il faut forcer (zone très freinée + ressort qui ramène à l'arrivée si on lâche
+- **Pied de page : supprimé partout** (Jules, 25/11/2026 : « j'aime pas »), sur l'accueil comme sur les autres pages ;
+  le frein et le ressort qui y menaient sont partis avec. Avant : après l'arrivée, il fallait forcer (zone très freinée + ressort qui ramène à l'arrivée si on lâche
   trop tôt). Il est opaque, sous la scène, jamais par-dessus.
 - Les nuages doivent bouger **avec le scroll** (et dériver doucement avec le temps).
 
@@ -164,12 +165,18 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   **Ne pas recopier un style avion** : une première version sombre en « tableau des arrivées » a été remplacée.
 - **Deuxième refonte le même jour** : la première version shadcn (style new-york, tableau, pictogrammes pixel partout,
   ligne tramée sous un en-tête à part) a été jugée « absolument catastrophique ». Demandes de Jules :
-  - **l'en-tête doit être le même que sur l'accueil**, tout en continuité dans le site : en-tête et pied de page sont
-    maintenant les composants de l'accueil (`chrome.css`) ;
+  - **l'en-tête doit être le même que sur l'accueil**, tout en continuité dans le site : l'en-tête est maintenant le
+    composant de l'accueil (`chrome.css`) ;
   - **composants officiels shadcn/ui, style Maia**, **thème bleu** en couleur d'accent ;
   - **inspiration Bluesky** (un seul bleu pour l'action, pilules, cartes arrondies, filets, pas d'ombres) ;
   - **filtres en chips** sur le modèle du dashboard Moddy ;
   - « moderne et minimaliste ».
+- **Troisième passe, le même jour** : plus de pied de page ; **toute la largeur de la fenêtre** ; l'embed du post X
+  **se charge tout seul** ; **plus de cartes à contour** ; marges revues ; **icônes Google Material** (Material Symbols)
+  et **plus d'icônes pixel** ; un style « plus travaillé », mélange de Bluesky, Twitter et Linear, **plus fonctionnel** ;
+  **éviter ce qui fait IA** (gros titre + paragraphe gris d'accroche, états vides avec une icône dans un carré, blocs
+  décoratifs). Refusé aussi : le texte limité en largeur à côté de la colonne de droite (« une grande ligne blanche qui
+  sert à rien »). Détails : `fact-checks.md`.
   Détails : `fact-checks.md`.
 - L'affirmation vérifiée toujours entre guillemets : sinon le titre se lit comme une affirmation de Seat 12A.
 

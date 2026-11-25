@@ -2,9 +2,8 @@
  * Scrolling: the flight track, the texts placed along it, and Lenis (smooth wheel scrolling, as on Aria).
  *
  * Wheel and trackpad are braked when a text gets close to the middle of the screen (down to 28 %): text and landscape
- * slow down together, then speed up again. Before the footer, a strong brake and a spring: you have to push on purpose
- * to get there; stop too early and it brings you back to the arrival. On touch screens, native scrolling (the spring
- * still works).
+ * slow down together, then speed up again. The page ends at the arrival (no footer, Jules 25/11/2026). On touch
+ * screens, native scrolling.
  */
 import Lenis from 'lenis';
 import { clamp, smooth } from './util.js';
@@ -18,8 +17,7 @@ export function createScroll({ track, sections, reducedMotion }) {
   const span = () => 9 * H * STRETCH;
   const fOf = (sc) => clamp(sc / span());
   const sOf = (f) => f * span();
-  const maxScroll = () => Math.max(1, track.offsetHeight - innerHeight);
-
+  
   function layout() { H = innerHeight; track.style.height = H + span() + 'px'; }
   layout();
   addEventListener('resize', layout);
@@ -34,37 +32,25 @@ export function createScroll({ track, sections, reducedMotion }) {
     });
   }
 
-  function brake(y, d) {
-    const end = maxScroll(), gap = H * .22;
+  function brake(y) {
     let dist = 1e9;
     secF.forEach((f) => { dist = Math.min(dist, Math.abs(y - sOf(f))); });
     let k = .28 + .72 * smooth(clamp(dist / (H * .4)));
-    if (d > 0 && y > end - 4 && y < end + gap + 60) k = Math.min(k, .16);
     return k;
   }
 
-  let lenis = null, lastInput = 0;
+  let lenis = null;
   if (!reducedMotion && matchMedia('(hover: hover) and (pointer: fine)').matches) {
     try {
       lenis = new Lenis({
         lerp: .1, smoothWheel: true, wheelMultiplier: 1,
-        virtualScroll: (e) => { e.deltaY *= brake(lenis ? lenis.targetScroll : scrollY, e.deltaY); lastInput = performance.now(); return true; },
+        virtualScroll: (e) => { e.deltaY *= brake(lenis ? lenis.targetScroll : scrollY); return true; },
       });
     } catch (err) { lenis = null; }
   }
-  addEventListener('touchend', () => { lastInput = performance.now(); }, { passive: true });
-  addEventListener('scroll', () => { if (!lenis) lastInput = performance.now(); }, { passive: true });
-
   /** To be called every frame. */
   function tick(now) {
     if (lenis) lenis.raf(now);
-    if (now - lastInput > 380 && !(lenis && lenis.isScrolling)) {
-      const end = maxScroll(), gap = H * .22, y = scrollY;
-      if (y > end + 1 && y < end + gap * .6) {                                           /* the spring */
-        if (lenis) lenis.scrollTo(end, { duration: .9 }); else scrollTo({ top: end, behavior: 'smooth' });
-      }
-      lastInput = now;
-    }
   }
 
   /** Flies to a point of the flight. */
