@@ -11,7 +11,7 @@ import '../styles/site.css';
 <Base title="Page introuvable · Seat 12A" description="Cette page n'existe pas." noindex>
   <Nav />
   <main class="lost">
-    <canvas id="plane" aria-hidden="true"></canvas>
+    <div class="art"><canvas id="plane" aria-hidden="true"></canvas></div>
     <div class="text">
       <h1>Cette porte d'embarquement n'existe pas.</h1>
       <p>La page a peut-être changé d'adresse, ou n'a jamais existé.</p>
@@ -25,13 +25,15 @@ import '../styles/site.css';
   <script>
     import { createPlane } from '../scripts/lost/plane.js';
     import { cellSize } from '../scripts/home/renderer.js';
-    /* the plane on the same cell size as the home page's scene; about 230 cells wide on a computer, less on a phone */
+    /* the plane on the same cell size as the home page's scene. On a computer it fills the right half (the text is on
+       the left, centred in height); on a phone it sits above the text, the whole block centred on the screen. */
     const canvas = document.getElementById('plane') as HTMLCanvasElement;
     const plane = createPlane(canvas);
     let last = '';
     function draw() {
       const { css } = cellSize();
-      const cols = Math.min(230, Math.floor((innerWidth - 32) / css), Math.floor(innerHeight * .5 / css / .72));
+      const wide = innerWidth >= 900;
+      const cols = Math.min(240, Math.floor((wide ? innerWidth * .52 - 48 : innerWidth - 32) / css), Math.floor(innerHeight * (wide ? .72 : .4) / css / .72));
       const key = `${cols}x${css}`;
       if (key !== last) { last = key; plane.render(cols, css); }
     }
@@ -48,12 +50,19 @@ import '../styles/site.css';
 </style>
 <style>
   .lost {
-    min-height: 100svh; box-sizing: border-box; padding: 96px 16px 48px;
-    display: grid; place-content: center; justify-items: center; gap: 28px; text-align: center;
+    min-height: 100svh; box-sizing: border-box; padding: 88px 16px 40px;
+    display: grid; align-content: center; justify-items: center; gap: 28px; text-align: center;
   }
-  #plane { image-rendering: pixelated; max-width: 100%; }
-  .text { display: grid; justify-items: center; gap: 18px; max-width: 640px; }
-  h1 { margin: 0; font-weight: 500; font-size: clamp(30px, 4.2vw, 54px); line-height: 1.02; letter-spacing: -.045em; text-wrap: balance; }
+  #plane { image-rendering: pixelated; max-width: 100%; display: block; }
+  .text { display: grid; justify-items: center; gap: 18px; max-width: 560px; }
+  h1 { margin: 0; font-weight: 500; font-size: clamp(30px, 4.2vw, 56px); line-height: 1.02; letter-spacing: -.045em; text-wrap: balance; }
   p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--soft); text-wrap: pretty; }
   .ctas { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 24px; margin-top: 4px; }
+  /* computer: the text on the left, centred in height, the plane on the right */
+  @media (min-width: 900px) {
+    .lost { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 48px; padding: 96px clamp(24px, 6vw, 96px) 48px; text-align: left; }
+    .art { order: 2; justify-self: center; }
+    .text { justify-items: start; justify-self: end; }
+    .ctas { justify-content: flex-start; }
+  }
 </style>

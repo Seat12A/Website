@@ -171,7 +171,9 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   Seat 12A), le nez planté dans le sol, la queue en l'air, sur une petite parcelle de terre qui s'efface en tramage ;
   lumière froide d'en haut avec ombres douces, lancer de rayons à la taille des cellules, puis **une échelle de 8 tons**
   avec tramage ordonné entre tons voisins seulement ; l'accent chaud : les hublots encore allumés. Cadrage calculé à
-  partir des points extrêmes de la scène. Statique (rien ne bouge). **À valider par Jules.**
+  partir des points extrêmes de la scène. Statique (rien ne bouge). Mise en page (Jules : « le texte doit être au
+  centre ou sur le côté ») : sur ordinateur, le texte à gauche centré en hauteur et l'avion à droite ; au téléphone,
+  l'avion au-dessus du texte, le tout centré dans l'écran. **À valider par Jules.**
 
 ## Les autres pages (fact-checks…)
 
