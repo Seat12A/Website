@@ -10,6 +10,7 @@ export const prerender = false;
 import Page from '../../../layouts/Page.astro';
 import PostEmbed from '../../../components/PostEmbed.astro';
 import BackLink from '../../../components/fc/BackLink.astro';
+import PanelHeader from '../../../components/fc/PanelHeader.astro';
 import { Sources } from '../../../components/fc/Sources';
 import { SearchBox } from '../../../components/fc/SearchBox';
 import { VerdictBadge } from '../../../components/fc/VerdictBadge';
@@ -38,16 +39,16 @@ Astro.response.headers.set('Cache-Control', failed ? CACHE_NONE : post ? CACHE_O
 
 const postUrl = post?.url ?? (platform === 'x' && known ? `https://x.com/i/status/${id}` : null);
 const claims = post?.claims ?? [];
-const h3 = 'text-[13px] font-medium text-muted-foreground';
+const h3 = 'text-base font-semibold';
 const heading = failed ? 'La vérification de ce post n’est pas disponible pour le moment.'
   : claims.length ? (claims.length > 1 ? `Ce post contient ${claims.length} affirmations vérifiées.` : 'Ce post a été vérifié.')
   : known ? 'Ce post n’a pas (encore) été vérifié par Seat 12A.' : 'Ce lien n’est pas reconnu.';
 ---
 <Page title={`${heading} · Seat 12A`} description="Ce post a-t-il été vérifié par Seat 12A ?" current="/fact-checks" noindex>
-  <div class="grid lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_28rem]">
+  <div class="grid min-h-[calc(100svh-var(--top))] lg:grid-cols-[minmax(0,1fr)_26rem] xl:grid-cols-[minmax(0,1fr)_32rem]">
     <div class="min-w-0 lg:border-r">
       <BackLink label="Un post" />
-      <div class="flex flex-col gap-10 px-4 pt-8 pb-16 md:px-6 xl:px-10">
+      <div class="flex flex-col gap-8 px-4 pt-8 pb-16 md:px-6 xl:px-10">
         <header class="flex flex-col gap-3">
           <h1 class="type-title">{heading}</h1>
           {failed && <p class="text-base leading-relaxed text-muted-foreground">Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.</p>}
@@ -57,20 +58,21 @@ const heading = failed ? 'La vérification de ce post n’est pas disponible pou
 
         {(none || !known) && <SearchBox label="Chercher une affirmation ou coller un autre lien X" />}
 
-        {claims.map((cl, i) => {
+        {claims.map((cl) => {
           const need = CONTEXT_NEED[cl.context_need ?? 'none'];
           const links = (cl.note?.links ?? []).map(safeUrl).filter(Boolean);
           return (
-            <article class:list={['flex flex-col gap-6', i > 0 && 'border-t pt-10']}>
-              <div class="flex flex-col gap-4">
-                <div class="flex flex-wrap items-center gap-2">
-                  <VerdictBadge veracity={cl.veracity} size="lg" />
-                  {need && <Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{need}</Badge>}
-                </div>
-                <h2 class:list={[cl.text.length > 110 ? 'text-2xl leading-snug font-semibold tracking-tight text-pretty' : 'type-title text-pretty']}>{quote(cl.text)}</h2>
-                {cl.validated_at && <p class="text-sm text-muted-foreground">Vérifié le <time datetime={cl.validated_at}>{longDate(cl.validated_at)}</time></p>}
+            <article class="flex flex-col gap-6 border-t pt-8">
+              <div class="flex flex-col gap-2">
+                <p class="text-[13px] text-muted-foreground">Affirmation vérifiée</p>
+                <h2 class="text-2xl leading-snug font-semibold tracking-tight text-pretty">{quote(cl.text)}</h2>
               </div>
-              {cl.note?.text && <p class="text-[17px] leading-relaxed">{cl.note.text}</p>}
+              <dl class="flex flex-wrap gap-x-10 gap-y-4 rounded-xl bg-muted/60 px-5 py-4">
+                <div class="flex flex-col gap-1.5"><dt class="text-[13px] text-muted-foreground">Verdict</dt><dd><VerdictBadge veracity={cl.veracity} size="lg" /></dd></div>
+                {need && <div class="flex flex-col gap-1.5"><dt class="text-[13px] text-muted-foreground">Contexte</dt><dd class="flex h-7 items-center text-sm font-medium">{need}</dd></div>}
+                {cl.validated_at && <div class="flex flex-col gap-1.5"><dt class="text-[13px] text-muted-foreground">Vérifié le</dt><dd class="flex h-7 items-center text-sm"><time datetime={cl.validated_at}>{longDate(cl.validated_at)}</time></dd></div>}
+              </dl>
+              {cl.note?.text && <section class="flex flex-col gap-3 border-t pt-6"><h3 class={h3}>Ce qu'il faut savoir</h3><p class="text-[17px] leading-[1.7]">{cl.note.text}</p></section>}
               {cl.note?.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
               {cl.inherited && (
                 <p class="text-sm text-muted-foreground">
@@ -79,7 +81,7 @@ const heading = failed ? 'La vérification de ce post n’est pas disponible pou
                 </p>
               )}
               {cl.context_types?.length > 0 && (
-                <section class="flex flex-col gap-3">
+                <section class="flex flex-col gap-3 border-t pt-6">
                   <h3 class={h3}>Ce qui manque au post</h3>
                   <ul class="flex flex-wrap gap-2">
                     {cl.context_types.map((t) => <li><Badge variant="secondary" className="h-7 px-3 text-[13px] font-normal">{CONTEXT_TYPES[t] ?? t}</Badge></li>)}
@@ -87,8 +89,8 @@ const heading = failed ? 'La vérification de ce post n’est pas disponible pou
                 </section>
               )}
               {links.length > 0 && (
-                <section class="flex flex-col gap-3">
-                  <h3 class={h3}>Sources <span class="tabular-nums">{links.length}</span></h3>
+                <section class="flex flex-col gap-3 border-t pt-6">
+                  <h3 class={h3}>Sources <span class="font-normal text-muted-foreground tabular-nums">{links.length}</span></h3>
                   <Sources links={links} />
                 </section>
               )}
@@ -99,9 +101,9 @@ const heading = failed ? 'La vérification de ce post n’est pas disponible pou
     </div>
 
     {postUrl && (
-      <aside class="max-lg:border-t lg:sticky lg:top-(--top) lg:max-h-[calc(100svh-var(--top))] lg:self-start lg:overflow-y-auto">
-        <div class="flex flex-col gap-3 px-4 py-6 md:px-6">
-          <h2 class={h3}>Le post</h2>
+      <aside class="min-w-0 max-lg:border-t">
+        <PanelHeader title="Le post" />
+        <div class="px-4 py-6 md:px-6">
           <PostEmbed url={postUrl} platform={platform} externalId={id} />
         </div>
       </aside>

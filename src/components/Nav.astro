@@ -2,15 +2,15 @@
 /*
  * The navigation bar of the whole site (one component, styles in styles/chrome.css). On the home page it floats over
  * the flight and turns solid when you scroll (main.js); on the other pages it is solid from the start (`solid`), since
- * there is no sky behind it. Links marked data-soon point to pages that do not exist yet: a click does nothing.
+ * there is no sky behind it, and as wide as the page (`page`). Links marked data-soon point to pages that do not exist yet: a click does nothing.
  */
 import Logo from './Logo.astro';
 import { NAV } from '../lib/links.js';
 
-interface Props { solid?: boolean; current?: string }
-const { solid = false, current } = Astro.props;
+interface Props { solid?: boolean; page?: boolean; current?: string }
+const { solid = false, page = false, current } = Astro.props;
 ---
-<nav class:list={['nav', { solid }]} id="nav" aria-label="Navigation principale">
+<nav class:list={['nav', { solid, page }]} id="nav" aria-label="Navigation principale">
   <a class="brand" href="/" id="home" aria-label="Seat 12A, accueil"><Logo /></a>
   <div class="nav-links">
     {NAV.map((l) => l.href

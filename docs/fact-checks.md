@@ -67,20 +67,23 @@ Maia + thème bleu avec en-tête et pied de page de l'accueil ; enfin la version
 pied de page, en pleine largeur, embed X automatique, sans cartes à contour, icônes Material, sans icônes pixel, un
 mélange de Bluesky, Twitter et Linear, plus fonctionnel, sans ce qui fait IA**.
 
-- **En-tête = celui de l'accueil** (`Nav.astro` avec `solid`, `src/styles/chrome.css`). Une bande de la couleur de la
-  page est fixée derrière lui (`layouts/Page.astro`) ; `--top` (82 px, `global.css`) est la hauteur sous cette bande :
+- **En-tête = celui de l'accueil, adapté** (`Nav.astro` avec `solid page`, `src/styles/chrome.css`) : aussi large que le
+  contenu, posé sur ses marges, un peu plus bas et plus serré, les liens à côté du logo. Une bande de la couleur de la
+  page est fixée derrière lui (`layouts/Page.astro`) ; `--top` (72 px, `global.css`) est la hauteur sous cette bande :
   la barre d'outils, la barre du haut d'un fact-check et la colonne de droite s'y collent. **Pas de pied de page.**
 - **Pleine largeur**, avec une petite marge de chaque côté (12 à 32 px, `layouts/Page.astro` : rien ne colle au bord,
   demandé par Jules) : la liste ou le texte à gauche, une colonne de 19 à 28 rem à droite, séparées par un filet
   vertical (comme les colonnes de Twitter). Le texte remplit sa colonne (pas de largeur maximale : refusé).
-- **Liste** (Linear) : titre court avec le compte, barre d'outils collante (recherche sur fond gris sans contour avec
+- **Liste** (Linear) : barre de titre avec le compte, alignée sur la barre « Répartition » de droite, barre d'outils collante (recherche sur fond gris sans contour avec
   le raccourci `/`, ordre, filtrer, actualiser), lignes séparées par des filets, survol gris, groupes par mois avec leur
   compte quand on trie par date. À droite, la **répartition** par verdict, type et pays (comptes de `stats`, chaque
   ligne filtre ; les comptes d'une facette ignorent son propre filtre, d'où trois appels à `stats`).
-- **Fact-check** : barre du haut (retour, fil d'Ariane, « Copier le lien », « Notre publication »), verdict, affirmation
-  (plus petite au-delà de 110 caractères), puis des sections sans cartes : « Ce qu'il faut savoir », « En savoir plus » et « Sources » ont un vrai titre (18 px)
-  et un texte de couleur normale (« En savoir plus » doit être mis en avant, Jules) ; « Ce qui manque au post » garde un
-  petit titre gris. À droite : le post, les
+- **Fact-check** : barre du haut (retour, fil d'Ariane, « Copier le lien », « Notre publication sur X »), puis
+  « Affirmation vérifiée » et l'affirmation (plus petite au-delà de 110 caractères), puis un **bandeau** Verdict /
+  Contexte / Vérifié le / Publié le dans un encadré teinté sans contour, puis des sections séparées par des filets : « Ce qu'il faut savoir », « Ce qui manque au post », « En savoir plus », « Sources », toutes avec le même titre
+  (16 px, gras) et un texte de couleur normale (« En savoir plus » mis en avant, Jules). La colonne de droite commence
+  par une barre de même hauteur que celle de gauche (`PanelHeader.astro`), ne défile pas à part, et le filet vertical
+  descend jusqu'en bas de la fenêtre. La page d'un post suit la même structure. À droite : le post, les
   détails (libellé / valeur, comme les propriétés de Linear), l'historique en frise.
 - **shadcn/ui** : style `radix-maia`, thème `blue` sur la base `mist`, Geist (vérifié : c'est bien Geist qui s'affiche).
   Preset appliqué avec le CLI (`npx shadcn@4.23.0 apply b1ZQ7FetM` ; la base `gray` est refusée). Ajouter un

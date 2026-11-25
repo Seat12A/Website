@@ -1,27 +1,51 @@
 ---
-/* Not found. Plain and quiet: the night sky colour of the arrival, one sentence, one way back. */
+/*
+ * Not found. The home page's universe: its navigation bar, its scene held at blue hour on the ground (the airport, the
+ * stars, the crescent moon), and in front a little airliner that missed its gate, nose in the grass (scripts/lost/).
+ * One sentence, two ways out. Without WebGL or JavaScript: the night-blue background and the text.
+ */
 import Base from '../layouts/Base.astro';
-import Logo from '../components/Logo.astro';
-import '@fontsource-variable/geist';
+import Nav from '../components/Nav.astro';
+import '../styles/site.css';
 ---
 <Base title="Page introuvable · Seat 12A" description="Cette page n'existe pas." noindex>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <canvas id="crash" aria-hidden="true"></canvas>
+  <Nav />
+
   <main class="lost">
-    <a class="brand" href="/" aria-label="Seat 12A, accueil"><Logo /></a>
     <h1>Cette porte d'embarquement n'existe pas.</h1>
-    <p>La page a peut-être changé d'adresse, ou n'a jamais existé.</p>
-    <a class="back" href="/">Retour à l'accueil</a>
+    <p>La page a peut-être changé d'adresse, ou n'a jamais existé. Notre avion, lui, a raté la piste.</p>
+    <div class="ctas">
+      <a class="btn" href="/">Retour à l'accueil</a>
+      <a class="link" href="/fact-checks">Voir les fact-checks</a>
+    </div>
   </main>
+
+  <canvas id="intro" aria-hidden="true"></canvas>
+
+  <script>
+    import '../scripts/lost/main.js';
+    /* links to pages that do not exist yet do nothing */
+    document.querySelectorAll('[data-soon]').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+  </script>
 </Base>
 
 <style is:global>
-  body { margin: 0; background: #0B1030; color: #fff; font-family: "Geist Variable", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; overflow: hidden; }
+  body { margin: 0; background: #1A2357; color: var(--white); font: 14px/1.4 var(--sans); -webkit-font-smoothing: antialiased; }
+  #sky, #crash { position: fixed; left: 0; top: 0; pointer-events: none; }
+  #sky { z-index: 0; }
+  #crash { z-index: 1; image-rendering: pixelated; }
+  #intro { position: fixed; left: 0; top: 0; z-index: 10; pointer-events: none; image-rendering: pixelated; }
 </style>
 <style>
-  .lost { min-height: 100svh; box-sizing: border-box; padding: 32px 16px; display: grid; place-content: center; justify-items: center; gap: 18px; text-align: center; }
-  .brand { color: #fff; margin-bottom: 24px; }
-  .brand :global(svg) { height: 26px; width: auto; display: block; }
-  h1 { margin: 0; font-weight: 500; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.05; letter-spacing: -.045em; max-width: 18ch; text-wrap: balance; }
-  p { margin: 0; color: rgba(255, 255, 255, .78); font-size: 17px; line-height: 1.55; }
-  .back { margin-top: 8px; color: #0B1030; background: #fff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 13px 20px; border-radius: 99px; }
-  .back:focus-visible { outline: 2px solid #FFB020; outline-offset: 3px; }
+  .lost {
+    position: fixed; z-index: 2; left: 50%; top: 38%; transform: translate(-50%, -50%);
+    width: min(680px, calc(100% - 32px)); display: grid; justify-items: center; gap: 20px; text-align: center;
+  }
+  h1 { margin: 0; font-weight: 500; font-size: clamp(32px, 4.6vw, 60px); line-height: 1; letter-spacing: -.045em; text-wrap: balance; }
+  p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--soft); max-width: 44ch; text-wrap: pretty; }
+  .ctas { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 24px; margin-top: 6px; }
+  @media (max-width: 760px) { .lost { top: 34%; } p { font-size: 16px; } }
 </style>

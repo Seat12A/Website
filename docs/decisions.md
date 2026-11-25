@@ -159,6 +159,17 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   sections empilées au centre (bug vu par Jules le 25/11/2026, quand le script tarde ou échoue). Si le script ne
   démarre pas en 6 s, ou sans JavaScript, les textes s'affichent comme une page simple, lisible.
 
+## La page 404
+
+- **Demande de Jules (25/11/2026)** : reprendre le style de l'accueil, avec un avion crashé ou qui se crashe, « mais
+  que ça soit mignon et joli ». Fait : la scène de l'accueil (même shader, même plan de vol) **figée à l'heure bleue au
+  sol** (f = 0 : aéroport, étoiles, croissant de lune), avec l'arrivée cellule par cellule ; devant, un **petit avion de
+  ligne dodu, le nez planté dans une butte de terre à côté de la piste**, la queue en l'air, les hublots encore allumés
+  (l'accent chaud), la fenêtre de Seat 12A sur la dérive, trois bouffées de fumée qui montent par crans et que le vent
+  emporte. Pixel art sur la grille des cellules, dans l'échelle de tons de la scène, dessiné par le code (`lost/crash.js`).
+- Évité : la fumée tramée contre le ciel (elle faisait le « grillage de petits carrés » déjà refusé) ; un avion trop
+  petit (« soit un truc impressionnant, soit rien »). **À valider par Jules.**
+
 ## Les autres pages (fact-checks…)
 
 - **Minimalistes, shadcn/ui obligatoire, clair par défaut et sombre si l'ordinateur l'est** (Jules, 25/11/2026).
@@ -177,6 +188,12 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   **éviter ce qui fait IA** (gros titre + paragraphe gris d'accroche, états vides avec une icône dans un carré, blocs
   décoratifs). Refusé aussi : le texte limité en largeur à côté de la colonne de droite (« une grande ligne blanche qui
   sert à rien »). Détails : `fact-checks.md`.
+- **Quatrième passe** (« au petit oignon, sérieux, structuré, très lisible ») : colonnes alignées (barres de même
+  hauteur à gauche et à droite, filet vertical jusqu'en bas), l'affirmation d'abord puis un **bandeau verdict / contexte
+  / dates** dans un encadré **teinté sans contour**, des sections séparées par des filets aux titres identiques, la
+  colonne de droite qui ne défile plus dans la page, l'**en-tête de l'accueil adapté** (aussi large que le contenu,
+  liens à côté du logo). Jules accepte les encadrés s'ils sont très fins et ne font pas IA : teinte légère, ou contour
+  plus foncé que d'habitude ; jamais les cartes à contour de base.
   Détails : `fact-checks.md`.
 - L'affirmation vérifiée toujours entre guillemets : sinon le titre se lit comme une affirmation de Seat 12A.
 

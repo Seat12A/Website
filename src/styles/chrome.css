@@ -24,6 +24,12 @@
   transition: width .6s var(--ease), background-color .4s var(--ease), box-shadow .4s var(--ease);
 }
 .nav.solid { width: min(880px, calc(100% - 32px)); background: #0B1030; box-shadow: inset 0 0 0 1px var(--line); }
+/* The other pages (Nav page): the bar is as wide as the content and sits on its side margins (layouts/Page.astro:
+   12, 20, then 32 px), a little lower and tighter; the links follow the logo, like an app's bar. */
+.nav.page { top: calc(10px + env(safe-area-inset-top, 0px)); width: calc(100% - 24px); padding: 6px 6px 6px 16px; transition: none; }
+.nav.page .nav-links { margin-left: 20px; margin-right: auto; }
+@media (min-width: 768px) { .nav.page { width: calc(100% - 40px); } }
+@media (min-width: 1280px) { .nav.page { width: calc(100% - 64px); } }
 .brand { display: flex; align-items: center; color: var(--white); text-decoration: none; }
 .brand svg { height: 24px; width: auto; display: block; }
 .nav-links { display: flex; gap: 4px; }

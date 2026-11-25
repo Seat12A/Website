@@ -17,7 +17,7 @@
 
 :root {
   color-scheme: light;
-  --top: 82px;                    /* under the fixed navigation bar (layouts/Page.astro) */
+  --top: 72px;                    /* under the fixed navigation bar (layouts/Page.astro) */
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.148 0.004 228.8);

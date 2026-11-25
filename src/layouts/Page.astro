@@ -22,7 +22,7 @@ const { title, description, noindex = false, current } = Astro.props;
   <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-primary-foreground">Aller au contenu</a>
 
   <div class="fixed inset-x-0 top-0 z-[4] h-(--top) bg-background" aria-hidden="true"></div>
-  <Nav solid current={current} />
+  <Nav solid page current={current} />
 
   <main id="main" class="px-3 pt-(--top) md:px-5 xl:px-8">
     <slot />

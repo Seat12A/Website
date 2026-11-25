@@ -30,7 +30,7 @@ export function FactCheckList({ items, grouped }: { items: ListItem[]; grouped: 
       {groups.map((g, gi) => (
         <section key={`${g.label}-${gi}`} aria-label={g.label ?? undefined}>
           {g.label && (
-            <h2 className="mt-2 flex items-center gap-2 rounded-lg bg-muted/70 px-4 py-2 text-[13px] font-medium md:px-6">
+            <h2 className="flex items-center gap-2 border-b bg-muted/50 px-4 py-2 text-[13px] font-medium md:px-6">
               {g.label}
               <span className="text-muted-foreground tabular-nums">{g.items.length}</span>
             </h2>

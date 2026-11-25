@@ -55,6 +55,9 @@ export function FactCheckBrowser({ initial, data: initialData }: { initial: Init
   const top = React.useRef<HTMLDivElement>(null);
   const input = React.useRef<HTMLInputElement>(null);
   const first = React.useRef(true);
+  /* the full placeholder does not fit a phone's search field */
+  const [narrow, setNarrow] = React.useState(false);
+  React.useEffect(() => { setNarrow(!matchMedia('(min-width: 640px)').matches); }, []);
 
   const runSearch = (next: string) => { setDebouncedQ(next); setPage(1); setSort(next ? 'relevance' : 'newest'); };
 
@@ -138,15 +141,15 @@ export function FactCheckBrowser({ initial, data: initialData }: { initial: Init
   return (
     <TooltipProvider>
       <div className="grid min-h-[calc(100svh-var(--top))] lg:grid-cols-[minmax(0,1fr)_19rem] xl:grid-cols-[minmax(0,1fr)_21rem]" ref={top}>
-        <div className="min-w-0 lg:border-r lg:pr-5">
-          <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 pt-6 pb-4 md:px-6">
-            <h1 className="text-2xl font-semibold tracking-tight">Fact-checks</h1>
+        <div className="min-w-0 lg:border-r">
+          <header className="flex min-h-14 flex-wrap items-center gap-x-3 gap-y-1 border-b px-4 py-3 md:px-6">
+            <h1 className="text-lg font-semibold tracking-tight">Fact-checks</h1>
             <p className="text-sm text-muted-foreground tabular-nums" aria-live="polite">
               {countLine}{debouncedQ && searched && data.total > 0 && !data.legacy && <> pour {quote(debouncedQ)}</>}
             </p>
           </header>
 
-          <div className="sticky top-(--top) z-20 flex flex-col gap-2.5 border-y bg-background px-4 py-2.5 md:px-6">
+          <div className="sticky top-(--top) z-20 flex flex-col gap-2.5 border-b bg-background px-4 py-2.5 md:px-6">
             <div className="flex items-center gap-1.5">
               <form method="get" action="/fact-checks" role="search" onSubmit={onSubmit} className="min-w-0 flex-1">
                 <label htmlFor="q" className="sr-only">Chercher une affirmation, ou coller le lien d’un post X</label>
@@ -154,7 +157,7 @@ export function FactCheckBrowser({ initial, data: initialData }: { initial: Init
                   <InputGroupAddon><SearchIcon /></InputGroupAddon>
                   <InputGroupInput
                     ref={input} id="q" name="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} maxLength={2000}
-                    autoComplete="off" spellCheck={false} placeholder="Chercher ou coller un lien X"
+                    autoComplete="off" spellCheck={false} placeholder={narrow ? 'Chercher' : 'Chercher ou coller un lien X'}
                   />
                   <InputGroupAddon align="inline-end">
                     {q
@@ -267,12 +270,15 @@ export function FactCheckBrowser({ initial, data: initialData }: { initial: Init
 
         {filtersOn && (
           <aside className="max-lg:hidden" aria-label="Répartition">
-            <div className="sticky top-(--top) max-h-[calc(100svh-var(--top))] overflow-y-auto px-4 py-6">
+            <div className="sticky top-(--top) max-h-[calc(100svh-var(--top))] overflow-y-auto">
+              <div className="flex min-h-14 items-center border-b px-6 py-3"><h2 className="text-sm font-semibold">Répartition</h2></div>
+              <div className="px-4 py-5">
               <Facets
                 counts={data.counts} typeCounts={data.typeCounts ?? {}} countryCounts={data.countryCounts ?? {}}
                 veracity={values.veracity ?? []} type={values.type} country={values.country}
                 onVeracity={toggleVerdict} onType={toggleOne('type')} onCountry={toggleOne('country')}
               />
+              </div>
             </div>
           </aside>
         )}

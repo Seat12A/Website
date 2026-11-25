@@ -1,0 +1,9 @@
+---
+/* The header of the right column: the same height and line as the bar on the left (BackLink), so both columns line up. */
+interface Props { title: string; note?: string }
+const { title, note } = Astro.props;
+---
+<div class="flex h-12 items-center gap-2 border-b px-4 md:px-6">
+  <h2 class="text-sm font-semibold">{title}</h2>
+  {note && <span class="truncate text-[13px] text-muted-foreground">· {note}</span>}
+</div>
