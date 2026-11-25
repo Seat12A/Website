@@ -1,8 +1,8 @@
 ---
 /*
  * Home page: a flight seen from seat 12A. The scene is drawn by src/scripts/home/ (WebGL); the sections below are placed
- * along the flight by scroll.js: `--f` is the point of the flight (0..1) where a section is centred, `data-y` shifts
- * it (fraction of the screen), `data-calm="1"` quiets the sky behind it, `.left` aligns it left (desktop only),
+ * along the flight by scroll.js: `--f` is the point of the flight (0..1) where a section is centred on the screen,
+ * chosen where its scene is at its peak (`data-y` could shift it, as a fraction of the screen; none does now), `data-calm="1"` quiets the sky behind it, `.left` aligns it left (desktop only),
  * `.light` uses dark ink (for bright skies).
  *
  * The story: on the ground and in the cloud, we cannot see (social networks); breaking through, we see clearly (what
@@ -38,7 +38,7 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
   </nav>
 
   <main id="track">
-    <section class="sec hero" style="--f:0" data-calm="1" data-y="-.04">
+    <section class="sec hero" style="--f:0" data-calm="1">
       <h1>Prenez de la hauteur sur ce qui circule.</h1>
       <p>Sur les réseaux, une info peut faire le tour du web avant que quiconque ait vérifié qu'elle est vraie. Seat 12A vérifie des posts qui circulent sur X, ajoute le contexte qui manque et donne ses sources.</p>
       <div class="ctas">
@@ -47,13 +47,13 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       </div>
     </section>
 
-    <section class="sec light" style="--f:.265" data-calm="0">
+    <section class="sec light" style="--f:.28" data-calm="0">
       <h2>Sur les réseaux, on y voit mal.</h2>
       <p>Les fils d'actualité mettent en avant ce qui fait réagir, souvent la colère ou la peur. Et les fausses infos circulent plus vite que les vraies : sur Twitter, une info vraie met en moyenne six fois plus de temps qu'une fausse à atteindre 1 500 personnes. Pendant une élection, ça peut peser lourd.</p>
       <span class="note">Source : <a href="https://doi.org/10.1126/science.aap9559" rel="noopener">étude du MIT sur 126 000 rumeurs, Science, 2018</a>.</span>
     </section>
 
-    <section class="sec" style="--f:.455" data-calm="1" data-y="-.13">
+    <section class="sec" style="--f:.49" data-calm="1">
       <h2>Ce que fait Seat 12A.</h2>
       <div class="points">
         <div><canvas class="picto" data-p="magnifier" width="16" height="16" aria-hidden="true"></canvas><div><h3>Vérifier les posts</h3><p>Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source.</p></div></div>
@@ -62,7 +62,7 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       </div>
     </section>
 
-    <section class="sec" style="--f:.55" data-calm="1" data-y="-.04">
+    <section class="sec" style="--f:.6" data-calm="1">
       <h2>Gratuit, et tout est public.</h2>
       <div class="rules">
         <div><canvas class="picto" data-p="heart" width="16" height="16" aria-hidden="true"></canvas><h3>Gratuit</h3><p>Pas de pub, pas d'abonnement, rien à acheter.</p></div>
@@ -73,7 +73,7 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
     </section>
 
 
-    <section class="sec" style="--f:.72" data-calm="1" data-y="-.06">
+    <section class="sec" style="--f:.72" data-calm="1">
       <h2>Un doute ? Posez la question.</h2>
       <p>Collez une affirmation ou un lien. On cherche les sources, et on vous dit aussi quand on ne sait pas.</p>
       <form class="ask" id="ask">
@@ -84,12 +84,12 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       <span class="note">Sur ordinateur, l'extension repère les posts à vérifier directement sur X (Chrome, Edge, Brave…). <a class="link" href="#" data-soon>Ajouter l'extension</a></span>
     </section>
 
-    <section class="sec" style="--f:.885" data-calm="1" data-y="-.2">
+    <section class="sec" style="--f:.9" data-calm="1">
       <h2>On aime Internet.</h2>
       <p>Wikipédia, les cours en ligne gratuits, les archives ouvertes : on n'a jamais eu autant de savoir à portée de main. On veut juste pouvoir continuer à s'y fier.</p>
     </section>
 
-    <section class="sec end" style="--f:1" data-calm="1" data-y="-.21">
+    <section class="sec end" style="--f:1" data-calm="1">
       <h2>Vous pouvez détacher votre ceinture.</h2>
       <p>Avant de partager un post surprenant, prenez une minute pour le vérifier. Il l'a peut-être déjà été.</p>
       <div class="ctas">

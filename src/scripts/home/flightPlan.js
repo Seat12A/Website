@@ -59,8 +59,8 @@ export const altFt = curve([[0, 13], [.05, 13], [.08, 520], [.115, 2400], [.16, 
 /** Pitch, in degrees: seen from the left window, pitching up tilts the horizon (the nose, on the right, goes down). */
 export const tilt = curve([[0, 0], [.043, 0], [.053, 9], [.10, 8], [.14, 4], [.18, 0], [.93, 0], [.948, 4], [.957, 0], [1, 0]]);
 /** Height of the horizon on screen: the left turn while climbing lowers the wing, we see the ground from above. */
-export const horizon = curve([[0, .30], [.06, .31], [.09, .66], [.13, .74], [.17, .62], [.20, .5], [.83, .5], [.86, .72], [.9, .66],
-  [.935, .5], [.955, .40], [1, .40]]);
+export const horizon = curve([[0, .30], [.06, .31], [.09, .66], [.13, .74], [.17, .62], [.20, .5], [.83, .5], [.86, .72], [.9, .73],
+  [.935, .44], [.955, .27], [1, .22]]);
 /** How lit the ground is (runway, taxiway, roads): 1 at night. */
 export const groundLights = curve([[0, 1], [.07, 1], [.13, .25], [.17, 0], [.80, 0], [.83, 1], [1, 1]]);
 /** Runways (x ranges, metres): departure and arrival. */
@@ -69,7 +69,7 @@ export const RUNWAYS = [-400, 3200, 98200, 101800];
 /* ---------- Phenomena that illustrate the texts (0 = absent, 1 = full) ----------
    Real things one can see from a window seat, drawn as an atmosphere rather than as precise shapes. */
 /** 22° halo and sun dogs (parhelia), when breaking through the clouds with the sun low: one sun, three images. */
-export const halo = curve([[.43, 0], [.455, 1], [.53, 1], [.6, 0]]);
+export const halo = curve([[.44, 0], [.47, 1], [.55, 1], [.6, 0]]);
 /** Another airliner crossing far above, at golden hour: its contrail widens and spreads as it ages.
  *  Returns [progress of the crossing 0..1, visibility]. Gone before we descend into the clouds (0.772). */
 export function contrail(f) {
@@ -78,9 +78,10 @@ export function contrail(f) {
 }
 /** Over Paris at night: light runs along the streets, spreading out from the centre (the internet, made visible). */
 export const network = curve([[.845, 0], [.9, 1], [1, 1]]);
-/** The Eiffel Tower beacon turns with the scroll (radians), about one turn over the night arrival; parked, it points
- *  to the right and a little towards us, so it rises across the sky above the terminal. */
-export const beacon = (f) => -.3 + (f - 1) * 30;
+/** The Eiffel Tower beacon turns with the scroll (radians), almost a turn over the night arrival. While the text on
+ *  the internet is read (0.9) it comes towards us from the left; it sweeps over the plane around 0.96; parked, it
+ *  points to the right and a little towards us, so it rises across the sky above the terminal. */
+export const beacon = (f) => -.3 + (f - 1) * 25.4;
 
 /** Distance travelled over the ground, in metres. `drift` is the extra distance flown with time while climbing. */
 export function travel(f, drift) {
@@ -110,15 +111,18 @@ const sunX = curve([[0, .82], [.44, .83], [.6, .79], [.8, .81]]);
 /** Elevation above the horizon, in screen heights. */
 const sunElevation = curve([[0, -.07], [.06, -.05], [.12, .035], [.2, .05], [.44, .09], [.6, .46], [.772, .06], [.8, -.06]]);
 /* On a portrait screen the texts take the whole width: the sun stays above them while one is being read, and rises or
-   sets only between two texts (0.478–0.512: nothing in the middle of the screen; 0.748–0.775: the last text has left). */
-const sunElevationPortrait = curve([[0, -.07], [.06, -.05], [.12, .035], [.2, .05], [.44, .09], [.478, .09], [.512, .64],
-  [.748, .64], [.775, .06], [.8, -.06]]);
+   sets only between two texts (0.44–0.47: just out of the clouds, before the text at 0.49 arrives; 0.748–0.775: the
+   last text has left). Elevations here are in screen heights, whatever the zoom (see sunPosition). */
+const sunElevationPortrait = curve([[0, -.07], [.06, -.05], [.12, .035], [.2, .05], [.44, .09], [.47, .62],
+  [.748, .62], [.775, .06], [.8, -.06]]);
 
-/** Sun as [x, y, radius] in screen units (x and y in 0..1, y from the bottom). */
-export function sunPosition(f, hz, size, portrait) {
+/** Sun as [x, y, radius] in scene units (x and y in 0..1, y from the bottom; with zoom = 1 these are screen units).
+ *  `hz` is the horizon height on screen. On a portrait screen the scene is zoomed out (`zoom` > 1, see uZoom in the
+ *  shader): the position is worked out on screen, then converted, so the sun stays where it should on screen. */
+export function sunPosition(f, hz, size, portrait, zoom = 1) {
   const el = (portrait ? sunElevationPortrait : sunElevation)(f);
   const ref = f < GROUND_END || f > NIGHT_START ? hz : SEA_HORIZON;
-  return [sunX(f), ref + el, portrait && f >= GROUND_END ? size * .8 : size];
+  return [(sunX(f) - .5) * zoom + .5, (ref + el - .5) * zoom + .5, (portrait && f >= GROUND_END ? size * .8 : size) * zoom];
 }
 
 /** Moon as [[x, y, radius, visibility], lightDirection]. A thin waning crescent before dawn, lit from the side of the

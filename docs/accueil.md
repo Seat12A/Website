@@ -19,7 +19,7 @@ Projet Astro, page `src/pages/index.astro`. La scène du vol est dessinée en We
 | `src/scripts/home/renderer.js` | WebGL2 : taille des cellules (`cellSize`, partagée), les deux passes. |
 | `src/scripts/home/scroll.js` | Piste du vol, placement des textes, Lenis, freinage, ressort avant le pied de page. |
 | `src/scripts/home/hud.js` | Altimètre, pictogrammes 16×16. |
-| `src/scripts/home/intro.js` | Le volet de hublot qui remonte à l'arrivée sur la page. |
+| `src/scripts/home/intro.js` | L'arrivée : la scène apparaît cellule par cellule, en tramage, depuis le milieu. |
 | `src/scripts/home/effects.js` | Étoiles filantes, stroboscope. |
 | `src/scripts/home/cabinSound.js` | Son d'ambiance (Web Audio), coupé par défaut, et le « ding » de la ceinture à l'arrivée. |
 | `tools/captures.js` | Captures du vol (Playwright) à partir de `dist/`. |
@@ -39,7 +39,8 @@ son, puis le pied de page **après** la piste du vol.
 
 ## 1. Rendu pixel (`renderer.js`)
 
-- Taille de cellule : `cellCss = max(3, round(max(largeur, hauteur × 1,4) / 480))` px CSS, puis
+- Taille de cellule : `cellCss = max(3, round(max(largeur, hauteur × 1,4) / 480))` px CSS (minimum 2 au lieu de 3
+  sous 600 px de large), puis
   `cell = round(cellCss × devicePixelRatio)` : chaque cellule fait un nombre entier de pixels de l'écran.
 - Passe 1 : `sky.frag.glsl` calcule une couleur par cellule dans une texture `gw × gh`.
 - Passe 2 : agrandit chaque cellule en carré net (`texelFetch`), ancré en haut à gauche.
@@ -145,6 +146,14 @@ Une ambiance, pas des formes précises : le pixel art ne permet pas le détail.
   avant le seuil, une barre transversale à 300 m, seuil vert ; un éclair blanc parcourt les 30 postes deux fois par
   seconde vers le seuil. Visible vers f = 0,89–0,93.
 
+### Écran portrait (`uZoom`)
+
+En portrait, `main.js` élargit le champ de vision : `zoom = clamp(hauteur / largeur, 1, 1,8)`, et le shader multiplie
+les coordonnées centrées par `uZoom`. Pour que la composition à l'écran ne bouge pas, ce qui est donné en hauteur
+d'écran est converti en coordonnées de scène (`toScene(y) = 0,5 + (y − 0,5) × zoom`) : l'horizon, le haut de la mer de
+nuages, le soleil (`sunPosition` calcule à l'écran puis convertit), la lune ; dans le shader, la trajectoire de la
+traînée (`cX`, `cY`) et la position du stroboscope. Sur écran large, `zoom = 1` : rien ne change.
+
 ## 6. Défilement et textes (`scroll.js`)
 
 - `STRETCH = 1.4` : la piste fait `H + 9·H·1,4` px ; `fOf(scroll)` et `sOf(f)` convertissent.
@@ -162,10 +171,11 @@ Une ambiance, pas des formes précises : le pixel art ne permet pas le détail.
   la variable CSS `--cell`. Un pictogramme s'affiche en 16×16 cellules, le reflet des boutons en 12×16, le volet en
   plein écran. Les pictogrammes sont redessinés avec les tons de la scène.
 - Les petites illustrations à côté des textes ont été essayées puis refusées (voir `decisions.md`).
-- **Volet** (`intro.js`) : lattes (rainure, reflet, face), barre du bas plus épaisse, poignée. Il se décroche (4
-  cellules), marque une pause, puis remonte. Son horloge avance image par image (au plus 1/15 s par image, à partir de
-  la troisième) pour qu'une première image lente (compilation du shader) ne le fasse pas sauter. Durées : `HOLD`,
-  `UNLATCH`, `PAUSE`, `RISE`. `tools/captures.js` attend qu'il ait disparu.
+- **Arrivée** (`intro.js`) : un calque des tons les plus sombres couvre l'écran ; chaque cellule se découvre quand son
+  seuil Bayer 8×8 passe sous `k × (1 + SPREAD) − distance au centre × SPREAD`, avec un liseré (`RIM`) d'un ton plus
+  clair. Son horloge avance image par image (au plus 1/15 s par image, à partir de la troisième) pour qu'une première
+  image lente (compilation du shader) ne la fasse pas sauter. Durées : `HOLD`, `OPEN`. `tools/captures.js` attend
+  qu'elle soit finie (le canvas `#intro` est retiré).
 
 ## 8. Avant le script, sans script
 

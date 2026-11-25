@@ -24,11 +24,11 @@ en ligne publique (un texte qui décrit un fonctionnement doit être vrai).
 | f | Scène | Section | Ce qu'elle dit |
 |---|---|---|---|
 | 0 | Heure bleue au sol | Hero | Ce qu'est Seat 12A, en une phrase |
-| 0,265 | Dans le nuage | Le problème | Sur les réseaux, on y voit mal |
-| 0,455 | La percée | Ce qu'on fait | Vérifier, remettre en contexte, nuancer |
-| 0,55 | Croisière | Transparence | Rien à vendre, rien à cacher |
+| 0,28 | Dans le nuage | Le problème | Sur les réseaux, on y voit mal |
+| 0,49 | Les parhélies | Ce qu'on fait | Vérifier, remettre en contexte, nuancer |
+| 0,6 | Soleil au plus haut | Transparence | Rien à vendre, rien à cacher |
 | 0,72 | Heure dorée | S'en servir | Demander une vérification, l'extension (et la traînée d'un autre avion) |
-| 0,885 | Paris la nuit | Internet | La beauté d'Internet |
+| 0,9 | Paris la nuit | Internet | La beauté d'Internet |
 | 1 | Garé | Arrivée | Détachez votre ceinture, et deux boutons |
 
 ---
@@ -42,7 +42,7 @@ en ligne publique (un texte qui décrit un fonctionnement doit être vrai).
 - Variante proposée : « Rumeurs, chiffres sortis de nulle part, vidéos coupées au mauvais moment : Seat 12A vérifie ce
   qui circule sur X et le remet dans son contexte. »
 
-## 2. Le problème (f = 0,265, dans le nuage)
+## 2. Le problème (f = 0,28, dans le nuage)
 
 Le brouillard est la métaphore : on n'y voit rien.
 
@@ -54,7 +54,7 @@ Le brouillard est la métaphore : on n'y voit rien.
 - Source affichée et liée : Vosoughi, Roy et Aral, « The spread of true and false news online », *Science*, 2018
   (MIT, environ 126 000 rumeurs diffusées sur Twitter entre 2006 et 2017), doi:10.1126/science.aap9559.
 
-## 3. Ce qu'on fait (f = 0,455, la percée)
+## 3. Ce qu'on fait (f = 0,49, les parhélies)
 
 Le moment le plus lumineux de la page porte le concept. Un pictogramme par point (loupe, photo légendée, balance).
 
@@ -64,7 +64,7 @@ Le moment le plus lumineux de la page porte le concept. Un pictogramme par point
 - Apporter de la nuance : « Beaucoup de posts ne sont ni complètement vrais ni complètement faux. On explique ce qui est sûr et ce
   qui ne l'est pas. »
 
-## 4. Transparence (f = 0,55)
+## 4. Transparence (f = 0,6)
 
 - **Gratuit, et tout est public.**
 - Gratuit : « Pas de pub, pas d'abonnement, rien à acheter. »
@@ -92,7 +92,7 @@ qui l'illustrait est passée sur « Un doute ? ».
 À valider : le chatbot dit-il vraiment quand il ne sait pas ? Que fait exactement l'extension (repère les posts ?
 affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
 
-## 7. Internet (f = 0,885, Paris la nuit)
+## 7. Internet (f = 0,9, Paris la nuit)
 
 - **On aime Internet.**
 - « Wikipédia, les cours en ligne gratuits, les archives ouvertes : on n'a jamais eu autant de savoir à portée de
@@ -106,6 +106,8 @@ affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
 - Boutons : Ajouter l'extension · Voir les fact-checks. « Redécoller » est passé dans le pied de page.
 - Remplace « Une erreur dans une case ? Dites-le-nous » (refusé par Jules le 25/11/2026). Le signalement d'erreurs
   pourra revenir dans la page Méthode ou sur chaque fact-check.
+
+Chaque texte est centré à l'écran au moment où sa scène est à son maximum (voir `decisions.md`).
 
 ## Ailleurs
 

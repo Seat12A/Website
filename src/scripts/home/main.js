@@ -91,7 +91,13 @@ function frame(now) {
 
   const S = sky(f), ft = altFt(f), hz = horizon(f), tl = tilt(f);
   const portrait = innerWidth < innerHeight * .9;
-  const sun = sunPosition(f, hz, S.sunSize, portrait);
+  /* on a portrait screen, zoom out so that we see as much landscape across as on a wide screen (otherwise the scene,
+     made for wide screens, shows a thin, enlarged slice and its clouds look like stacked bands) */
+  const zoom = portrait ? clamp(innerHeight / innerWidth, 1, 1.8) : 1;
+  /* screen height (0..1 from the bottom) to scene height: the horizon and the top of the sea of clouds stay at the same
+     height on screen as on a wide screen, only the field of view widens */
+  const toScene = (y) => .5 + (y - .5) * zoom;
+  const sun = sunPosition(f, hz, S.sunSize, portrait, zoom);
   const time = reducedMotion ? 40 : (now - t0) / 1000;
   if (!reducedMotion && f > .053 && f < .5) drift += dt * 70;
   if (f <= .053) drift = 0;
@@ -104,7 +110,7 @@ function frame(now) {
     renderer.draw((gl, U) => {
       const { gw, gh } = renderer.size;
       gl.uniform1f(U.uTime, time); gl.uniform3fv(U.uPal, S.pal.flat());
-      gl.uniform1f(U.uSea, S.sea); gl.uniform1f(U.uFog, S.fog); gl.uniform1f(U.uCover, S.cover);
+      gl.uniform1f(U.uSea, toScene(S.sea)); gl.uniform1f(U.uFog, S.fog); gl.uniform1f(U.uCover, S.cover);
       gl.uniform1f(U.uTop, S.top); gl.uniform1f(U.uBot, S.bot); gl.uniform1f(U.uLo, S.lo); gl.uniform1f(U.uHi, S.hi);
       gl.uniform1f(U.uGlow, S.glow); gl.uniform1f(U.uRays, S.rays); gl.uniform1f(U.uStars, S.stars);
       gl.uniform1f(U.uOffY, (ft / 35000) * 7);
@@ -112,19 +118,19 @@ function frame(now) {
       gl.uniform3fv(U.uSun, sun); gl.uniform2fv(U.uWing, S.wing);
       gl.uniform1f(U.uGround, f < GROUND_END || f > NIGHT_START ? 1 : 0);
       gl.uniform1f(U.uH, Math.max(4, ft / 3.281)); gl.uniform1f(U.uTravel, travel(f, drift));
-      gl.uniform1f(U.uTilt, (tl * Math.PI) / 180); gl.uniform1f(U.uHorizon, hz);
+      gl.uniform1f(U.uTilt, (tl * Math.PI) / 180); gl.uniform1f(U.uHorizon, toScene(hz));
       gl.uniform1f(U.uNight, groundLights(f)); gl.uniform1f(U.uCity, f > CITY_START ? 1 : 0);
       gl.uniform1f(U.uStrobe, strobe(now, reducedMotion)); gl.uniform1f(U.uWingS, clamp(gw / gh / 1.4, .5, 1));
       gl.uniform1f(U.uBlink, now % 1500 < 700 ? 1 : 0);
       gl.uniform1f(U.uGlint, .12 + (hz - .30) * .5 + tl * .01 + Math.sin(time * .25) * .02);
       gl.uniform4fv(U.uRwy, RUNWAYS);
-      const mo = moonPosition(f, hz); gl.uniform4fv(U.uMoon, mo[0]); gl.uniform3fv(U.uMoonL, mo[1]);
+      const mo = moonPosition(f, toScene(hz)); gl.uniform4fv(U.uMoon, mo[0]); gl.uniform3fv(U.uMoonL, mo[1]);
       gl.uniform1f(U.uMilky, f > .8 ? smooth(clamp((f - .86) / .05)) : 0);
       gl.uniform1f(U.uFlightX, f * 55);                                                 /* the decor moves with the scroll */
       gl.uniform1f(U.uFogDir, f < .3 ? 1 : f < .82 ? -1 : 1);
       const me = meteor(now, S.stars, gw / gh); gl.uniform4fv(U.uMet, me[0]); gl.uniform2fv(U.uMet2, me[1]);
       const c = calmRect(); gl.uniform4f(U.uCalm, c[0], c[1], c[2], c[3]); gl.uniform1f(U.uCalmK, c[4]);
-      gl.uniform1f(U.uHalo, halo(f)); gl.uniform2fv(U.uContrail, contrail(f)); gl.uniform1f(U.uNet, network(f)); gl.uniform1f(U.uBeam, beacon(f));
+      gl.uniform1f(U.uHalo, halo(f)); gl.uniform2fv(U.uContrail, contrail(f)); gl.uniform1f(U.uNet, network(f)); gl.uniform1f(U.uBeam, beacon(f)); gl.uniform1f(U.uZoom, zoom);
     });
   }
   if (!renderer) {

@@ -76,9 +76,21 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
 - **Boutons** (25/11/2026) : au survol, le bouton passe en bleu ciel pâle et un reflet en pixels (une bande épaisse et
   une fine, en escalier sur la grille) le traverse par crans, en boucle. Kitsch, voulu. Les petites étoiles qui
   clignotent aux coins ont été proposées et **refusées**.
-- **Animation d'arrivée** (25/11/2026) : un volet de hublot en pixel art couvre l'écran au chargement, se décroche,
-  puis remonte et découvre la piste (`intro.js`, environ 1,3 s). Pas de fondu, pas de flou, pas de décalage entre les
-  textes : tout est découvert ensemble par le volet. Rien si le visiteur demande moins d'animations.
+- **Animation d'arrivée** (25/11/2026) : la scène apparaît cellule par cellule, en tramage (Bayer 8×8), en s'ouvrant
+  depuis le milieu de l'écran, avec un liseré de cellules plus claires au front (`intro.js`, environ 1,2 s). Abstraite
+  exprès. Refusé : un volet de hublot qui remontait (« comme une porte de garage, un truc concret »). Pas de fondu,
+  pas de flou, pas de décalage entre les textes. Rien si le visiteur demande moins d'animations.
+- **Chaque texte est pile au milieu de l'écran quand sa scène est à son maximum** (Jules, 25/11/2026) : hero au sol
+  (0), « on y voit mal » au cœur du nuage (0,28), « Ce que fait Seat 12A » quand les parhélies sont pleinement
+  visibles (0,49), « Gratuit… » soleil au plus haut (0,6), « Un doute ? » traînée développée (0,72), « On aime
+  Internet » réseau de Paris au maximum (0,9), arrivée garée (1). Plus aucun décalage `data-y`. Pour que ça tienne :
+  à l'arrivée l'horizon descend à 0,22 (le texte passe au-dessus des bâtiments) ; à 0,9 il monte à 0,73 (le centre
+  lumineux de Paris passe au-dessus du texte) ; la ville est un peu adoucie derrière le texte lu.
+- **Téléphone** (25/11/2026, « tout est bizarre, les nuages se chevauchent ») : la scène, faite pour un écran large,
+  n'en montrait qu'une tranche agrandie (nuages en bandes empilées, pixels énormes). Désormais, en portrait, le champ
+  de vision s'élargit (`uZoom`, jusqu'à 1,8) en gardant l'horizon et la mer de nuages à la même hauteur d'écran, et
+  les cellules font 2 px CSS au lieu de 3 (environ 195 de large). Le soleil monte juste après la sortie des nuages
+  (0,44–0,47) et reste au-dessus des textes en croisière.
 
 ## Ce qui fait « IA » (refusé, ne pas remettre)
 

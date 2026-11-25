@@ -27,6 +27,7 @@ uniform vec4 uRwy; uniform vec4 uCalm; uniform float uCalmK;
 uniform vec4 uMoon; uniform vec3 uMoonL; uniform float uMilky; uniform vec4 uMet; uniform vec2 uMet2;
 uniform float uFogDir; uniform float uFlightX;
 uniform float uHalo; uniform vec2 uContrail; uniform float uNet; uniform float uBeam;
+uniform float uZoom;                                     /* > 1 on portrait screens: a wider field of view */
 const float F = 1.2;                                     /* focal length of the camera (screen height = 1) */
 const float B[16] = float[16](0.,8.,2.,10.,12.,4.,14.,6.,3.,11.,1.,9.,15.,7.,13.,5.);
 float bay(vec2 fc){ return (B[int(mod(fc.y, 4.)) * 4 + int(mod(fc.x, 4.))] + .5) / 16.; }
@@ -60,6 +61,8 @@ const float LE0 = 1., LEK = .465, TE0 = -5., TEK = .2, Y0 = -2.5, DH = .087, SPA
 const float TIP_LE = LE0 - SPAN * LEK, TIP_TE = TE0 - SPAN * TEK, TIP_Y = Y0 + SPAN * DH;
 /* where the strobe sits on screen (uv), at the top of the winglet */
 vec2 strobeUv(float asp){ float zw = SPAN + .15; return vec2(.5 + (TIP_LE - 2.2) * F / zw * uWingS / asp, .42 + (TIP_Y + 2.4) * F / zw * uWingS); }
+/* the calm zone of the text being read (set in main(), used by the ground to quiet the city behind the text) */
+float gCalm = 0.;
 float G(float t){ return .02 + t * .40; }                 /* ground: the bottom of the ladder */
 float Bt(float t){ return .06 + t * .46; }                /* buildings: the middle of the ladder */
 /* a row of point lights along x, without halo: one sharp dot each */
@@ -137,7 +140,7 @@ float ground(vec2 w, float fwx, float fwz, out float emit, out vec3 ecol, out fl
         /* the network, as an atmosphere: slow, wide waves of light leave the centre and cross the city (about one every
            ten seconds); where a wave passes the city glows a little brighter, then it settles */
         float wave = uNet * pow(.5 + .5 * sin((rad - uTime * 420.) / 700.), 3.);
-        float a = (blocks * .68 + streets * .16 + avenues * .7 + quays * .45) * edge * (.85 + .4 * wave);
+        float a = (blocks * .68 + streets * .16 + avenues * .7 + quays * .45) * edge * (.85 + .4 * wave) * (1. - gCalm * .7);
         /* a small warm ramp (the one accent, at a few intensities), dithered between neighbours like the tones */
         float q = clamp(a, 0., 1.) * 4., qi = floor(q); qi += step(bay(gl_FragCoord.xy), q - qi);
         if (qi > .5) {
@@ -281,7 +284,7 @@ bool building(float sx, float sy, float base, out float bt, out float zb, out fl
 void main(){
   vec2 fc = gl_FragCoord.xy, uv = fc / uRes; float asp = uRes.x / uRes.y;
   float b = bay(fc);
-  vec2 cc = vec2((uv.x - .5) * asp, uv.y - .5);
+  vec2 cc = vec2((uv.x - .5) * asp, uv.y - .5) * uZoom;
   float cs = cos(uTilt), sn = sin(uTilt);
   vec2 r = vec2(cs * cc.x - sn * cc.y, sn * cc.x + cs * cc.y);
   float sx = r.x, sy = r.y + .5 - uHorizon, ry = r.y + .5;   /* sy: height above the horizon */
@@ -291,6 +294,7 @@ void main(){
   vec2 cc0 = (uCalm.xy + uCalm.zw) * .5, chs = max((uCalm.zw - uCalm.xy) * .5, vec2(.01));
   float ce = length((uv - cc0) / chs);
   float calm = uCalmK * (1. - smoothstep(.55, 1.35, ce));
+  gCalm = calm;
 
   /* ---- sky ---- */
   float T = gnd ? mix(uBot, uTop, clamp(sy * 2.8, 0., 1.)) : mix(uBot, uTop, ry);
@@ -368,12 +372,13 @@ void main(){
     T = mix(T, mix(uLo, uHi, .55 + .3 * nf), cf * .7);
   }
   if (!gnd || sy > 0.) T = mix(T, uTop + .06, calm * .12);
-  float cX = -.3 + uContrail.x * (asp + .6);                                           /* where the other plane is */
+  float cX = .5 * asp - (.5 * asp * uZoom + .3) + uContrail.x * (asp * uZoom + .6);  /* where the other plane is */
+  float cY = .5 + .33 * uZoom;                                                         /* its path, near the top of the screen */
   if (uContrail.y > .01 && !gnd) {
     /* another airliner crosses far above. Its contrail stays where it was left in the air: every piece ages in place
        (it widens, wavers and spreads into a veil) while the plane moves on. So its shapes are tied to the sky (they
        only drift a little with our own motion), never to the plane: otherwise it looks like a banner being towed. */
-    float py = .83 - .023 * (p.x + .3), age = cX - p.x, pr = p.y - py;
+    float py = cY - .023 * (p.x + .3), age = cX - p.x, pr = p.y - py;
     if (age > .015) {
       float ax = p.x + uFlightX * .006;
       float wd = .002 + age * .028, wav = (fbm3(vec2(ax * 6., 3.) + vec2(0., uTime * .008)) - .5) * age * .1;
@@ -381,7 +386,7 @@ void main(){
       float dn = exp(-cd * cd) * exp(-age * .75) * (.7 + .6 * fbm3(vec2(ax * 14., pr * 120.) + vec2(0., uTime * .02)));
       T = mix(T, uHi - .14, clamp(dn, 0., 1.) * uContrail.y * (1. - calm * .5));
     }
-    if (length((p - vec2(cX, .83 - .023 * (cX + .3))) * uRes.y) < 1.3) T = uTop + .35;  /* the plane itself: one glint */
+    if (length((p - vec2(cX, cY - .023 * (cX + .3))) * uRes.y / uZoom) < 1.3) T = uTop + .35;  /* the plane itself: one glint */
   }
   float emit = 0.; vec3 ecol = vec3(0.);
   float occZ = 1e9;                                     /* distance of what is drawn on the ground (hides the beacon) */
@@ -485,8 +490,8 @@ void main(){
       vec3 P = src + dir * L;
       float g = .55, cosT = dot(dir, normalize(-P));                                     /* beam vs. line of sight, there */
       float phase = pow(1. + g * g, 1.5) / pow(1. + g * g - 2. * g * cosT, 1.5);        /* 1 when seen sideways */
-      float wW = 2.5 + L * .009, hw = wW * F * iz, cell = 1. / uRes.y;
-      float sub = min(1., hw / (.7 * cell)); hw = max(hw, .7 * cell);
+      float wW = 2.5 + L * .009, hw = wW * F * iz, cell = uZoom / uRes.y;
+      float sub = min(1., hw / (.7 * cell)); hw = clamp(hw, .7 * cell, .06);              /* capped when it comes at us */
       float I = (exp(-pow(pe / hw, 2.)) + .16 * exp(-pow(pe / (hw * 6.), 2.)))
               * pow(sub, .6) * pow(2.5 / wW, .35) * min(phase, 7.) * 1.7 * exp(-L / 9000.)
               * (.75 + .5 * fbm3(vec2(L / 600., 2.)))
@@ -526,7 +531,7 @@ void main(){
        the next), and the billows of the cloud show for an instant. That is why pilots may switch them off in clouds: they dazzle. Faint in a white daytime cloud, strong
        in a dark one, as in reality. */
     if (uStrobe > 0.) {
-      vec2 su = strobeUv(asp), dl = p - vec2(su.x * asp, su.y);
+      vec2 su = strobeUv(asp), dl = p - vec2((su.x - .5) * asp * uZoom + .5 * asp, (su.y - .5) * uZoom + .5);
       float dist = length(dl);
       float shafts = .78 + .5 * pow(vn(vec2(atan(dl.y, dl.x) * 4. + 17., floor(uTime / 1.4) * 3.1)), 2.);
       float billow = fbm(p * vec2(2.6, 3.8) + vec2(uFlightX * 1.6 + uTime * .09, uOffY * 2.));

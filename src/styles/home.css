@@ -95,8 +95,8 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 .ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; margin-top: 6px; }
 .hero { width: min(980px, calc(100% - 32px)); }
 
-.points { display: grid; gap: 18px; margin-top: 4px; width: min(540px, 100%); text-align: left; }
-.points > div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; }
+.points { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 4px; width: min(680px, 100%); text-align: left; }
+.points > div { display: grid; gap: 10px; align-content: start; }
 .points h3 { margin: 0 0 4px; font: 500 18px/1.2 var(--sans); letter-spacing: -.02em; }
 .points p { font-size: 15px; }
 .points .picto { margin: 2px 0 0; }
@@ -115,9 +115,9 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 .ask input::placeholder { color: rgba(255, 255, 255, .55); }
 .note { font-size: 14px; color: var(--soft); max-width: 52ch; text-wrap: pretty; }
 
-/* ---------- Before the script runs (html.js without .flying): only the background, the colour of the closed window
-   blind. If the script never runs (html.static, or no JavaScript at all), the texts are shown as a plain page. ---------- */
-html.js:not(.flying):not(.static) body { background: #1C1F48; }
+/* ---------- Before the script runs (html.js without .flying): only the background, the darkest tone of the first
+   scene, the one the arrival animation opens from. If the script never runs (html.static, or no JavaScript at all), the texts are shown as a plain page. ---------- */
+html.js:not(.flying):not(.static) body { background: #050817; }
 html.js:not(.flying):not(.static) :is(.sec, .nav, .alt, .snd) { visibility: hidden; }
 html.static #track, html:not(.js) #track { height: auto; padding: 120px 0 40px; }
 html.static .sec, html:not(.js) .sec {
@@ -130,7 +130,7 @@ html.static :is(.picto, #intro), html:not(.js) :is(.picto, #intro) { display: no
 html.static .foot-gap, html:not(.js) .foot-gap { height: 40px; }
 html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
 
-/* ---------- The window blind on arrival (intro.js) ---------- */
+/* ---------- The arrival: the scene appears cell by cell (intro.js) ---------- */
 #intro { position: fixed; left: 0; top: 0; z-index: 8; pointer-events: none; image-rendering: pixelated; image-rendering: crisp-edges; }
 
 /* ---------- Altimeter ---------- */
@@ -200,7 +200,8 @@ html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
   .rules { grid-template-columns: 1fr; gap: 16px; }
   .rules > div { grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 2px; align-items: start; }
   .rules .picto { grid-row: span 2; margin: 0; }
-  .points { gap: 14px; }
+  .points { grid-template-columns: 1fr; gap: 14px; width: min(540px, 100%); }
+  .points > div { grid-template-columns: auto minmax(0, 1fr); gap: 16px; }
   .points p { font-size: 14px; }
   .sec p { font-size: 16px; }
   .ask { flex-direction: column; }

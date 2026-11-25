@@ -73,11 +73,17 @@ ne nomment pas encore ces phénomènes : à décider (une ligne discrète pourra
 - Paris : plus de points jaunes, une nappe de lumière chaude continue (voir `decisions.md`).
 - Faisceau de la tour Eiffel : tourne avec le défilement, physique refaite, caché par ce qui est devant.
 
+## Textes au bon moment, nouvelle arrivée, téléphone
+
+- Chaque texte passe pile au milieu de l'écran quand sa scène est à son maximum (positions dans `decisions.md`).
+- L'arrivée n'est plus un volet (« porte de garage ») : la scène apparaît cellule par cellule, en tramage, depuis le
+  milieu.
+- Téléphone : champ de vision élargi (`uZoom`), cellules plus fines, soleil au-dessus des textes, faisceau plafonné.
+- Question restée ouverte : Jules a commencé « fais un truc pour que si on défile trop vite… » sans finir.
+
 ## Limites connues
 
-- Sur téléphone, le relief de la mer de nuages remonte jusqu'au milieu de l'écran : le bas de « Nuancer » et de « Les
-  sources, toujours » passe sur des nuages clairs, moins lisible. Pistes : raccourcir encore ces textes, ou baisser le
-  relief de la mer de nuages en mode portrait (toucherait au décor, à décider avec Jules).
+- Téléphone : réglé par l'élargissement du champ de vision (la mer de nuages reste en bas de l'écran).
 - Le volet joue à chaque chargement de la page, même en revenant d'un autre onglet : à limiter à la première visite
   si ça lasse.
 

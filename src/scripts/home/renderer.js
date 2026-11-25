@@ -16,13 +16,14 @@ void main(){ o = texelFetch(uTex, ivec2(floor((gl_FragCoord.xy + vec2(0., uOffY)
 const UNIFORMS = ['uRes', 'uTime', 'uPal', 'uSea', 'uFog', 'uCover', 'uTop', 'uBot', 'uLo', 'uHi', 'uGlow', 'uRays', 'uStars',
   'uOffY', 'uFlash', 'uSun', 'uWing', 'uGround', 'uH', 'uTravel', 'uTilt', 'uHorizon', 'uNight', 'uCity', 'uStrobe', 'uWingS',
   'uBlink', 'uGlint', 'uRwy', 'uCalm', 'uCalmK', 'uMoon', 'uMoonL', 'uMilky', 'uMet', 'uMet2', 'uFogDir', 'uFlightX',
-  'uHalo', 'uContrail', 'uNet', 'uBeam'];
+  'uHalo', 'uContrail', 'uNet', 'uBeam', 'uZoom'];
 
 /** Size of a cell: in device pixels (a whole number, so squares stay sharp) and in CSS pixels. Shared with the
  *  pixel-art drawn over the scene (pictograms, button glint, the window blind), so it uses the same grid. */
 export function cellSize() {
   const w = innerWidth, hgt = innerHeight, dpr = Math.min(devicePixelRatio || 1, 3);
-  const cellCss = Math.max(3, Math.round(Math.max(w, hgt * 1.4) / 480));
+  /* phones: cells of 2 CSS px (about 195 across) rather than 3 (130 across, far too coarse on a narrow screen) */
+  const cellCss = Math.max(w < 600 ? 2 : 3, Math.round(Math.max(w, hgt * 1.4) / 480));
   const dev = Math.max(1, Math.round(cellCss * dpr));
   return { dev, css: dev / dpr, dpr };
 }
