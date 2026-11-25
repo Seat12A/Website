@@ -95,7 +95,7 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 .ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; margin-top: 6px; }
 .hero { width: min(980px, calc(100% - 32px)); }
 
-.points { display: grid; gap: 18px; margin-top: 4px; }
+.points { display: grid; gap: 18px; margin-top: 4px; width: min(540px, 100%); text-align: left; }
 .points > div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; }
 .points h3 { margin: 0 0 4px; font: 500 18px/1.2 var(--sans); letter-spacing: -.02em; }
 .points p { font-size: 15px; }
@@ -113,7 +113,7 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
   border: 1px solid rgba(255, 255, 255, .22); border-radius: 99px; padding: 14px 18px;
 }
 .ask input::placeholder { color: rgba(255, 255, 255, .55); }
-.note { font-size: 14px; color: var(--soft); }
+.note { font-size: 14px; color: var(--soft); max-width: 52ch; text-wrap: pretty; }
 
 /* ---------- Before the script runs (html.js without .flying): only the background, the colour of the closed window
    blind. If the script never runs (html.static, or no JavaScript at all), the texts are shown as a plain page. ---------- */
@@ -192,7 +192,6 @@ html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
 
 @media (max-width: 760px) {
   .sec.left { left: 50%; justify-items: center; text-align: center; }
-  .points > div { text-align: left; }
   html.static .sec.left, html:not(.js) .sec.left { margin-left: auto; }
   .sec.left .ctas, .sec.left .ask { justify-content: center; }
   .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }

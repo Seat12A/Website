@@ -37,6 +37,8 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   (un croissant descendant s'est couché avant le soleil). Détails : `accueil.md` §4.
 - **Typographie** : Geist (texte) et Geist Mono (altimètre). **Police normale** pour les titres (le titre dessiné en
   pixels a été refusé). **Titres d'une seule couleur. Jamais de texte tout en majuscules.**
+- **Textes toujours centrés** (25/11/2026) : à gauche, ils passaient sur l'aile et se lisaient mal. La classe `.left`
+  existe encore dans le code mais n'est plus utilisée.
 - **Responsive** : sur téléphone, les textes sont centrés ; le soleil reste au-dessus du texte qu'on lit et ne monte
   ou ne se couche qu'entre deux textes.
 - **Les textes sont illustrés par le décor lui-même** (25/11/2026), avec des phénomènes réels qu'on voit depuis un
@@ -47,10 +49,19 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
     les couper en nuage : ils éblouissent) ;
   - en croisière (« les études… comment elles se propagent ») : un autre avion passe plus haut, sa **traînée**
     s'élargit et se défait, son **ombre** tombe sur la mer de nuages ;
-  - au-dessus de Paris (« Internet reste une merveille ») : **le réseau**, des fils de lumière en pointillés le long
-    de certaines rues, des éclats qui courent du centre vers l'extérieur ;
+  - au-dessus de Paris (« On aime Internet ») : **le réseau**, rendu comme une ambiance : de grandes vagues de lumière
+    lentes partent du centre et traversent la ville (plus de fenêtres allumées, plus lumineuses, puis ça retombe).
+    Refusé : des pointillés et des éclats le long des rues (« trop précis, pas une ambiance ») ;
   - à l'approche : le **« lapin »**, l'éclair qui court sur les feux d'approche d'une piste parallèle.
+  - **le faisceau de la tour Eiffel**, refait : un vrai faisceau en 3D vu en perspective (long sur le côté, court
+    quand il vient vers nous ou s'éloigne), qui s'élargit et pâlit avec la distance, inégal dans la brume, plus
+    lumineux quand il vient vers nous, et un éclat quand il balaie l'avion. Toujours un seul faisceau.
   Essayé et retiré : le front de la vague du réseau en anneau plein (un aplat orange à l'horizon, laid).
+- **Dans le brouillard, l'aile disparaît aussi** (Jules) : d'autant plus vers le bout (17 m) qu'à l'emplanture (2 m).
+  Le flash du stroboscope est surtout une grande lueur diffuse autour du bout d'aile, avec des faisceaux à peine
+  marqués (une première version en étoile de rayons faisait « soleil dessiné »).
+- **La traînée est accrochée au ciel, pas à l'avion** : chaque morceau vieillit sur place pendant que l'avion avance.
+  Calculée par rapport à l'avion, elle avançait d'un bloc avec lui, « comme une banderole tirée par un avion ».
 - **Petites illustrations à côté des textes : refusées** (25/11/2026). Essayé : un post qui se propage, une note de
   contexte qui se déplie, un radar, une fenêtre de navigateur, un panneau ceinture (petits dessins pixel de ~200 px).
   Jules : « j'aime pas les petites illustrations comme ça, pas du tout ; pas un truc semi-petit : soit un truc

@@ -53,6 +53,16 @@ avion et son ombre sur la mer de nuages, réseau de lumière dans les rues de Pa
 Détails : `accueil.md` (§ 3), `decisions.md`. Vérifiés en captures (le flash forcé le temps d'une capture). Les textes
 ne nomment pas encore ces phénomènes : à décider (une ligne discrète pourrait les nommer et apprendre quelque chose).
 
+## Retours de Jules sur le décor, et corrections
+
+- Textes : plus jamais à gauche (ils passaient sur l'aile), tous centrés. Textes réécrits plus simplement, sans
+  formules toutes faites (« un post vous fait bondir », « Internet reste une merveille »… refusés) : `textes.md`.
+- Brouillard : l'aile disparaît dans le nuage, surtout vers le bout ; le flash est une lueur diffuse réaliste.
+- Traînée : accrochée au ciel au lieu d'avancer d'un bloc avec l'avion (« une banderole »).
+- Paris : les pointillés du réseau, trop précis, remplacés par des vagues de lumière lentes sur la ville.
+- Faisceau de la tour Eiffel : refait en vraie 3D (voir `accueil.md`). Il était aussi beaucoup trop faible pour se
+  voir ; corrigé, et le sommet de la tour ne disparaît plus au loin.
+
 ## Limites connues
 
 - Sur téléphone, le relief de la mer de nuages remonte jusqu'au milieu de l'écran : le bas de « Nuancer » et de « Les

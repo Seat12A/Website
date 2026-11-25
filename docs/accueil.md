@@ -116,14 +116,25 @@ Une ambiance, pas des formes précises : le pixel art ne permet pas le détail.
 - **Halo et parhélies** (`uHalo`, dans le ciel) : anneau à 0,485 hauteur d'écran du soleil (tan 22° × F), ciel un peu
   plus sombre juste à l'intérieur, deux taches claires à hauteur du soleil avec une traîne vers l'extérieur, une ligne
   très pâle entre elles ; le tout tacheté par un bruit (le voile de cristaux). La mer de nuages passe devant.
-- **Flash dans le nuage** (`uStrobe` dans le bloc du brouillard) : pendant le double éclat, le brouillard tire vers le
-  ton 0,97 autour du bout d'aile (et un peu partout). Plus visible dans le nuage sombre de la descente que dans le
-  nuage clair de la montée, comme en vrai.
-- **Traînée** (`uContrail`, ciel de croisière) : l'avion (un point clair) traverse en haut de l'écran ; derrière lui,
-  la traînée commence fine, s'élargit, ondule et pâlit avec l'âge. **Son ombre** : une bande sombre aplatie sur la mer
-  de nuages, décalée.
-- **Réseau de Paris** (`uNet`, dans `ground()`) : environ une rue sur deux porte des pointillés lumineux et des éclats
-  qui s'éloignent du centre ; il s'étend avec `uNet`. Seulement de près (`near`), sinon les rues remplissent tout.
+- **Flash dans le nuage** (`uStrobe` dans le bloc du brouillard) : pendant le double éclat, une grande lueur diffuse
+  part du stroboscope (`strobeUv`, en haut du winglet), le relief du nuage ressort, quelques faisceaux à peine marqués
+  changent d'un éclat à l'autre. Plus visible dans le nuage sombre de la descente que dans le nuage clair de la
+  montée, comme en vrai.
+- **L'aile dans le brouillard** : le ton de l'aile est mélangé au ton du brouillard (`fogT`), d'autant plus que la
+  partie est loin (`1 - exp(-z / 6)` : l'emplanture reste, le bout disparaît) ; le stroboscope éclaire le bout d'aile ;
+  le feu rouge est atténué.
+- **Traînée** (`uContrail`, ciel de croisière) : l'avion (un point clair) traverse en haut de l'écran sur une
+  trajectoire fixe ; derrière lui, la traînée commence fine, s'élargit, ondule et pâlit avec l'âge (`age = cX - p.x`).
+  Ses formes (ondulations, grain) dépendent de la position dans le ciel, pas de la distance à l'avion : elles restent
+  sur place quand l'avion avance. **Son ombre** : une bande sombre aplatie sur la mer de nuages, décalée.
+- **Réseau de Paris** (`uNet`, dans `ground()`) : une vague `pow(0,5 + 0,5 sin((rad - t·420) / 700), 3)` part du centre
+  (une toutes les dix secondes environ) ; elle augmente la densité et l'éclat des lumières de la ville et éclaircit un
+  peu les rues. Aucun trait, aucun point dessiné en plus.
+- **Faisceau de la tour Eiffel** (après les bâtiments) : une droite en 3D depuis le sommet (324 m), presque
+  horizontale, qui tourne (`uTime × 0,85`), projetée avec la caméra ; la distance en mètres le long du faisceau est
+  retrouvée par interpolation en perspective (`iz`). Largeur `3 m + 1,2 %` de la distance, atténuation sur 6,5 km,
+  brume (`fbm3`), plus lumineux vers nous (`dot(dir, toCam)`), éclat de la source et de l'aile quand il nous balaie.
+  Le sommet de la tour fait au moins une cellule de large, pour que le faisceau parte bien de quelque chose.
 - **Lapin** (dans `ground()`, avant l'aéroport) : piste parallèle à 1 km (z 978–1022), feux d'approche sur 900 m
   avant le seuil, une barre transversale à 300 m, seuil vert ; un éclair blanc parcourt les 30 postes deux fois par
   seconde vers le seuil. Visible vers f = 0,89–0,93.
