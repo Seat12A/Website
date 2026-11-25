@@ -24,13 +24,14 @@
   Paris la nuit ; « Vous pouvez détacher votre ceinture » à l'arrivée. Détail et points à valider : `textes.md`.
 - « Case » remplacé par « fact-check » / « vérification » partout pour les visiteurs (menu, boutons, pied de page).
   « Association » retiré partout (page, description, pied de page, `CLAUDE.md`).
-- **Illustrations** (`art.js`, nouveau) : un post qui se propage, une note de contexte qui se déplie, un radar, une
-  fenêtre de navigateur avec l'extension, le panneau ceinture. Pixel art sur la grille de la scène (`--cell`), tons de
-  la scène, animées par le défilement. Nouveaux pictogrammes : code, livre, chaîne, photo légendée.
+- **Illustrations** : de petits dessins pixel à côté des textes (un post qui se propage, une note de contexte, un
+  radar, un navigateur, un panneau ceinture) ont été faits puis **retirés à la demande de Jules** (« soit un truc
+  impressionnant mais vraiment magnifique, soit rien » ; voir `decisions.md`). Restent de nouveaux pictogrammes 16×16 :
+  code, livre, chaîne, photo légendée.
 - **Boutons** : fond bleu ciel pâle et reflet en escalier de pixels qui traverse le bouton par crans, en boucle.
 - **Volet d'arrivée** (`intro.js`, nouveau) : le volet du hublot couvre l'écran, se décroche, remonte et découvre la
   piste.
-- **Son** : le « ding » de la ceinture revient, seulement à l'arrivée et si le son est allumé.
+- **Son** : le « ding » de la ceinture revient, seulement quand l'avion est garé et si le son est allumé.
 - **Bug du chargement** : reproduit (c'est l'état de la page avant que le script tourne : script lent ou en échec).
   Corrigé : on ne voit que le fond avant le script ; sans script au bout de 6 s, les textes s'affichent en page simple.
   La boucle d'animation résiste aux erreurs et à la perte du contexte WebGL.
@@ -42,7 +43,7 @@
 - `npm run build` sans erreur. Captures bureau (1280×800) et téléphone (390×844) de chaque texte, aucune erreur
   dans la console. Volet image par image, reflet des boutons image par image, page sans JavaScript, chargement avec un
   script retardé de 4 s.
-- Non vérifié : la fluidité réelle (volet, reflet, radar) et le ding : à regarder et écouter sur une vraie machine.
+- Non vérifié : la fluidité réelle (volet, reflet) et le ding : à regarder et écouter sur une vraie machine.
 
 ## Limites connues
 
@@ -56,4 +57,6 @@
 
 - Valider ce que les textes affirment (`textes.md`) : Tower et l'extension publics ? où est la méthode ? que fait
   l'extension ? Créer la page Méthode avant d'ouvrir la bêta.
-- Jules : regarder le volet, le reflet des boutons et les illustrations à l'œil ; écouter le ding.
+- Jules : regarder le volet et le reflet des boutons à l'œil ; écouter le ding.
+- Si on veut une illustration, ce sera une seule, grande et soignée, de préférence dans la scène elle-même (voir les
+  pistes proposées à Jules en fin de session).

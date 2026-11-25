@@ -18,7 +18,7 @@ const UNIFORMS = ['uRes', 'uTime', 'uPal', 'uSea', 'uFog', 'uCover', 'uTop', 'uB
   'uBlink', 'uGlint', 'uRwy', 'uCalm', 'uCalmK', 'uMoon', 'uMoonL', 'uMilky', 'uMet', 'uMet2', 'uFogDir', 'uFlightX'];
 
 /** Size of a cell: in device pixels (a whole number, so squares stay sharp) and in CSS pixels. Shared with the
- *  pixel-art canvases drawn over the scene (illustrations, pictograms, the window blind), so they use the same grid. */
+ *  pixel-art drawn over the scene (pictograms, button glint, the window blind), so it uses the same grid. */
 export function cellSize() {
   const w = innerWidth, hgt = innerHeight, dpr = Math.min(devicePixelRatio || 1, 3);
   const cellCss = Math.max(3, Math.round(Math.max(w, hgt * 1.4) / 480));

@@ -19,7 +19,6 @@ Projet Astro, page `src/pages/index.astro`. La scène du vol est dessinée en We
 | `src/scripts/home/renderer.js` | WebGL2 : taille des cellules (`cellSize`, partagée), les deux passes. |
 | `src/scripts/home/scroll.js` | Piste du vol, placement des textes, Lenis, freinage, ressort avant le pied de page. |
 | `src/scripts/home/hud.js` | Altimètre, pictogrammes 16×16. |
-| `src/scripts/home/art.js` | Les illustrations en pixel art à côté des textes (post, note de contexte, radar, navigateur, panneau ceinture). |
 | `src/scripts/home/intro.js` | Le volet de hublot qui remonte à l'arrivée sur la page. |
 | `src/scripts/home/effects.js` | Étoiles filantes, stroboscope. |
 | `src/scripts/home/cabinSound.js` | Son d'ambiance (Web Audio), coupé par défaut, et le « ding » de la ceinture à l'arrivée. |
@@ -116,25 +115,14 @@ Pour régler : modifier `sunX`, `sunElevation` ou `sunElevationPortrait`, jamais
 - **Lenis** (`lerp: .1`) avec `virtualScroll` pour freiner : jusqu'à 28 % près d'un texte, 16 % avant le pied de page.
   Ressort qui ramène à l'arrivée si l'on s'arrête trop tôt. Au doigt : défilement natif, la scène suit avec un léger
   lissage.
-- `.wide` : une illustration à côté du texte (bureau, colonne de texte de 560 px max, l'illustration juste après pour
-  laisser la place au soleil à droite) ou dessous (téléphone). `.art.low` : illustration alignée en bas du texte.
 - `window.seat12a.goTo(f)` : saute à un point du vol (pour `tools/captures.js`).
 
-## 7. Illustrations, pictogrammes et volet (`art.js`, `hud.js`, `intro.js`)
+## 7. Pictogrammes et volet (`hud.js`, `intro.js`)
 
 - **Même grille que la scène** : `cellSize()` (`renderer.js`) donne la taille d'une cellule ; `main.js` la pose dans
-  la variable CSS `--cell`. Un canvas d'illustration de `W×H` pixels est affiché en `W×H` cellules
-  (`style="--w:W;--h:H"`), un pictogramme en 16×16 cellules, le volet en plein écran.
-- **Les tons de la scène** : chaque illustration est redessinée avec l'échelle de 8 tons du moment (`SCHEMES` dans
-  `art.js` : quels tons pour le fond, les traits, le texte, sur ciel sombre ou clair `.light`). Seule exception : la
-  lumière chaude du panneau ceinture allumé.
-- **Avancement** : `p` va de 0 (la section entre à l'écran) à 1 (elle est à sa place de lecture), calculé à partir de
-  la position de la section ; remonter fait reculer l'animation. Le radar utilise aussi le temps (le balayage tourne).
-  Une illustration n'est redessinée que si `p`, la palette ou le temps (radar) ont changé.
-- Illustrations : `feed` (un post qui se propage), `context` (une phrase soulignée, une note qui se déplie), `radar`
-  (des échos qui s'accumulent), `browser` (l'extension marque des posts), `belt` (panneau ceinture, éteint quand
-  f > 0,985, avec le ding si le son est allumé). Sur téléphone de moins de 900 px de haut, `context` et `browser` sont
-  masquées (sections déjà longues).
+  la variable CSS `--cell`. Un pictogramme s'affiche en 16×16 cellules, le reflet des boutons en 12×16, le volet en
+  plein écran. Les pictogrammes sont redessinés avec les tons de la scène.
+- Les petites illustrations à côté des textes ont été essayées puis refusées (voir `decisions.md`).
 - **Volet** (`intro.js`) : lattes (rainure, reflet, face), barre du bas plus épaisse, poignée. Il se décroche (4
   cellules), marque une pause, puis remonte. Son horloge avance image par image (au plus 1/15 s par image, à partir de
   la troisième) pour qu'une première image lente (compilation du shader) ne le fasse pas sauter. Durées : `HOLD`,
@@ -145,7 +133,7 @@ Pour régler : modifier `sunX`, `sunElevation` ou `sunElevationPortrait`, jamais
 - Un petit script dans `<head>` (`index.astro`) pose `html.js`. Tant que `main.js` n'a pas dessiné sa première image
   (`html.flying`), on ne voit que le fond, de la couleur du volet fermé : les sections ne s'empilent plus au centre.
 - Si `main.js` n'a pas démarré au bout de 6 s (bloqué, erreur), ou sans JavaScript du tout, `html.static` affiche les
-  textes comme une page simple, les uns sous les autres (fond uni, sans illustrations ni altimètre).
+  textes comme une page simple, les uns sous les autres (fond uni, sans pictogrammes ni altimètre).
 - La boucle d'animation se relance en premier à chaque image : une erreur dans une image ne fige plus les textes. Si le
   dessin WebGL échoue ou si le contexte est perdu, on passe au dégradé, et on reconstruit le rendu quand le contexte
   revient.

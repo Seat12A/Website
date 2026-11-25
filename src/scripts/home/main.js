@@ -11,7 +11,6 @@
  * html.flying. If the script never runs, a timer in index.astro shows the texts as a plain page (html.static).
  * The loop is guarded: an error in one frame, or a lost WebGL context, does not freeze the texts.
  */
-import { createArt } from './art.js';
 import { createCabinSound } from './cabinSound.js';
 import { createMeteors, strobe } from './effects.js';
 import { altFt, CITY_START, GROUND_END, groundLights, horizon, moonPosition, NIGHT_START, RUNWAYS, sky, sunPosition, tilt, travel } from './flightPlan.js';
@@ -46,9 +45,8 @@ const sections = Array.from(document.querySelectorAll('.sec'));
 const scroll = createScroll({ track: $('#track'), sections, reducedMotion });
 const updateAltimeter = createAltimeter($('#digits'), $('#plane'));
 const drawPictos = createPictos(Array.from(document.querySelectorAll('.picto')));
-const drawArt = createArt(Array.from(document.querySelectorAll('.art')), reducedMotion);
 const drawIntro = createIntro($('#intro'), reducedMotion);
-let introOn = true, beltLit = true;
+let introOn = true, wasLanded = false;
 const meteor = createMeteors(reducedMotion);
 const nav = $('#nav');
 
@@ -134,10 +132,10 @@ function frame(now) {
   }
   updateAltimeter(ft);
   drawPictos(S.pal);
-  /* the seat-belt sign switches off once the plane is parked, with its chime if the sound is on */
+  /* once the plane is parked, the seat-belt chime (only if the cabin sound is on) */
   const landed = f > .985;
-  if (beltLit === landed) { beltLit = !landed; if (landed) sound.chime(); }
-  drawArt(S.pal, innerHeight, time, beltLit);
+  if (landed && !wasLanded) sound.chime();
+  wasLanded = landed;
   document.body.classList.toggle('landed', landed);
   if (!root.classList.contains('flying')) { root.classList.add('flying'); root.classList.remove('static'); }
   if (introOn) introOn = drawIntro(now, S.pal, cell.css);

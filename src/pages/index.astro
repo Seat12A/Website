@@ -3,12 +3,12 @@
  * Home page: a flight seen from seat 12A. The scene is drawn by src/scripts/home/ (WebGL); the sections below are placed
  * along the flight by scroll.js: `--f` is the point of the flight (0..1) where a section is centred, `data-y` shifts
  * it (fraction of the screen), `data-calm="1"` quiets the sky behind it, `.left` aligns it left (desktop only),
- * `.light` uses dark ink (for bright skies), `.wide` puts an illustration next to the text (desktop) or under it (phone).
+ * `.light` uses dark ink (for bright skies).
  *
  * The story: on the ground and in the cloud, we cannot see (social networks); breaking through, we see clearly (what
  * Seat 12A does); in cruise, how we work and what comes next; over Paris at night, the internet seen from above.
  *
- * Illustrations (.art) are drawn by art.js, pictograms (.picto) by hud.js. Links marked data-soon point to pages that
+ * Pictograms (.picto) are drawn by hud.js. Links marked data-soon point to pages that
  * do not exist yet: they do nothing for now. Texts: see docs/textes.md (current version, what must be validated).
  */
 import Base from '../layouts/Base.astro';
@@ -47,25 +47,19 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       </div>
     </section>
 
-    <section class="sec light left wide" style="--f:.265" data-calm="0">
-      <div class="txt">
-        <h2>Sur les réseaux, on y voit mal.</h2>
-        <p>Les fils d'actualité mettent en avant ce qui fait réagir : la colère, la peur, l'indignation. Et le faux va plus vite que le vrai : sur Twitter, une info vraie met en moyenne six fois plus de temps qu'une fausse à toucher 1 500 personnes. En pleine campagne électorale, ça compte.</p>
-        <span class="note">Source : <a href="https://doi.org/10.1126/science.aap9559" rel="noopener">étude du MIT sur 126 000 rumeurs, Science, 2018</a>.</span>
-      </div>
-      <canvas class="art" data-art="feed" width="84" height="56" style="--w:84;--h:56" aria-hidden="true"></canvas>
+    <section class="sec light left" style="--f:.265" data-calm="0">
+      <h2>Sur les réseaux, on y voit mal.</h2>
+      <p>Les fils d'actualité mettent en avant ce qui fait réagir : la colère, la peur, l'indignation. Et le faux va plus vite que le vrai : sur Twitter, une info vraie met en moyenne six fois plus de temps qu'une fausse à toucher 1 500 personnes. En pleine campagne électorale, ça compte.</p>
+      <span class="note">Source : <a href="https://doi.org/10.1126/science.aap9559" rel="noopener">étude du MIT sur 126 000 rumeurs, Science, 2018</a>.</span>
     </section>
 
-    <section class="sec left wide" style="--f:.455" data-calm="1" data-y="-.1">
-      <div class="txt">
-        <h2>Vérifier, remettre en contexte, nuancer.</h2>
-        <div class="points">
-          <div><canvas class="picto" data-p="magnifier" width="16" height="16" aria-hidden="true"></canvas><div><h3>Vérifier</h3><p>Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source.</p></div></div>
-          <div><canvas class="picto" data-p="photo" width="16" height="16" aria-hidden="true"></canvas><div><h3>Remettre en contexte</h3><p>Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque.</p></div></div>
-          <div><canvas class="picto" data-p="balance" width="16" height="16" aria-hidden="true"></canvas><div><h3>Nuancer</h3><p>Peu de posts sont tout vrais ou tout faux. On dit ce qui est établi, ce qui se discute, et de quel côté penchent les preuves.</p></div></div>
-        </div>
+    <section class="sec left" style="--f:.455" data-calm="1" data-y="-.1">
+      <h2>Vérifier, remettre en contexte, nuancer.</h2>
+      <div class="points">
+        <div><canvas class="picto" data-p="magnifier" width="16" height="16" aria-hidden="true"></canvas><div><h3>Vérifier</h3><p>Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source.</p></div></div>
+        <div><canvas class="picto" data-p="photo" width="16" height="16" aria-hidden="true"></canvas><div><h3>Remettre en contexte</h3><p>Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque.</p></div></div>
+        <div><canvas class="picto" data-p="balance" width="16" height="16" aria-hidden="true"></canvas><div><h3>Nuancer</h3><p>Peu de posts sont tout vrais ou tout faux. On dit ce qui est établi, ce qui se discute, et de quel côté penchent les preuves.</p></div></div>
       </div>
-      <canvas class="art" data-art="context" width="76" height="62" style="--w:76;--h:62" aria-hidden="true"></canvas>
     </section>
 
     <section class="sec" style="--f:.55" data-calm="1" data-y="-.04">
@@ -78,26 +72,20 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       </div>
     </section>
 
-    <section class="sec left wide" style="--f:.64" data-calm="1" data-y=".04">
-      <div class="txt">
-        <h2>Bientôt : ce que les chiffres racontent.</h2>
-        <p>À force de vérifier, on accumule des données. On s'en servira pour de petites études : combien de fausses infos circulent, sur quels sujets, à quels moments d'une campagne, et comment elles se propagent.</p>
-      </div>
-      <canvas class="art low" data-art="radar" width="64" height="64" style="--w:64;--h:64" aria-hidden="true"></canvas>
+    <section class="sec left" style="--f:.64" data-calm="1" data-y="-.04">
+      <h2>Bientôt : ce que les chiffres racontent.</h2>
+      <p>À force de vérifier, on accumule des données. On s'en servira pour de petites études : combien de fausses infos circulent, sur quels sujets, à quels moments d'une campagne, et comment elles se propagent.</p>
     </section>
 
-    <section class="sec left wide" style="--f:.72" data-calm="1" data-y="-.06">
-      <div class="txt">
-        <h2>Un doute ? Posez la question.</h2>
-        <p>Collez une affirmation ou un lien. On cherche les sources, et on vous dit aussi quand on ne sait pas.</p>
-        <form class="ask" id="ask">
-          <label class="visually-hidden" for="askInput">Affirmation ou lien à vérifier</label>
-          <input id="askInput" type="text" placeholder="Cette photo date-t-elle vraiment de 2024 ?">
-          <button class="btn" type="submit">Vérifier</button>
-        </form>
-        <span class="note">Sur ordinateur, l'extension repère les posts à vérifier directement sur X (Chrome, Edge, Brave…). <a class="link" href="#" data-soon>Ajouter l'extension</a></span>
-      </div>
-      <canvas class="art" data-art="browser" width="84" height="58" style="--w:84;--h:58" aria-hidden="true"></canvas>
+    <section class="sec left" style="--f:.72" data-calm="1" data-y="-.06">
+      <h2>Un doute ? Posez la question.</h2>
+      <p>Collez une affirmation ou un lien. On cherche les sources, et on vous dit aussi quand on ne sait pas.</p>
+      <form class="ask" id="ask">
+        <label class="visually-hidden" for="askInput">Affirmation ou lien à vérifier</label>
+        <input id="askInput" type="text" placeholder="Cette photo date-t-elle vraiment de 2024 ?">
+        <button class="btn" type="submit">Vérifier</button>
+      </form>
+      <span class="note">Sur ordinateur, l'extension repère les posts à vérifier directement sur X (Chrome, Edge, Brave…). <a class="link" href="#" data-soon>Ajouter l'extension</a></span>
     </section>
 
     <section class="sec" style="--f:.885" data-calm="1" data-y="-.2">
@@ -105,8 +93,7 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       <p>Une encyclopédie écrite par des bénévoles, des cours gratuits, des archives ouvertes à tous : jamais autant de savoir n'a été aussi facile d'accès. Seat 12A existe pour qu'on puisse continuer à s'y fier.</p>
     </section>
 
-    <section class="sec end" style="--f:1" data-calm="1" data-y="-.185">
-      <canvas class="art belt" data-art="belt" width="18" height="14" style="--w:18;--h:14" aria-hidden="true"></canvas>
+    <section class="sec end" style="--f:1" data-calm="1" data-y="-.21">
       <h2>Vous pouvez détacher votre ceinture.</h2>
       <p>Bienvenue au sol. La prochaine fois qu'un post vous fait bondir, prenez de la hauteur avant de le partager : il a peut-être déjà été vérifié.</p>
       <div class="ctas">

@@ -39,10 +39,10 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   pixels a été refusé). **Titres d'une seule couleur. Jamais de texte tout en majuscules.**
 - **Responsive** : sur téléphone, les textes sont centrés ; le soleil reste au-dessus du texte qu'on lit et ne monte
   ou ne se couche qu'entre deux textes.
-- **Pas que du texte** (demande de Jules, 25/11/2026) : des illustrations en pixel art accompagnent les textes
-  (`art.js`), sur la même grille que la scène (une case de l'illustration = une cellule) et avec les tons de la scène.
-  Elles avancent avec le défilement, jamais avec un fondu ou un flou. Aucun vrai post, aucune fausse affirmation : le
-  texte des posts est dessiné en barres, rien n'imite l'apparence de X.
+- **Petites illustrations à côté des textes : refusées** (25/11/2026). Essayé : un post qui se propage, une note de
+  contexte qui se déplie, un radar, une fenêtre de navigateur, un panneau ceinture (petits dessins pixel de ~200 px).
+  Jules : « j'aime pas les petites illustrations comme ça, pas du tout ; pas un truc semi-petit : soit un truc
+  impressionnant mais vraiment magnifique, soit rien ». Les pictogrammes 16×16 à côté des titres restent.
 - **Boutons** (25/11/2026) : au survol, le bouton passe en bleu ciel pâle et un reflet en pixels (une bande épaisse et
   une fine, en escalier sur la grille) le traverse par crans, en boucle. Kitsch, voulu. Les petites étoiles qui
   clignotent aux coins ont été proposées et **refusées**.

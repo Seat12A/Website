@@ -1,7 +1,7 @@
 /*
  * Cabin sound, off by default: ambience only (engine rumble, ventilation, airframe vibration), synthesised with
- * Web Audio and muffled. No announcements (rejected). One chime: when the seat-belt sign switches off on arrival,
- * and only if the sound is on.
+ * Web Audio and muffled. No announcements (rejected). One chime: when the plane is parked on arrival, and only if the
+ * sound is on.
  */
 export function createCabinSound() {
   let ac = null, master = null, on = false;

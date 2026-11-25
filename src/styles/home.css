@@ -95,12 +95,6 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 .ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; margin-top: 6px; }
 .hero { width: min(980px, calc(100% - 32px)); }
 
-/* Sections with an illustration: text and drawing side by side (desktop), the drawing under the text (phone) */
-.sec.wide { width: min(1040px, calc(100vw - 2 * clamp(16px, 9vw, 140px))); grid-template-columns: minmax(0, 560px) auto; justify-content: start; align-items: center; gap: 20px 64px; }
-.sec.wide .art.low { align-self: end; }
-.sec.wide .txt { display: grid; gap: 20px; justify-items: start; min-width: 0; }
-.art { display: block; width: calc(var(--w) * var(--cell, 3px)); height: calc(var(--h) * var(--cell, 3px)); image-rendering: pixelated; image-rendering: crisp-edges; }
-.art.belt { margin-bottom: -6px; }
 .points { display: grid; gap: 18px; margin-top: 4px; }
 .points > div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; }
 .points h3 { margin: 0 0 4px; font: 500 18px/1.2 var(--sans); letter-spacing: -.02em; }
@@ -132,7 +126,7 @@ html.static .sec, html:not(.js) .sec {
 }
 html.static .sec.left, html:not(.js) .sec.left { margin-left: clamp(16px, 9vw, 140px); }
 html.static .sec.light p, html:not(.js) .sec.light p { color: var(--soft); }
-html.static :is(.art, .picto, #intro), html:not(.js) :is(.art, .picto, #intro) { display: none; }
+html.static :is(.picto, #intro), html:not(.js) :is(.picto, #intro) { display: none; }
 html.static .foot-gap, html:not(.js) .foot-gap { height: 40px; }
 html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
 
@@ -198,8 +192,6 @@ html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
 
 @media (max-width: 760px) {
   .sec.left { left: 50%; justify-items: center; text-align: center; }
-  .sec.wide { width: min(560px, calc(100% - 32px)); grid-template-columns: minmax(0, 1fr); justify-items: center; }
-  .sec.wide .txt { justify-items: center; }
   .points > div { text-align: left; }
   html.static .sec.left, html:not(.js) .sec.left { margin-left: auto; }
   .sec.left .ctas, .sec.left .ask { justify-content: center; }
@@ -218,9 +210,6 @@ html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
   .sec { gap: 16px; }
   .rules p { font-size: 14px; }
   .alt { padding: 8px 12px 8px 10px; font-size: 12px; }
-}
-@media (max-width: 760px) and (max-height: 900px) {
-  .art[data-art="context"], .art[data-art="browser"] { display: none; }     /* these sections are already long on a phone */
 }
 @media (prefers-reduced-motion: reduce) {
   .btn:hover::after, .btn:focus-visible::after { animation: none; }

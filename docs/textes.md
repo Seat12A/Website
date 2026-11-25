@@ -50,19 +50,16 @@ Le brouillard est la métaphore : on n'y voit rien.
   personnes. En pleine campagne électorale, ça compte. »
 - Source affichée et liée : Vosoughi, Roy et Aral, « The spread of true and false news online », *Science*, 2018
   (MIT, environ 126 000 rumeurs diffusées sur Twitter entre 2006 et 2017), doi:10.1126/science.aap9559.
-- Illustration `feed` : un post au centre, des copies apparaissent autour, vague après vague, pendant qu'on défile.
 
 ## 3. Ce qu'on fait (f = 0,455, la percée)
 
-Le moment le plus lumineux de la page porte le concept.
+Le moment le plus lumineux de la page porte le concept. Un pictogramme par point (loupe, photo légendée, balance).
 
 - **Vérifier, remettre en contexte, nuancer.**
 - Vérifier : « Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source. »
 - Remettre en contexte : « Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque. »
 - Nuancer : « Peu de posts sont tout vrais ou tout faux. On dit ce qui est établi, ce qui se discute, et de quel côté
   penchent les preuves. » (la dernière proposition garde l'idée de l'ancienne règle « pas de faux équilibre »).
-- Illustration `context` : un post, une phrase soulignée, une note de contexte qui se déplie dessous avec le hublot de
-  Seat 12A.
 
 ## 4. Transparence (f = 0,55)
 
@@ -82,8 +79,6 @@ Retiré en attendant d'être confirmé : « Un humain a le dernier mot / l'équi
 - **Bientôt : ce que les chiffres racontent.**
 - « À force de vérifier, on accumule des données. On s'en servira pour de petites études : combien de fausses infos
   circulent, sur quels sujets, à quels moments d'une campagne, et comment elles se propagent. »
-- Illustration `radar` : un écran radar dont le balayage tourne ; plus on défile, plus il y a d'échos. Purement
-  décoratif : aucun faux chiffre.
 
 À valider : ne pas promettre la publication des données brutes tant que ce n'est pas décidé (des données sur des
 comptes X sont des données personnelles).
@@ -94,8 +89,6 @@ comptes X sont des données personnelles).
 - « Collez une affirmation ou un lien. On cherche les sources, et on vous dit aussi quand on ne sait pas. »
 - Note : « Sur ordinateur, l'extension repère les posts à vérifier directement sur X (Chrome, Edge, Brave…). » + lien
   Ajouter l'extension.
-- Illustration `browser` : une fenêtre de navigateur, trois posts ; le curseur va vers le hublot que l'extension pose
-  sur deux d'entre eux.
 
 À valider : le chatbot dit-il vraiment quand il ne sait pas ? Que fait exactement l'extension (repère les posts ?
 affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
@@ -105,13 +98,10 @@ affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
 - **Internet reste une merveille.**
 - « Une encyclopédie écrite par des bénévoles, des cours gratuits, des archives ouvertes à tous : jamais autant de
   savoir n'a été aussi facile d'accès. Seat 12A existe pour qu'on puisse continuer à s'y fier. »
-- Pas d'illustration : les lumières de Paris en sont une.
 
 ## 8. Arrivée (f = 1)
 
-- Illustration `belt` : le panneau ceinture, allumé (lumière chaude) pendant l'approche, il s'éteint quand l'avion est
-  garé, avec le « ding » si le son de cabine est allumé.
-- **Vous pouvez détacher votre ceinture.**
+- **Vous pouvez détacher votre ceinture.** (avec le « ding » de la ceinture si le son de cabine est allumé)
 - « Bienvenue au sol. La prochaine fois qu'un post vous fait bondir, prenez de la hauteur avant de le partager : il a
   peut-être déjà été vérifié. »
 - Boutons : Ajouter l'extension · Voir les fact-checks. « Redécoller » est passé dans le pied de page.
