@@ -39,6 +39,18 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   pixels a été refusé). **Titres d'une seule couleur. Jamais de texte tout en majuscules.**
 - **Responsive** : sur téléphone, les textes sont centrés ; le soleil reste au-dessus du texte qu'on lit et ne monte
   ou ne se couche qu'entre deux textes.
+- **Les textes sont illustrés par le décor lui-même** (25/11/2026), avec des phénomènes réels qu'on voit depuis un
+  hublot, rendus comme une ambiance (Jules : « avec les pixels, il est difficile de faire des trucs précis, c'est plus
+  une ambiance globale ») :
+  - à la percée (« Vérifier… ») : **halo de 22° et parhélies** autour du soleil bas (un soleil, trois images) ;
+  - dans le nuage (« on y voit mal ») : chaque **flash du stroboscope illumine le brouillard** (les pilotes peuvent
+    les couper en nuage : ils éblouissent) ;
+  - en croisière (« les études… comment elles se propagent ») : un autre avion passe plus haut, sa **traînée**
+    s'élargit et se défait, son **ombre** tombe sur la mer de nuages ;
+  - au-dessus de Paris (« Internet reste une merveille ») : **le réseau**, des fils de lumière en pointillés le long
+    de certaines rues, des éclats qui courent du centre vers l'extérieur ;
+  - à l'approche : le **« lapin »**, l'éclair qui court sur les feux d'approche d'une piste parallèle.
+  Essayé et retiré : le front de la vague du réseau en anneau plein (un aplat orange à l'horizon, laid).
 - **Petites illustrations à côté des textes : refusées** (25/11/2026). Essayé : un post qui se propage, une note de
   contexte qui se déplie, un radar, une fenêtre de navigateur, un panneau ceinture (petits dessins pixel de ~200 px).
   Jules : « j'aime pas les petites illustrations comme ça, pas du tout ; pas un truc semi-petit : soit un truc

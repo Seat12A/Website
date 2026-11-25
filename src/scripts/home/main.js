@@ -13,7 +13,7 @@
  */
 import { createCabinSound } from './cabinSound.js';
 import { createMeteors, strobe } from './effects.js';
-import { altFt, CITY_START, GROUND_END, groundLights, horizon, moonPosition, NIGHT_START, RUNWAYS, sky, sunPosition, tilt, travel } from './flightPlan.js';
+import { altFt, CITY_START, contrail, GROUND_END, groundLights, halo, horizon, moonPosition, network, NIGHT_START, RUNWAYS, sky, sunPosition, tilt, travel } from './flightPlan.js';
 import { createAltimeter, createPictos } from './hud.js';
 import { createIntro } from './intro.js';
 import { cellSize, createRenderer } from './renderer.js';
@@ -124,6 +124,7 @@ function frame(now) {
       gl.uniform1f(U.uFogDir, f < .3 ? 1 : f < .82 ? -1 : 1);
       const me = meteor(now, S.stars, gw / gh); gl.uniform4fv(U.uMet, me[0]); gl.uniform2fv(U.uMet2, me[1]);
       const c = calmRect(); gl.uniform4f(U.uCalm, c[0], c[1], c[2], c[3]); gl.uniform1f(U.uCalmK, c[4]);
+      gl.uniform1f(U.uHalo, halo(f)); gl.uniform2fv(U.uContrail, contrail(f)); gl.uniform1f(U.uNet, network(f));
     });
   }
   if (!renderer) {

@@ -45,6 +45,14 @@
   script retardé de 4 s.
 - Non vérifié : la fluidité réelle (volet, reflet) et le ding : à regarder et écouter sur une vraie machine.
 
+## Fin de session : le décor illustre les textes
+
+Après le refus des petites illustrations, cinq phénomènes réels ont été ajoutés **dans le décor** (shader), comme une
+ambiance : parhélies et halo de 22° à la percée, flash du stroboscope qui illumine le brouillard, traînée d'un autre
+avion et son ombre sur la mer de nuages, réseau de lumière dans les rues de Paris, « lapin » des feux d'approche.
+Détails : `accueil.md` (§ 3), `decisions.md`. Vérifiés en captures (le flash forcé le temps d'une capture). Les textes
+ne nomment pas encore ces phénomènes : à décider (une ligne discrète pourrait les nommer et apprendre quelque chose).
+
 ## Limites connues
 
 - Sur téléphone, le relief de la mer de nuages remonte jusqu'au milieu de l'écran : le bas de « Nuancer » et de « Les
@@ -58,5 +66,5 @@
 - Valider ce que les textes affirment (`textes.md`) : Tower et l'extension publics ? où est la méthode ? que fait
   l'extension ? Créer la page Méthode avant d'ouvrir la bêta.
 - Jules : regarder le volet et le reflet des boutons à l'œil ; écouter le ding.
-- Si on veut une illustration, ce sera une seule, grande et soignée, de préférence dans la scène elle-même (voir les
-  pistes proposées à Jules en fin de session).
+- Jules : regarder en mouvement les cinq phénomènes du décor (parhélies, flash dans le nuage, traînée et son ombre,
+  réseau de Paris, lapin) et dire lesquels garder ou doser.

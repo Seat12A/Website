@@ -64,6 +64,9 @@ son, puis le pied de page **après** la piste du vol.
   - `sunSize` : rayon du disque (0 = pas de disque). La **position** du soleil ne se règle plus ici (voir §4).
 - Courbes : `altFt` (pieds), `tilt` (degrés), `horizon` (hauteur de l'horizon), `groundLights` (lumières du sol),
   `travel` (distance parcourue).
+- Phénomènes (0 à 1) : `halo(f)` (parhélies, 0,43–0,6), `contrail(f)` (traînée, 0,55–0,73 : avancement de la
+  traversée et visibilité), `network(f)` (réseau de Paris, à partir de 0,845). Le lapin et le flash dans le nuage
+  n'ont pas de courbe : ils existent dès que la piste (de nuit, à l'arrivée) ou le brouillard sont là.
 - Repères : `GROUND_END = 0.215` (fin de la phase sol), `NIGHT_START = 0.81` (retour au sol, nuit), `CITY_START = 0.5`.
 - Étapes : 0 au sol (heure bleue) · ~0,05 rotation · 0,05–0,17 montée · 0,165–0,215 entrée dans le nuage ·
   ~0,34 changement de scène dans le nuage · 0,372–0,44 percée · 0,44–0,77 croisière puis heure dorée ·
@@ -105,6 +108,25 @@ Pour régler : modifier `sunX`, `sunElevation` ou `sunElevationPortrait`, jamais
 6. **Mer de nuages** (`uSea`) et **brouillard** (`uFog`, qui arrive par le côté du nuage selon `uFogDir`). Tous liés
    au défilement (`uFlightX`) et au temps.
 7. **Aile gauche en 3D** projetée avec la même caméra, reflet du soleil (`uGlint`), feu rouge, stroboscope.
+
+### Les phénomènes qui illustrent les textes (dans `sky.frag.glsl`)
+
+Une ambiance, pas des formes précises : le pixel art ne permet pas le détail.
+
+- **Halo et parhélies** (`uHalo`, dans le ciel) : anneau à 0,485 hauteur d'écran du soleil (tan 22° × F), ciel un peu
+  plus sombre juste à l'intérieur, deux taches claires à hauteur du soleil avec une traîne vers l'extérieur, une ligne
+  très pâle entre elles ; le tout tacheté par un bruit (le voile de cristaux). La mer de nuages passe devant.
+- **Flash dans le nuage** (`uStrobe` dans le bloc du brouillard) : pendant le double éclat, le brouillard tire vers le
+  ton 0,97 autour du bout d'aile (et un peu partout). Plus visible dans le nuage sombre de la descente que dans le
+  nuage clair de la montée, comme en vrai.
+- **Traînée** (`uContrail`, ciel de croisière) : l'avion (un point clair) traverse en haut de l'écran ; derrière lui,
+  la traînée commence fine, s'élargit, ondule et pâlit avec l'âge. **Son ombre** : une bande sombre aplatie sur la mer
+  de nuages, décalée.
+- **Réseau de Paris** (`uNet`, dans `ground()`) : environ une rue sur deux porte des pointillés lumineux et des éclats
+  qui s'éloignent du centre ; il s'étend avec `uNet`. Seulement de près (`near`), sinon les rues remplissent tout.
+- **Lapin** (dans `ground()`, avant l'aéroport) : piste parallèle à 1 km (z 978–1022), feux d'approche sur 900 m
+  avant le seuil, une barre transversale à 300 m, seuil vert ; un éclair blanc parcourt les 30 postes deux fois par
+  seconde vers le seuil. Visible vers f = 0,89–0,93.
 
 ## 6. Défilement et textes (`scroll.js`)
 
