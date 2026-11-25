@@ -45,22 +45,27 @@ img { max-width: 100%; }
 .nav a:focus-visible, .btn:focus-visible, .link:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
 /* ---------- Buttons and links ----------
-   On hover, a sky colour sweeps across the button from left to right in steps, with a dithered edge, like light
-   moving over the wing. Links: dashes that scroll like runway markings. */
+   On hover, the button turns pale sky blue and a pixel glint (a thick band and a thin one, drawn as a staircase on the
+   cell grid) runs across it in steps, again and again, like a sticker that shines. A bit kitsch, on purpose.
+   Links: dashes that scroll like runway markings. */
 .btn {
-  appearance: none; border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  appearance: none; border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   font: 500 14px/1 var(--sans); padding: 13px 20px; border-radius: 99px; background: var(--white); color: var(--ink);
-  position: relative; isolation: isolate; overflow: hidden; transition: transform .25s steps(2), background-color .25s;
+  position: relative; isolation: isolate; overflow: hidden; transition: transform .25s steps(2), background-color .2s steps(2);
 }
 .btn.small { padding: 11px 16px; }
-.btn::before {
-  content: ""; position: absolute; inset: 0 -8px 0 0; z-index: -1;
-  background:
-    linear-gradient(#CFDDFF, #CFDDFF) left / calc(100% - 8px) 100% no-repeat,
-    repeating-conic-gradient(#CFDDFF 0 25%, transparent 0 50%) right / 8px 8px repeat-y;
-  transform: translateX(-102%); transition: transform .42s steps(8);
+.btn::after {
+  content: ""; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none;
+  width: calc(12 * var(--cell, 3px)); height: calc(16 * var(--cell, 3px));
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 16' shape-rendering='crispEdges' fill='%23fff'%3E%3Crect x='7' y='0' width='3' height='1'/%3E%3Crect x='11' y='0' width='1' height='1'/%3E%3Crect x='7' y='1' width='3' height='1'/%3E%3Crect x='11' y='1' width='1' height='1'/%3E%3Crect x='6' y='2' width='3' height='1'/%3E%3Crect x='10' y='2' width='1' height='1'/%3E%3Crect x='6' y='3' width='3' height='1'/%3E%3Crect x='10' y='3' width='1' height='1'/%3E%3Crect x='5' y='4' width='3' height='1'/%3E%3Crect x='9' y='4' width='1' height='1'/%3E%3Crect x='5' y='5' width='3' height='1'/%3E%3Crect x='9' y='5' width='1' height='1'/%3E%3Crect x='4' y='6' width='3' height='1'/%3E%3Crect x='8' y='6' width='1' height='1'/%3E%3Crect x='4' y='7' width='3' height='1'/%3E%3Crect x='8' y='7' width='1' height='1'/%3E%3Crect x='3' y='8' width='3' height='1'/%3E%3Crect x='7' y='8' width='1' height='1'/%3E%3Crect x='3' y='9' width='3' height='1'/%3E%3Crect x='7' y='9' width='1' height='1'/%3E%3Crect x='2' y='10' width='3' height='1'/%3E%3Crect x='6' y='10' width='1' height='1'/%3E%3Crect x='2' y='11' width='3' height='1'/%3E%3Crect x='6' y='11' width='1' height='1'/%3E%3Crect x='1' y='12' width='3' height='1'/%3E%3Crect x='5' y='12' width='1' height='1'/%3E%3Crect x='1' y='13' width='3' height='1'/%3E%3Crect x='5' y='13' width='1' height='1'/%3E%3Crect x='0' y='14' width='3' height='1'/%3E%3Crect x='4' y='14' width='1' height='1'/%3E%3Crect x='0' y='15' width='3' height='1'/%3E%3Crect x='4' y='15' width='1' height='1'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  transform: translateX(-100%);
 }
-.btn:hover::before, .btn:focus-visible::before { transform: translateX(0); }
+.btn:hover, .btn:focus-visible { background-color: #CFDDFF; }
+.btn:hover::after, .btn:focus-visible::after { animation: glint 1.5s infinite; }
+@keyframes glint {
+  0% { left: 0; transform: translateX(-100%); animation-timing-function: steps(9, end); }
+  45%, 100% { left: 100%; transform: translateX(0); }
+}
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(1px); }
 .link {
@@ -70,6 +75,8 @@ img { max-width: 100%; }
 .link:hover { animation: runway .5s steps(3) infinite; }
 button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; background-color: transparent; }
 @keyframes runway { to { background-position: 6px 100%; } }
+.sec p .link, .note .link { padding-bottom: 3px; color: inherit; white-space: nowrap; }
+.note a:not(.link) { color: inherit; text-underline-offset: 3px; }
 
 /* ---------- Scroll track and sections (placed every frame by scroll.js) ---------- */
 #track { position: relative; height: 1000vh; z-index: 1; }
@@ -84,15 +91,27 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 .sec.left { left: clamp(16px, 9vw, 140px); width: min(560px, calc(100% - 32px)); justify-items: start; text-align: left; }
 .sec.left .ctas, .sec.left .ask { justify-content: flex-start; }
 .sec.light { color: var(--ink); }
-.sec.light p { color: var(--ink-soft); }
+.sec.light p, .sec.light .note { color: var(--ink-soft); }
 .ctas { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; margin-top: 6px; }
 .hero { width: min(980px, calc(100% - 32px)); }
+
+/* Sections with an illustration: text and drawing side by side (desktop), the drawing under the text (phone) */
+.sec.wide { width: min(1040px, calc(100vw - 2 * clamp(16px, 9vw, 140px))); grid-template-columns: minmax(0, 560px) auto; justify-content: start; align-items: center; gap: 20px 64px; }
+.sec.wide .art.low { align-self: end; }
+.sec.wide .txt { display: grid; gap: 20px; justify-items: start; min-width: 0; }
+.art { display: block; width: calc(var(--w) * var(--cell, 3px)); height: calc(var(--h) * var(--cell, 3px)); image-rendering: pixelated; image-rendering: crisp-edges; }
+.art.belt { margin-bottom: -6px; }
+.points { display: grid; gap: 18px; margin-top: 4px; }
+.points > div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; }
+.points h3 { margin: 0 0 4px; font: 500 18px/1.2 var(--sans); letter-spacing: -.02em; }
+.points p { font-size: 15px; }
+.points .picto { margin: 2px 0 0; }
 
 .rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 44px; text-align: left; margin-top: 10px; width: 100%; }
 .rules div { display: grid; gap: 6px; min-width: 0; }
 .rules h3 { margin: 0; font: 500 18px/1.2 var(--sans); letter-spacing: -.02em; }
 .rules p { font-size: 15px; }
-.picto { width: 40px; height: 40px; image-rendering: pixelated; image-rendering: crisp-edges; margin-bottom: 4px; }
+.picto { width: calc(16 * var(--cell, 3px)); height: calc(16 * var(--cell, 3px)); image-rendering: pixelated; image-rendering: crisp-edges; margin-bottom: 4px; }
 
 .ask { display: flex; gap: 8px; width: min(520px, 100%); margin-top: 6px; }
 .ask input {
@@ -101,6 +120,24 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 }
 .ask input::placeholder { color: rgba(255, 255, 255, .55); }
 .note { font-size: 14px; color: var(--soft); }
+
+/* ---------- Before the script runs (html.js without .flying): only the background, the colour of the closed window
+   blind. If the script never runs (html.static, or no JavaScript at all), the texts are shown as a plain page. ---------- */
+html.js:not(.flying):not(.static) body { background: #1C1F48; }
+html.js:not(.flying):not(.static) :is(.sec, .nav, .alt, .snd) { visibility: hidden; }
+html.static #track, html:not(.js) #track { height: auto; padding: 120px 0 40px; }
+html.static .sec, html:not(.js) .sec {
+  position: relative; left: auto !important; top: auto; transform: none !important; visibility: visible !important;
+  margin: 0 auto 120px; color: var(--white);
+}
+html.static .sec.left, html:not(.js) .sec.left { margin-left: clamp(16px, 9vw, 140px); }
+html.static .sec.light p, html:not(.js) .sec.light p { color: var(--soft); }
+html.static :is(.art, .picto, #intro), html:not(.js) :is(.art, .picto, #intro) { display: none; }
+html.static .foot-gap, html:not(.js) .foot-gap { height: 40px; }
+html.static :is(.alt, .snd), html:not(.js) :is(.alt, .snd) { display: none; }
+
+/* ---------- The window blind on arrival (intro.js) ---------- */
+#intro { position: fixed; left: 0; top: 0; z-index: 8; pointer-events: none; image-rendering: pixelated; image-rendering: crisp-edges; }
 
 /* ---------- Altimeter ---------- */
 .alt {
@@ -161,11 +198,19 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
 
 @media (max-width: 760px) {
   .sec.left { left: 50%; justify-items: center; text-align: center; }
+  .sec.wide { width: min(560px, calc(100% - 32px)); grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .sec.wide .txt { justify-items: center; }
+  .points > div { text-align: left; }
+  html.static .sec.left, html:not(.js) .sec.left { margin-left: auto; }
   .sec.left .ctas, .sec.left .ask { justify-content: center; }
   .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nav-links { display: none; }
   .brand svg { height: 20px; }
-  .rules { grid-template-columns: 1fr; gap: 20px; }
+  .rules { grid-template-columns: 1fr; gap: 16px; }
+  .rules > div { grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 2px; align-items: start; }
+  .rules .picto { grid-row: span 2; margin: 0; }
+  .points { gap: 14px; }
+  .points p { font-size: 14px; }
   .sec p { font-size: 16px; }
   .ask { flex-direction: column; }
 }
@@ -174,8 +219,11 @@ button.link { appearance: none; border: 0; cursor: pointer; padding: 0 0 4px; ba
   .rules p { font-size: 14px; }
   .alt { padding: 8px 12px 8px 10px; font-size: 12px; }
 }
+@media (max-width: 760px) and (max-height: 900px) {
+  .art[data-art="context"], .art[data-art="browser"] { display: none; }     /* these sections are already long on a phone */
+}
 @media (prefers-reduced-motion: reduce) {
-  .btn::before { transition: none; }
+  .btn:hover::after, .btn:focus-visible::after { animation: none; }
   .link:hover { animation: none; }
   .digits .col, .alt svg, .nav { transition: none; }
 }

@@ -1,92 +1,127 @@
 # Textes de la page d'accueil
 
-Pour chaque section : le texte en ligne, des propositions de remplacement, et ce qui doit être **validé avec l'équipe
-de Tower** avant la mise en ligne publique (un texte qui décrit un fonctionnement doit être vrai).
+Pour chaque section : le texte en ligne, l'illustration qui l'accompagne, et ce qui doit être **validé** avant la mise
+en ligne publique (un texte qui décrit un fonctionnement doit être vrai).
 
-Règle d'écriture : chaque phrase doit apprendre quelque chose au visiteur (ce qu'on vérifie, comment, ce qu'il peut
-faire). Pas de remerciements, pas de slogans creux.
+## Règles d'écriture
 
-Le texte sur l'auteur des posts (« On ne regarde jamais qui parle », « Sans regarder qui parle ») a été retiré à la
-demande de Jules (24/11/2026) : ce n'est pas ce qui intéresse le visiteur.
+- **Expliquer le concept avant la méthode.** Quelqu'un qui ne connaît rien de Seat 12A doit comprendre, en lisant la
+  page, quel problème on traite (les réseaux, polarisants, surtout en période d'élection) et ce qu'on fait (vérifier,
+  remettre en contexte, nuancer). Les détails de méthode (« on isole ce qui est affirmé ») n'intéressent pas le
+  visiteur : Jules les a refusés le 25/11/2026 (« on s'en tape »).
+- Chaque phrase doit apprendre quelque chose au visiteur. Pas de remerciements, pas de slogans creux.
+- **Vocabulaire** : jamais « case » pour les visiteurs (ils ne savent pas ce que c'est). « Fact-check » dans les menus
+  et les boutons, « vérification » dans les phrases. Le mot « case » reste valable dans le code et avec l'équipe.
+- **Jamais « association »** : Seat 12A n'a pas encore de statut juridique. On peut dire qu'on ne vend rien, que c'est
+  gratuit, sans publicité.
+- Pas de texte sur l'auteur des posts (retiré le 24/11/2026, « on s'en fiche »).
+
+## La structure : un vol, une histoire
+
+| f | Scène | Section | Ce qu'elle dit |
+|---|---|---|---|
+| 0 | Heure bleue au sol | Hero | Ce qu'est Seat 12A, en une phrase |
+| 0,265 | Dans le nuage | Le problème | Sur les réseaux, on y voit mal |
+| 0,455 | La percée | Ce qu'on fait | Vérifier, remettre en contexte, nuancer |
+| 0,55 | Croisière | Transparence | Rien à vendre, rien à cacher |
+| 0,64 | Croisière | Les études | Ce qui vient ensuite |
+| 0,72 | Heure dorée | S'en servir | Demander une vérification, l'extension |
+| 0,885 | Paris la nuit | Internet | La beauté d'Internet |
+| 1 | Garé | Arrivée | Détachez votre ceinture, et deux boutons |
 
 ---
 
-## 1. Hero (au sol, f = 0)
+## 1. Hero (f = 0)
 
-Titre conservé : **Prenez de la hauteur sur ce qui circule.**
+- Titre (conservé) : **Prenez de la hauteur sur ce qui circule.**
+- « Sur les réseaux sociaux, une info fait le tour du web avant que quiconque l'ait vérifiée. Seat 12A vérifie les
+  posts qui circulent sur X, les remet dans leur contexte et montre toutes ses sources. »
+- Boutons : Voir les fact-checks · Ajouter l'extension.
+- Variante proposée : « Rumeurs, chiffres sortis de nulle part, vidéos coupées au mauvais moment : Seat 12A vérifie ce
+  qui circule sur X et le remet dans son contexte. »
 
-- **En ligne** : « Seat 12A vérifie les affirmations qui circulent sur X, en français, et publie chaque vérification
-  avec ses sources, pour que vous puissiez juger par vous-même. »
-- B : « Un chiffre douteux, une photo sortie de son contexte, une citation inventée : Seat 12A vérifie ce qui circule
-  sur X et publie ses sources. »
-- C : « Seat 12A vérifie ce qui circule sur X et vous montre tout : l'affirmation, les sources, le verdict. »
+## 2. Le problème (f = 0,265, dans le nuage)
 
-## 2. Dans le nuage (f = 0,265) — remplace le texte sur l'auteur
+Le brouillard est la métaphore : on n'y voit rien.
 
-- **En ligne** : **D'abord, on isole ce qui est affirmé.** « Un post mélange souvent des faits, des opinions et du
-  ressenti. On en extrait ce qui peut se vérifier : un chiffre, une citation, une date, une image. Une opinion, elle,
-  ne se vérifie pas. »
-- B : **On vérifie des faits, pas des opinions.** « "Ce pont a été inauguré en 1998" se vérifie. "Ce pont est moche"
-  ne se vérifie pas. On ne traite que ce qu'une source peut confirmer ou démentir. »
-- C : **Ce qu'on vérifie.** « Les affirmations factuelles : chiffres, citations, images, vidéos, dates. Pas les
-  opinions, pas les prédictions. »
+- **Sur les réseaux, on y voit mal.**
+- « Les fils d'actualité mettent en avant ce qui fait réagir : la colère, la peur, l'indignation. Et le faux va plus
+  vite que le vrai : sur Twitter, une info vraie met en moyenne six fois plus de temps qu'une fausse à toucher 1 500
+  personnes. En pleine campagne électorale, ça compte. »
+- Source affichée et liée : Vosoughi, Roy et Aral, « The spread of true and false news online », *Science*, 2018
+  (MIT, environ 126 000 rumeurs diffusées sur Twitter entre 2006 et 2017), doi:10.1126/science.aap9559.
+- Illustration `feed` : un post au centre, des copies apparaissent autour, vague après vague, pendant qu'on défile.
 
-Le « D'abord » prépare le « Puis » de la section suivante (les deux décrivent la méthode dans l'ordre). Si on prend B
-ou C, enlever « Puis » au titre suivant.
+## 3. Ce qu'on fait (f = 0,455, la percée)
 
-À valider : Tower extrait-il bien l'affirmation vérifiable d'un post ? Écarte-t-il les opinions et les prédictions
-(C) ?
+Le moment le plus lumineux de la page porte le concept.
 
-## 3. La percée (f = 0,455)
+- **Vérifier, remettre en contexte, nuancer.**
+- Vérifier : « Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source. »
+- Remettre en contexte : « Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque. »
+- Nuancer : « Peu de posts sont tout vrais ou tout faux. On dit ce qui est établi, ce qui se discute, et de quel côté
+  penchent les preuves. » (la dernière proposition garde l'idée de l'ancienne règle « pas de faux équilibre »).
+- Illustration `context` : un post, une phrase soulignée, une note de contexte qui se déplie dessous avec le hublot de
+  Seat 12A.
 
-Titre conservé : **Puis on cherche, jusqu'à y voir clair.**
+## 4. Transparence (f = 0,55)
 
-- **En ligne** : « On remonte aux sources d'origine : données publiques, documents, études, archives. La note dit ce
-  qu'on a trouvé, où, et ce qui reste incertain. »
-- B : **On remonte à la source, pas au premier article qui la cite.** « Un chiffre se vérifie dans la publication qui
-  l'a produit, une image dans sa première diffusion, une citation dans l'enregistrement d'origine. »
+- **Rien à vendre, rien à cacher.**
+- Rien à vendre : « Pas de pub, pas d'abonnement, pas de version payante. »
+- Code ouvert : « Tout notre code est public : n'importe qui peut lire comment Seat 12A fonctionne. » + lien vers
+  https://github.com/seat12a.
+- Méthode publique : « Comment on choisit un post, comment on cherche, comment on tranche : tout est écrit. »
+- Les sources, toujours : « Chaque vérification cite ses sources. Vous pouvez tout revérifier vous-même. »
 
-À valider : les notes indiquent-elles ce qui reste incertain ? Les sources primaires sont-elles la règle ?
-L'ancienne version disait « relue par l'équipage avant de devenir une note publique » : retiré du texte tant que le
-moment de la relecture (avant ou après publication) n'est pas confirmé.
+À valider : **Tower et l'extension sont-ils publics** (sinon « tout notre code » est faux) ? **Où la méthode est-elle
+publiée ?** La page « Méthode » n'existe pas encore : il faut qu'elle existe avant d'ouvrir la bêta au public.
+Retiré en attendant d'être confirmé : « Un humain a le dernier mot / l'équipage relit chaque note ».
 
-## 4. Les cases (f = 0,55)
+## 5. Les études (f = 0,64)
 
-- **En ligne** (inchangé) : **Ce qui vient d'être vérifié.** « Chaque case montre le post d'origine, l'affirmation
-  vérifiée, les sources consultées et le verdict, sans jargon. »
-- Quand les verdicts de Tower seront connus : ajouter « Chaque verdict a une définition publique » avec un lien vers
-  la page Méthode. C'est ce qui permet au lecteur de comprendre la différence entre « trompeur » et « faux ».
+- **Bientôt : ce que les chiffres racontent.**
+- « À force de vérifier, on accumule des données. On s'en servira pour de petites études : combien de fausses infos
+  circulent, sur quels sujets, à quels moments d'une campagne, et comment elles se propagent. »
+- Illustration `radar` : un écran radar dont le balayage tourne ; plus on défile, plus il y a d'échos. Purement
+  décoratif : aucun faux chiffre.
 
-## 5. Nos règles de vol (f = 0,64)
+À valider : ne pas promettre la publication des données brutes tant que ce n'est pas décidé (des données sur des
+comptes X sont des données personnelles).
 
-En ligne (inchangé) : Pas de faux équilibre · Les sources, toujours · Un humain a le dernier mot · Rien à vendre.
+## 6. S'en servir (f = 0,72)
 
-Propositions pour remplacer une règle (il faudrait un pictogramme de plus) :
+- **Un doute ? Posez la question.**
+- « Collez une affirmation ou un lien. On cherche les sources, et on vous dit aussi quand on ne sait pas. »
+- Note : « Sur ordinateur, l'extension repère les posts à vérifier directement sur X (Chrome, Edge, Brave…). » + lien
+  Ajouter l'extension.
+- Illustration `browser` : une fenêtre de navigateur, trois posts ; le curseur va vers le hublot que l'extension pose
+  sur deux d'entre eux.
 
-- **On corrige nos erreurs.** « Une note fausse est corrigée, datée, et la correction reste visible. »
-- **On dit quand on ne sait pas.** « Si les sources ne permettent pas de trancher, le verdict le dit. »
+À valider : le chatbot dit-il vraiment quand il ne sait pas ? Que fait exactement l'extension (repère les posts ?
+affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
 
-À valider : **« Un humain a le dernier mot » / « L'équipage relit et modère chaque note »** doit correspondre au
-fonctionnement réel (point ouvert depuis le prototype).
+## 7. Internet (f = 0,885, Paris la nuit)
 
-## 6. Demander (f = 0,73)
+- **Internet reste une merveille.**
+- « Une encyclopédie écrite par des bénévoles, des cours gratuits, des archives ouvertes à tous : jamais autant de
+  savoir n'a été aussi facile d'accès. Seat 12A existe pour qu'on puisse continuer à s'y fier. »
+- Pas d'illustration : les lumières de Paris en sont une.
 
-- **En ligne** (inchangé) : **Un doute ? Posez la question.** « Collez une affirmation ou un lien. On cherche les
-  sources et on vous dit aussi quand on ne sait pas. »
-- B : **Vous hésitez à partager un post ? Demandez d'abord.** (même texte dessous)
+## 8. Arrivée (f = 1)
 
-À valider : le chatbot dit-il vraiment quand il ne sait pas ? Le formulaire ne fait rien pour l'instant (le chatbot
-n'existe pas encore).
+- Illustration `belt` : le panneau ceinture, allumé (lumière chaude) pendant l'approche, il s'éteint quand l'avion est
+  garé, avec le « ding » si le son de cabine est allumé.
+- **Vous pouvez détacher votre ceinture.**
+- « Bienvenue au sol. La prochaine fois qu'un post vous fait bondir, prenez de la hauteur avant de le partager : il a
+  peut-être déjà été vérifié. »
+- Boutons : Ajouter l'extension · Voir les fact-checks. « Redécoller » est passé dans le pied de page.
+- Remplace « Une erreur dans une case ? Dites-le-nous » (refusé par Jules le 25/11/2026). Le signalement d'erreurs
+  pourra revenir dans la page Méthode ou sur chaque fact-check.
 
-## 7. Arrivée (f = 1) — remplace « Merci d'avoir pris de la hauteur avec nous »
+## Ailleurs
 
-- **En ligne** : **Une erreur dans une case ? Dites-le-nous.** « Envoyez le lien de la case et la source qui la
-  contredit. Si on s'est trompé, la note est corrigée et la correction reste visible. » Boutons : Signaler une erreur ·
-  Redécoller.
-- B : garder **Vous pouvez détacher votre ceinture.** avec, dessous, un conseil utile : « Avant de partager un post,
-  cherchez-le dans les cases : il a peut-être déjà été vérifié. »
-- C : **Rejoignez l'équipage.** « Seat 12A est une association : on cherche des bénévoles pour vérifier, relire et
-  traduire. » (seulement si l'association recrute)
-
-À valider : existe-t-il un moyen de signaler une erreur (adresse, formulaire, bouton dans l'extension) ? Les
-corrections sont-elles affichées sur les notes ? Sans ça, prendre B.
+- Description (Google, aperçus de liens) : « Seat 12A vérifie et remet en contexte ce qui circule sur X, en français,
+  avec ses sources. Gratuit, sans publicité, code ouvert. »
+- Pied de page : « Seat 12A vérifie et remet en contexte ce qui circule sur X, en français, sources à l'appui.
+  Gratuit, sans publicité, et tout le code est public. Indépendant de X et de tout parti politique. » La colonne
+  « L'association » est devenue « Le projet » (À propos, Le code source, Nous contacter).

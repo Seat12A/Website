@@ -49,6 +49,8 @@ page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 await page.goto(base);
 await page.waitForTimeout(1500);
+/* wait for the window blind of the arrival to be gone (intro.js) */
+await page.waitForFunction(() => !document.getElementById('intro'), null, { timeout: 60000 });
 for (const f of flight) {
   await page.evaluate((x) => window.seat12a.goTo(x), f);
   await page.waitForTimeout(700);

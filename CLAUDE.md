@@ -6,7 +6,8 @@ Seat 12A est un service francophone de fact-checking et de modération centré s
 (Tower, gate, hangar, radar, intercom). Trois clients passent par l'API de **12A Tower** (backend, dépôt `seat12a/tower`) :
 ce site web public, une extension Chromium et un bot Discord interne. Le site ne touche jamais la base directement.
 Le site aura trois parties : la page d'accueil (en bêta), les cases (chaque fact-check détaillé) et un chatbot pour
-demander une vérification. Seat 12A est une association à but non lucratif : on ne vend rien.
+demander une vérification. On ne vend rien, et tout le code est public. Seat 12A n'a pas encore de statut juridique :
+ne jamais écrire « association » sur le site.
 
 Pile : **Astro** (site statique pour l'instant), déployé sur **Vercel**. Pas de CDN externe au chargement : polices
 (Fontsource) et Lenis viennent de npm. Voir `docs/deploiement.md`.
@@ -27,6 +28,7 @@ sait pas.
   aux visiteurs sont en français.
 - Ne jamais copier le code, les textes ou les assets d'Aria (joinariapp.com) : on s'inspire des techniques, on écrit
   les nôtres. Le dépôt est public.
+- Pour les visiteurs, jamais le mot « case » : « fact-check » ou « vérification ».
 - Jamais de texte tout en majuscules. Jamais de titre en deux couleurs. Pas d'effets « IA » (voir `docs/decisions.md`).
 - Toute illustration est en pixel art, sur la grille de cellules, dans l'échelle de tons de la scène.
 - Ne pas inventer de faux fact-checks présentés comme réels : les contenus réels viendront de l'API de Tower.

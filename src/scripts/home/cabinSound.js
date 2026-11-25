@@ -1,6 +1,7 @@
 /*
  * Cabin sound, off by default: ambience only (engine rumble, ventilation, airframe vibration), synthesised with
- * Web Audio and muffled. No announcements (rejected), no seat-belt chime.
+ * Web Audio and muffled. No announcements (rejected). One chime: when the seat-belt sign switches off on arrival,
+ * and only if the sound is on.
  */
 export function createCabinSound() {
   let ac = null, master = null, on = false;
@@ -42,5 +43,17 @@ export function createCabinSound() {
     return on;
   }
 
-  return { toggle };
+  /** The seat-belt chime: one soft, high note that fades out (only when the sound is on). */
+  function chime() {
+    if (!on || !ac) return;
+    const t = ac.currentTime, g = ac.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.09, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + 1.6);
+    g.connect(ac.destination);
+    [[988, 1], [1976, .18]].forEach(([fq, k]) => {
+      const o = ac.createOscillator(), og = ac.createGain();
+      o.frequency.value = fq; og.gain.value = k; o.connect(og).connect(g); o.start(t); o.stop(t + 1.7);
+    });
+  }
+
+  return { toggle, chime };
 }

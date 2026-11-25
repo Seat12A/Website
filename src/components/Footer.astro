@@ -1,21 +1,22 @@
 ---
-/* Site footer. Links marked data-soon point to pages that do not exist yet. */
+/* Site footer. Links marked data-soon point to pages that do not exist yet. Seat 12A has no legal status yet: do not
+   call it an association (see docs/decisions.md). */
 const year = new Date().getFullYear();
 ---
 <footer class="foot" id="foot">
   <div class="foot-in">
     <div class="foot-brand">
-      <p>Seat 12A vérifie ce qui circule sur X, en français, sources à l'appui. Une association à but non lucratif, indépendante de X et de tout parti politique.</p>
+      <p>Seat 12A vérifie et remet en contexte ce qui circule sur X, en français, sources à l'appui. Gratuit, sans publicité, et tout le code est public. Indépendant de X et de tout parti politique.</p>
     </div>
     <nav class="foot-cols" aria-label="Pied de page">
-      <div><h2>Seat 12A</h2><a href="#" data-soon>Les cases</a><a href="#" data-soon>Demander une vérification</a><a href="#" data-soon>L'extension</a></div>
+      <div><h2>Seat 12A</h2><a href="#" data-soon>Les fact-checks</a><a href="#" data-soon>Demander une vérification</a><a href="#" data-soon>L'extension</a></div>
       <div><h2>Comprendre</h2><a href="#" data-soon>Méthode</a><a href="#" data-soon>Nos règles de vol</a><a href="#" data-soon>Questions fréquentes</a></div>
-      <div><h2>L'association</h2><a href="#" data-soon>À propos</a><a href="#" data-soon>Transparence et financement</a><a href="#" data-soon>Nous contacter</a></div>
+      <div><h2>Le projet</h2><a href="#" data-soon>À propos</a><a href="https://github.com/seat12a" rel="noopener">Le code source</a><a href="#" data-soon>Nous contacter</a></div>
       <div><h2>Légal</h2><a href="#" data-soon>Mentions légales</a><a href="#" data-soon>Confidentialité</a></div>
     </nav>
     <div class="foot-base">
       <span>© {year} Seat 12A</span>
-      <span>Vol S12A · arrivé à destination</span>
+      <button class="link" id="takeoff" type="button">Redécoller</button>
     </div>
   </div>
 </footer>

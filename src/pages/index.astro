@@ -3,86 +3,115 @@
  * Home page: a flight seen from seat 12A. The scene is drawn by src/scripts/home/ (WebGL); the sections below are placed
  * along the flight by scroll.js: `--f` is the point of the flight (0..1) where a section is centred, `data-y` shifts
  * it (fraction of the screen), `data-calm="1"` quiets the sky behind it, `.left` aligns it left (desktop only),
- * `.light` uses dark ink (for bright skies).
+ * `.light` uses dark ink (for bright skies), `.wide` puts an illustration next to the text (desktop) or under it (phone).
  *
- * Links marked data-soon point to pages that do not exist yet: they do nothing for now.
- * Texts: see docs/textes.md (current version, alternatives, what must be validated).
+ * The story: on the ground and in the cloud, we cannot see (social networks); breaking through, we see clearly (what
+ * Seat 12A does); in cruise, how we work and what comes next; over Paris at night, the internet seen from above.
+ *
+ * Illustrations (.art) are drawn by art.js, pictograms (.picto) by hud.js. Links marked data-soon point to pages that
+ * do not exist yet: they do nothing for now. Texts: see docs/textes.md (current version, what must be validated).
  */
 import Base from '../layouts/Base.astro';
 import Logo from '../components/Logo.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/home.css';
+
+const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X, en français, avec ses sources. Gratuit, sans publicité, code ouvert.";
 ---
-<Base
-  title="Seat 12A · Prenez de la hauteur sur ce qui circule"
-  description="Seat 12A vérifie les affirmations qui circulent sur X, en français, et publie chaque vérification avec ses sources. Une association à but non lucratif."
->
+<Base title="Seat 12A · Prenez de la hauteur sur ce qui circule" description={description}>
+  <script is:inline slot="head">
+    /* Hide the flight until main.js has placed it; if it never runs (blocked, failed), show the texts as a plain page. */
+    document.documentElement.classList.add('js');
+    setTimeout(function () { var h = document.documentElement; if (!h.classList.contains('flying')) h.classList.add('static'); }, 6000);
+  </script>
   <canvas id="sky" aria-hidden="true"></canvas>
 
   <nav class="nav" id="nav" aria-label="Navigation principale">
     <a class="brand" href="/" id="home" aria-label="Seat 12A, accueil"><Logo /></a>
     <div class="nav-links">
-      <a href="#" data-soon>Cases</a>
+      <a href="#" data-soon>Fact-checks</a>
       <a href="#" data-soon>Demander</a>
       <a href="#" data-soon>Méthode</a>
       <a href="#" data-soon>À propos</a>
     </div>
-    <a class="btn small" href="#" data-soon>Installer l'extension</a>
+    <a class="btn small" href="#" data-soon>Ajouter l'extension</a>
   </nav>
 
   <main id="track">
     <section class="sec hero" style="--f:0" data-calm="1" data-y="-.04">
       <h1>Prenez de la hauteur sur ce qui circule.</h1>
-      <p>Seat 12A vérifie les affirmations qui circulent sur X, en français, et publie chaque vérification avec ses sources, pour que vous puissiez juger par vous-même.</p>
+      <p>Sur les réseaux sociaux, une info fait le tour du web avant que quiconque l'ait vérifiée. Seat 12A vérifie les posts qui circulent sur X, les remet dans leur contexte et montre toutes ses sources.</p>
       <div class="ctas">
-        <a class="btn" href="#" data-soon>Voir les cases</a>
-        <a class="link" href="#" data-soon>Demander une vérification</a>
+        <a class="btn" href="#" data-soon>Voir les fact-checks</a>
+        <a class="link" href="#" data-soon>Ajouter l'extension</a>
       </div>
     </section>
 
-    <section class="sec light left" style="--f:.265" data-calm="0">
-      <h2>D'abord, on isole ce qui est affirmé.</h2>
-      <p>Un post mélange souvent des faits, des opinions et du ressenti. On en extrait ce qui peut se vérifier : un chiffre, une citation, une date, une image. Une opinion, elle, ne se vérifie pas.</p>
+    <section class="sec light left wide" style="--f:.265" data-calm="0">
+      <div class="txt">
+        <h2>Sur les réseaux, on y voit mal.</h2>
+        <p>Les fils d'actualité mettent en avant ce qui fait réagir : la colère, la peur, l'indignation. Et le faux va plus vite que le vrai : sur Twitter, une info vraie met en moyenne six fois plus de temps qu'une fausse à toucher 1 500 personnes. En pleine campagne électorale, ça compte.</p>
+        <span class="note">Source : <a href="https://doi.org/10.1126/science.aap9559" rel="noopener">étude du MIT sur 126 000 rumeurs, Science, 2018</a>.</span>
+      </div>
+      <canvas class="art" data-art="feed" width="84" height="56" style="--w:84;--h:56" aria-hidden="true"></canvas>
     </section>
 
-    <section class="sec" style="--f:.455" data-calm="1" data-y="-.14">
-      <h2>Puis on cherche, jusqu'à y voir clair.</h2>
-      <p>On remonte aux sources d'origine : données publiques, documents, études, archives. La note dit ce qu'on a trouvé, où, et ce qui reste incertain.</p>
+    <section class="sec left wide" style="--f:.455" data-calm="1" data-y="-.1">
+      <div class="txt">
+        <h2>Vérifier, remettre en contexte, nuancer.</h2>
+        <div class="points">
+          <div><canvas class="picto" data-p="magnifier" width="16" height="16" aria-hidden="true"></canvas><div><h3>Vérifier</h3><p>Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source.</p></div></div>
+          <div><canvas class="picto" data-p="photo" width="16" height="16" aria-hidden="true"></canvas><div><h3>Remettre en contexte</h3><p>Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque.</p></div></div>
+          <div><canvas class="picto" data-p="balance" width="16" height="16" aria-hidden="true"></canvas><div><h3>Nuancer</h3><p>Peu de posts sont tout vrais ou tout faux. On dit ce qui est établi, ce qui se discute, et de quel côté penchent les preuves.</p></div></div>
+        </div>
+      </div>
+      <canvas class="art" data-art="context" width="76" height="62" style="--w:76;--h:62" aria-hidden="true"></canvas>
     </section>
 
-    <section class="sec left" style="--f:.55" data-calm="1" data-y="-.12">
-      <h2>Ce qui vient d'être vérifié.</h2>
-      <p>Chaque case montre le post d'origine, l'affirmation vérifiée, les sources consultées et le verdict, sans jargon.</p>
-      <div class="ctas"><a class="btn" href="#" data-soon>Parcourir les cases</a></div>
-    </section>
-
-    <section class="sec" style="--f:.64" data-calm="1">
-      <h2>Nos règles de vol.</h2>
+    <section class="sec" style="--f:.55" data-calm="1" data-y="-.04">
+      <h2>Rien à vendre, rien à cacher.</h2>
       <div class="rules">
-        <div><canvas class="picto" data-p="balance" width="16" height="16" aria-hidden="true"></canvas><h3>Pas de faux équilibre</h3><p>Quand les preuves penchent d'un côté, on le dit clairement.</p></div>
-        <div><canvas class="picto" data-p="magnifier" width="16" height="16" aria-hidden="true"></canvas><h3>Les sources, toujours</h3><p>Chaque note montre d'où elle vient. Vous pouvez tout vérifier.</p></div>
-        <div><canvas class="picto" data-p="headset" width="16" height="16" aria-hidden="true"></canvas><h3>Un humain a le dernier mot</h3><p>L'équipage relit et modère chaque note.</p></div>
-        <div><canvas class="picto" data-p="heart" width="16" height="16" aria-hidden="true"></canvas><h3>Rien à vendre</h3><p>Pas de pub, pas d'abonnement. Une association à but non lucratif.</p></div>
+        <div><canvas class="picto" data-p="heart" width="16" height="16" aria-hidden="true"></canvas><h3>Rien à vendre</h3><p>Pas de pub, pas d'abonnement, pas de version payante.</p></div>
+        <div><canvas class="picto" data-p="code" width="16" height="16" aria-hidden="true"></canvas><h3>Code ouvert</h3><p>Tout notre code est public : n'importe qui peut lire comment Seat 12A fonctionne. <a class="link" href="https://github.com/seat12a" rel="noopener">Voir le code</a></p></div>
+        <div><canvas class="picto" data-p="book" width="16" height="16" aria-hidden="true"></canvas><h3>Méthode publique</h3><p>Comment on choisit un post, comment on cherche, comment on tranche : tout est écrit.</p></div>
+        <div><canvas class="picto" data-p="link" width="16" height="16" aria-hidden="true"></canvas><h3>Les sources, toujours</h3><p>Chaque vérification cite ses sources. Vous pouvez tout revérifier vous-même.</p></div>
       </div>
     </section>
 
-    <section class="sec left" style="--f:.73" data-calm="1" data-y="-.06">
-      <h2>Un doute ? Posez la question.</h2>
-      <p>Collez une affirmation ou un lien. On cherche les sources et on vous dit aussi quand on ne sait pas.</p>
-      <form class="ask" id="ask">
-        <label class="visually-hidden" for="askInput">Affirmation ou lien à vérifier</label>
-        <input id="askInput" type="text" placeholder="Cette photo date-t-elle vraiment de 2024 ?">
-        <button class="btn" type="submit">Vérifier</button>
-      </form>
-      <span class="note">Ou installez l'extension : elle repère les posts à vérifier directement sur X.</span>
+    <section class="sec left wide" style="--f:.64" data-calm="1" data-y=".04">
+      <div class="txt">
+        <h2>Bientôt : ce que les chiffres racontent.</h2>
+        <p>À force de vérifier, on accumule des données. On s'en servira pour de petites études : combien de fausses infos circulent, sur quels sujets, à quels moments d'une campagne, et comment elles se propagent.</p>
+      </div>
+      <canvas class="art low" data-art="radar" width="64" height="64" style="--w:64;--h:64" aria-hidden="true"></canvas>
     </section>
 
-    <section class="sec end" style="--f:1" data-calm="1" data-y="-.21">
-      <h2>Une erreur dans une case ? Dites-le-nous.</h2>
-      <p>Envoyez le lien de la case et la source qui la contredit. Si on s'est trompé, la note est corrigée et la correction reste visible.</p>
+    <section class="sec left wide" style="--f:.72" data-calm="1" data-y="-.06">
+      <div class="txt">
+        <h2>Un doute ? Posez la question.</h2>
+        <p>Collez une affirmation ou un lien. On cherche les sources, et on vous dit aussi quand on ne sait pas.</p>
+        <form class="ask" id="ask">
+          <label class="visually-hidden" for="askInput">Affirmation ou lien à vérifier</label>
+          <input id="askInput" type="text" placeholder="Cette photo date-t-elle vraiment de 2024 ?">
+          <button class="btn" type="submit">Vérifier</button>
+        </form>
+        <span class="note">Sur ordinateur, l'extension repère les posts à vérifier directement sur X (Chrome, Edge, Brave…). <a class="link" href="#" data-soon>Ajouter l'extension</a></span>
+      </div>
+      <canvas class="art" data-art="browser" width="84" height="58" style="--w:84;--h:58" aria-hidden="true"></canvas>
+    </section>
+
+    <section class="sec" style="--f:.885" data-calm="1" data-y="-.2">
+      <h2>Internet reste une merveille.</h2>
+      <p>Une encyclopédie écrite par des bénévoles, des cours gratuits, des archives ouvertes à tous : jamais autant de savoir n'a été aussi facile d'accès. Seat 12A existe pour qu'on puisse continuer à s'y fier.</p>
+    </section>
+
+    <section class="sec end" style="--f:1" data-calm="1" data-y="-.185">
+      <canvas class="art belt" data-art="belt" width="18" height="14" style="--w:18;--h:14" aria-hidden="true"></canvas>
+      <h2>Vous pouvez détacher votre ceinture.</h2>
+      <p>Bienvenue au sol. La prochaine fois qu'un post vous fait bondir, prenez de la hauteur avant de le partager : il a peut-être déjà été vérifié.</p>
       <div class="ctas">
-        <a class="btn" href="#" data-soon>Signaler une erreur</a>
-        <button class="link" id="takeoff" type="button">Redécoller</button>
+        <a class="btn" href="#" data-soon>Ajouter l'extension</a>
+        <a class="link" href="#" data-soon>Voir les fact-checks</a>
       </div>
     </section>
   </main>
@@ -102,6 +131,8 @@ import '../styles/home.css';
     </svg>
     <span class="digits" id="digits"></span><span class="unit">ft</span>
   </div>
+
+  <canvas id="intro" aria-hidden="true"></canvas>
 
   <script>
     import '../scripts/home/main.js';

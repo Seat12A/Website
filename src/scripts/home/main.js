@@ -6,27 +6,49 @@
  *              ├─► altFt, tilt, horizon, travel     camera
  *              ├─► sunPosition, moonPosition        one sun, one day (see flightPlan.js)
  *              └─► uniforms ──► renderer (pass 1: one colour per cell, pass 2: sharp squares) ──► screen
+ *
+ * Before this script runs, the page shows nothing but the background (html.js, see home.css); the first frame adds
+ * html.flying. If the script never runs, a timer in index.astro shows the texts as a plain page (html.static).
+ * The loop is guarded: an error in one frame, or a lost WebGL context, does not freeze the texts.
  */
+import { createArt } from './art.js';
 import { createCabinSound } from './cabinSound.js';
 import { createMeteors, strobe } from './effects.js';
 import { altFt, CITY_START, GROUND_END, groundLights, horizon, moonPosition, NIGHT_START, RUNWAYS, sky, sunPosition, tilt, travel } from './flightPlan.js';
 import { createAltimeter, createPictos } from './hud.js';
-import { createRenderer } from './renderer.js';
+import { createIntro } from './intro.js';
+import { cellSize, createRenderer } from './renderer.js';
 import { createScroll } from './scroll.js';
 import { clamp, smooth } from './util.js';
 
 const $ = (s) => document.querySelector(s);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const root = document.documentElement;
 const canvas = $('#sky');
-const renderer = createRenderer(canvas);
-if (renderer) addEventListener('resize', renderer.resize);
-else document.documentElement.classList.add('no-webgl');
+let renderer = createRenderer(canvas);
+if (!renderer) root.classList.add('no-webgl');
+/* a lost GPU context (driver reset, too many tabs): fall back to the gradient, and rebuild when it comes back */
+canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); renderer = null; root.classList.add('no-webgl'); });
+canvas.addEventListener('webglcontextrestored', () => { renderer = createRenderer(canvas); if (renderer) root.classList.remove('no-webgl'); });
+
+/* the pixel-art canvases over the scene use the same cell size as the scene */
+let cell = cellSize();
+function onResize() {
+  cell = cellSize();
+  root.style.setProperty('--cell', cell.css + 'px');
+  renderer?.resize();
+}
+onResize();
+addEventListener('resize', onResize);
 
 const sections = Array.from(document.querySelectorAll('.sec'));
 const scroll = createScroll({ track: $('#track'), sections, reducedMotion });
 const updateAltimeter = createAltimeter($('#digits'), $('#plane'));
 const drawPictos = createPictos(Array.from(document.querySelectorAll('.picto')));
+const drawArt = createArt(Array.from(document.querySelectorAll('.art')), reducedMotion);
+const drawIntro = createIntro($('#intro'), reducedMotion);
+let introOn = true, beltLit = true;
 const meteor = createMeteors(reducedMotion);
 const nav = $('#nav');
 
@@ -60,6 +82,7 @@ const t0 = performance.now();
 let prev = t0, drift = 0, vY = scrollY;
 
 function frame(now) {
+  requestAnimationFrame(frame);                         /* first, so that an error in this frame does not stop the loop */
   scroll.tick(now);
   const dt = Math.min(.05, (now - prev) / 1000); prev = now;
   /* without Lenis (touch screens), the scene follows the native scroll with a little smoothing */
@@ -77,6 +100,9 @@ function frame(now) {
   nav.classList.toggle('solid', scrollY > 40);
 
   if (renderer) {
+    try { drawScene(); } catch (err) { console.error(err); renderer = null; root.classList.add('no-webgl'); }
+  }
+  function drawScene() {
     renderer.draw((gl, U) => {
       const { gw, gh } = renderer.size;
       gl.uniform1f(U.uTime, time); gl.uniform3fv(U.uPal, S.pal.flat());
@@ -101,14 +127,20 @@ function frame(now) {
       const me = meteor(now, S.stars, gw / gh); gl.uniform4fv(U.uMet, me[0]); gl.uniform2fv(U.uMet2, me[1]);
       const c = calmRect(); gl.uniform4f(U.uCalm, c[0], c[1], c[2], c[3]); gl.uniform1f(U.uCalmK, c[4]);
     });
-  } else {
+  }
+  if (!renderer) {
     const a = S.pal[2].map((v) => Math.round(v * 255)), c = S.pal[5].map((v) => Math.round(v * 255));
     document.body.style.background = `linear-gradient(rgb(${a}), rgb(${c}))`;
   }
   updateAltimeter(ft);
   drawPictos(S.pal);
-  document.body.classList.toggle('landed', f > .985);
-  requestAnimationFrame(frame);
+  /* the seat-belt sign switches off once the plane is parked, with its chime if the sound is on */
+  const landed = f > .985;
+  if (beltLit === landed) { beltLit = !landed; if (landed) sound.chime(); }
+  drawArt(S.pal, innerHeight, time, beltLit);
+  document.body.classList.toggle('landed', landed);
+  if (!root.classList.contains('flying')) { root.classList.add('flying'); root.classList.remove('static'); }
+  if (introOn) introOn = drawIntro(now, S.pal, cell.css);
 }
 requestAnimationFrame(frame);
 

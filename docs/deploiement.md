@@ -48,8 +48,9 @@ alors :
 
 ## Avant d'ouvrir la bêta au public
 
-- **Mentions légales** : obligatoires en France pour un site édité par une association (nom, siège, directeur de la
-  publication, hébergeur : Vercel Inc.). La page n'existe pas encore.
+- **Mentions légales** : obligatoires en France (éditeur, directeur de la publication, hébergeur : Vercel Inc.). Seat 12A
+  n'a pas encore de statut juridique : l'éditeur est donc une ou plusieurs personnes physiques (à vérifier : un
+  particulier non professionnel peut ne donner son identité qu'à l'hébergeur). La page n'existe pas encore.
 - **Confidentialité** : à rédiger, même si le site ne pose aucun cookie aujourd'hui.
 - Les liens du menu et du pied de page (`data-soon`) ne mènent nulle part, et le formulaire « Vérifier » ne fait
   rien : soit on crée les pages, soit on les masque pour la bêta.

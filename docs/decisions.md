@@ -1,7 +1,8 @@
 # Décisions de design et retours de Jules
 
 Ce document rassemble ce qui a été décidé pour la page d'accueil, et surtout **ce que Jules a refusé**, pour ne pas
-refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentaine d'itérations sur le prototype), complété au passage en bêta.
+refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentaine d'itérations sur le prototype),
+complété au passage en bêta puis le 25/11/2026 (textes, illustrations, boutons, volet d'arrivée).
 
 ## Le concept
 
@@ -11,7 +12,11 @@ refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentai
   gauche, le sol s'éloigne → le soleil se lève *parce qu'on monte* (phénomène réel) → entrée progressive dans les
   nuages → croisière au-dessus d'une mer de nuages → heure dorée → descente dans les nuages → nuit sur Paris
   (tour Eiffel et son phare, Seine, monuments) → atterrissage face à la tour de contrôle.
-- Le titre du hero : « Prenez de la hauteur sur ce qui circule. »
+- Le titre du hero : « Prenez de la hauteur sur ce qui circule. » (Jules veut le garder comme phrase principale.)
+- **L'histoire racontée par les textes** (25/11/2026) : au sol et dans le nuage, on n'y voit rien (les réseaux, très
+  polarisants, surtout pendant les élections) ; à la percée, on y voit clair (ce que fait Seat 12A : vérifier,
+  remettre en contexte, nuancer) ; en croisière, comment on travaille (rien à vendre, code ouvert, méthode publique)
+  et ce qui vient (de petites études sur les données) ; au-dessus de Paris la nuit, la beauté d'Internet.
 
 ## Règles visuelles (validées)
 
@@ -34,6 +39,16 @@ refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentai
   pixels a été refusé). **Titres d'une seule couleur. Jamais de texte tout en majuscules.**
 - **Responsive** : sur téléphone, les textes sont centrés ; le soleil reste au-dessus du texte qu'on lit et ne monte
   ou ne se couche qu'entre deux textes.
+- **Pas que du texte** (demande de Jules, 25/11/2026) : des illustrations en pixel art accompagnent les textes
+  (`art.js`), sur la même grille que la scène (une case de l'illustration = une cellule) et avec les tons de la scène.
+  Elles avancent avec le défilement, jamais avec un fondu ou un flou. Aucun vrai post, aucune fausse affirmation : le
+  texte des posts est dessiné en barres, rien n'imite l'apparence de X.
+- **Boutons** (25/11/2026) : au survol, le bouton passe en bleu ciel pâle et un reflet en pixels (une bande épaisse et
+  une fine, en escalier sur la grille) le traverse par crans, en boucle. Kitsch, voulu. Les petites étoiles qui
+  clignotent aux coins ont été proposées et **refusées**.
+- **Animation d'arrivée** (25/11/2026) : un volet de hublot en pixel art couvre l'écran au chargement, se décroche,
+  puis remonte et découvre la piste (`intro.js`, environ 1,3 s). Pas de fondu, pas de flou, pas de décalage entre les
+  textes : tout est découvert ensemble par le volet. Rien si le visiteur demande moins d'animations.
 
 ## Ce qui fait « IA » (refusé, ne pas remettre)
 
@@ -80,18 +95,32 @@ refaire les mêmes erreurs. Il est issu de la session du 24/11/2026 (une trentai
 
 - Bouton « Son coupé / Son de cabine », coupé par défaut. **Seulement l'ambiance** (grondement, ventilation, vibration),
   synthétisée et étouffée. Les annonces de bord ont été refusées (voix de synthèse « ralentie », puis MBROLA) ; le
-  « ding » de la ceinture a été retiré avec elles (à proposer à nouveau si besoin).
+  « ding » de la ceinture a été retiré avec elles, puis **remis le 25/11/2026** à un seul endroit : quand le panneau
+  ceinture s'éteint à l'arrivée, et seulement si le son est allumé. À retirer si Jules ne l'aime pas.
 
 ## Textes
 
 - Le texte sur l'auteur des posts (« On ne regarde jamais qui parle ») : retiré, « on s'en fiche » (Jules). Chaque
   phrase doit apprendre quelque chose au visiteur ; pas de phrases futiles (« Merci d'avoir pris de la hauteur avec
   nous » : retirée). Propositions et points à valider : `textes.md`.
+- **Expliquer le concept, pas la cuisine** (25/11/2026) : « D'abord, on isole ce qui est affirmé » (« on s'en tape »)
+  et « Une erreur dans une case ? Dites-le-nous » (« on s'en fiche ») sont retirés. Quelqu'un qui ne connaît rien
+  doit comprendre ce qu'est Seat 12A.
+- **Jamais le mot « case »** pour les visiteurs : « fact-check » (menus, boutons) ou « vérification » (phrases).
+- **Jamais « association »** : Seat 12A n'a pas de statut juridique. On peut mettre en avant qu'on ne vend rien, que
+  tout le code est public et que la méthode l'est aussi.
+
+## Chargement
+
+- Avant que le script démarre, la page n'affiche que le fond (couleur du volet fermé) : plus jamais toutes les
+  sections empilées au centre (bug vu par Jules le 25/11/2026, quand le script tarde ou échoue). Si le script ne
+  démarre pas en 6 s, ou sans JavaScript, les textes s'affichent comme une page simple, lisible.
 
 ## Points à valider avec Jules ou l'équipe
 
 - Les textes qui décrivent le fonctionnement de Tower (voir `textes.md`) : notamment « un humain relit chaque note »
-  (relecture avant ou après publication ?) et le signalement des erreurs.
+  (retiré en attendant), le code public de Tower et de l'extension, l'endroit où la méthode est publiée, ce que fait
+  l'extension.
 - Les libellés exacts des verdicts (pour le futur tableau des arrivées).
 - L'éclairage de nuit de la tour Eiffel et son phare font l'objet de droits pour certains usages : à vérifier avant la
   mise en ligne.

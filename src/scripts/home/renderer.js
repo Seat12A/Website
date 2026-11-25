@@ -17,6 +17,15 @@ const UNIFORMS = ['uRes', 'uTime', 'uPal', 'uSea', 'uFog', 'uCover', 'uTop', 'uB
   'uOffY', 'uFlash', 'uSun', 'uWing', 'uGround', 'uH', 'uTravel', 'uTilt', 'uHorizon', 'uNight', 'uCity', 'uStrobe', 'uWingS',
   'uBlink', 'uGlint', 'uRwy', 'uCalm', 'uCalmK', 'uMoon', 'uMoonL', 'uMilky', 'uMet', 'uMet2', 'uFogDir', 'uFlightX'];
 
+/** Size of a cell: in device pixels (a whole number, so squares stay sharp) and in CSS pixels. Shared with the
+ *  pixel-art canvases drawn over the scene (illustrations, pictograms, the window blind), so they use the same grid. */
+export function cellSize() {
+  const w = innerWidth, hgt = innerHeight, dpr = Math.min(devicePixelRatio || 1, 3);
+  const cellCss = Math.max(3, Math.round(Math.max(w, hgt * 1.4) / 480));
+  const dev = Math.max(1, Math.round(cellCss * dpr));
+  return { dev, css: dev / dpr, dpr };
+}
+
 /** Returns null when WebGL2 is not available (the page then falls back to a CSS gradient). */
 export function createRenderer(canvas) {
   const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' });
@@ -51,9 +60,8 @@ export function createRenderer(canvas) {
   const size = { gw: 1, gh: 1, cell: 3, devW: 1, devH: 1 };
 
   function resize() {
-    const w = innerWidth, hgt = innerHeight, dpr = Math.min(devicePixelRatio || 1, 3);
-    const cellCss = Math.max(3, Math.round(Math.max(w, hgt * 1.4) / 480));
-    size.cell = Math.max(1, Math.round(cellCss * dpr));
+    const w = innerWidth, hgt = innerHeight, { dev, dpr } = cellSize();
+    size.cell = dev;
     size.devW = Math.round(w * dpr); size.devH = Math.round(hgt * dpr);
     size.gw = Math.ceil(size.devW / size.cell); size.gh = Math.ceil(size.devH / size.cell);
     canvas.width = size.devW; canvas.height = size.devH;
