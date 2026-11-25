@@ -80,7 +80,9 @@ une **page 404** dans le style de l'accueil avec un avion crashé, mignon et jol
   propre, filet vertical jusqu'en bas.
 - Liste : barre de titre alignée sur la barre « Répartition », bandes de mois sans arrondi, placeholder court au téléphone.
 - En-tête des autres pages : aussi large que le contenu, sur ses marges, liens à côté du logo (`.nav.page`).
-- 404 : `src/scripts/lost/` (scène figée à f = 0, avion planté dessiné par le code), `src/pages/404.astro`. Corrigé en
-  route : avion trop mince et posé à plat, fumée tramée en damier, fumée devant le fuselage, avion trop petit.
+- 404, première version (scène de l'accueil figée, avion dodu en aplats) : refusée par Jules (« pas le même fond », «
+  l'illustration est nulle »). Deuxième version, direction choisie par Jules (avion seul, centré, fond uni, réaliste) :
+  un avion de ligne en fonctions de distance, rendu par lancer de rayons à la taille des cellules, réduit à 8 tons
+  tramés (`src/scripts/lost/plane.js`), cadrage calculé automatiquement.
 - Vérifié : build, captures 1440 (clair, sombre), 390, 404 en 1280 et 390, accueil au point 0 (inchangé, sans erreur).
-- À valider par Jules : la 404 (à l'œil, la fumée bouge), le bandeau verdict, l'en-tête élargi.
+- À valider par Jules : la 404, le bandeau verdict, l'en-tête élargi.

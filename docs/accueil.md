@@ -11,7 +11,7 @@ Projet Astro, page `src/pages/index.astro`. La scène du vol est dessinée en We
 | `src/components/Nav.astro` | La barre de navigation de l'accueil. Liens partagés avec les autres pages : `src/lib/links.js`. |
 | `src/layouts/Base.astro` | Coquille commune : langue, balises meta, Open Graph, favicon. |
 | `src/components/Logo.astro`, `Nav.astro` | Le logo complet (SVG), la barre de navigation (partagée avec les autres pages). |
-| `src/pages/404.astro`, `src/scripts/lost/` | Page introuvable : la scène de l'accueil figée à l'heure bleue au sol (`lost/main.js`) et un petit avion de ligne planté dans l'herbe (`lost/crash.js`). |
+| `src/pages/404.astro`, `src/scripts/lost/plane.js` | Page introuvable : fond bleu nuit uni, la barre de navigation de l'accueil, un avion de ligne planté dans le sol (rendu 3D transformé en pixel art). |
 | `src/styles/site.css`, `chrome.css` | Partie commune : polices (Fontsource), couleurs ; barre de navigation, boutons, liens (`chrome.css`, partagé avec les autres pages). |
 | `src/styles/home.css` | Le style propre à l'accueil (le vol, les sections, l'altimètre, le son). |
 | `src/scripts/home/main.js` | Point d'entrée : relie tout et fait tourner la boucle d'animation. |

@@ -161,14 +161,17 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
 
 ## La page 404
 
-- **Demande de Jules (25/11/2026)** : reprendre le style de l'accueil, avec un avion crashé ou qui se crashe, « mais
-  que ça soit mignon et joli ». Fait : la scène de l'accueil (même shader, même plan de vol) **figée à l'heure bleue au
-  sol** (f = 0 : aéroport, étoiles, croissant de lune), avec l'arrivée cellule par cellule ; devant, un **petit avion de
-  ligne dodu, le nez planté dans une butte de terre à côté de la piste**, la queue en l'air, les hublots encore allumés
-  (l'accent chaud), la fenêtre de Seat 12A sur la dérive, trois bouffées de fumée qui montent par crans et que le vent
-  emporte. Pixel art sur la grille des cellules, dans l'échelle de tons de la scène, dessiné par le code (`lost/crash.js`).
-- Évité : la fumée tramée contre le ciel (elle faisait le « grillage de petits carrés » déjà refusé) ; un avion trop
-  petit (« soit un truc impressionnant, soit rien »). **À valider par Jules.**
+- **Demande de Jules (25/11/2026)** : une 404 avec un avion crashé, « mignon et joli ». Première version (la scène de
+  l'accueil figée à l'heure bleue, un avion dodu planté dans l'herbe, dessiné en aplats) : **refusée** (« reprends pas
+  le même fond que la page d'accueil », « l'illustration est nulle »).
+- Direction choisie par Jules : **un avion seul, centré, sur un fond uni** (bleu nuit `#0B1030`), **réaliste et beau**
+  plutôt que mignon.
+- Fait : un **petit rendu 3D transformé en pixel art** (`src/scripts/lost/plane.js`) : un avion de ligne modélisé en
+  fonctions de distance (fuselage, nez, cône de queue, ailes en flèche, réacteurs, empennage, dérive avec la fenêtre de
+  Seat 12A), le nez planté dans le sol, la queue en l'air, sur une petite parcelle de terre qui s'efface en tramage ;
+  lumière froide d'en haut avec ombres douces, lancer de rayons à la taille des cellules, puis **une échelle de 8 tons**
+  avec tramage ordonné entre tons voisins seulement ; l'accent chaud : les hublots encore allumés. Cadrage calculé à
+  partir des points extrêmes de la scène. Statique (rien ne bouge). **À valider par Jules.**
 
 ## Les autres pages (fact-checks…)
 
