@@ -16,7 +16,7 @@ void main(){ o = texelFetch(uTex, ivec2(floor((gl_FragCoord.xy + vec2(0., uOffY)
 const UNIFORMS = ['uRes', 'uTime', 'uPal', 'uSea', 'uFog', 'uCover', 'uTop', 'uBot', 'uLo', 'uHi', 'uGlow', 'uRays', 'uStars',
   'uOffY', 'uFlash', 'uSun', 'uWing', 'uGround', 'uH', 'uTravel', 'uTilt', 'uHorizon', 'uNight', 'uCity', 'uStrobe', 'uWingS',
   'uBlink', 'uGlint', 'uRwy', 'uCalm', 'uCalmK', 'uMoon', 'uMoonL', 'uMilky', 'uMet', 'uMet2', 'uFogDir', 'uFlightX',
-  'uHalo', 'uContrail', 'uNet'];
+  'uHalo', 'uContrail', 'uNet', 'uBeam'];
 
 /** Size of a cell: in device pixels (a whole number, so squares stay sharp) and in CSS pixels. Shared with the
  *  pixel-art drawn over the scene (pictograms, button glint, the window blind), so it uses the same grid. */

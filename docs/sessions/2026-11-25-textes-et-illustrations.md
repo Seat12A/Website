@@ -63,6 +63,16 @@ ne nomment pas encore ces phénomènes : à décider (une ligne discrète pourra
 - Faisceau de la tour Eiffel : refait en vraie 3D (voir `accueil.md`). Il était aussi beaucoup trop faible pour se
   voir ; corrigé, et le sommet de la tour ne disparaît plus au loin.
 
+## Derniers retours
+
+- Section « Plus tard : des études » retirée ; la traînée est passée sur « Un doute ? » (heure dorée) ; son ombre sur
+  les nuages retirée.
+- « Ce que fait Seat 12A » : « Vérifier les posts », « Remettre les posts dans leur contexte », « Apporter de la
+  nuance ».
+- Hors du nuage, le flash n'éclaire plus l'aile.
+- Paris : plus de points jaunes, une nappe de lumière chaude continue (voir `decisions.md`).
+- Faisceau de la tour Eiffel : tourne avec le défilement, physique refaite, caché par ce qui est devant.
+
 ## Limites connues
 
 - Sur téléphone, le relief de la mer de nuages remonte jusqu'au milieu de l'écran : le bas de « Nuancer » et de « Les

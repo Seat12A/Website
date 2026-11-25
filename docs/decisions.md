@@ -47,16 +47,23 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   - à la percée (« Vérifier… ») : **halo de 22° et parhélies** autour du soleil bas (un soleil, trois images) ;
   - dans le nuage (« on y voit mal ») : chaque **flash du stroboscope illumine le brouillard** (les pilotes peuvent
     les couper en nuage : ils éblouissent) ;
-  - en croisière (« les études… comment elles se propagent ») : un autre avion passe plus haut, sa **traînée**
-    s'élargit et se défait, son **ombre** tombe sur la mer de nuages ;
-  - au-dessus de Paris (« On aime Internet ») : **le réseau**, rendu comme une ambiance : de grandes vagues de lumière
-    lentes partent du centre et traversent la ville (plus de fenêtres allumées, plus lumineuses, puis ça retombe).
+  - à l'heure dorée (« Un doute ? ») : un autre avion passe plus haut, sa **traînée** s'élargit et se défait. Son
+    ombre sur la mer de nuages a été **retirée** (Jules : « le reflet de l'avion sur les nuages ») ;
+  - au-dessus de Paris (« On aime Internet ») : **Paris n'est plus dessiné en points lumineux** (« catastrophique »,
+    ils apparaissent et disparaissent au défilement) mais en **nappe de lumière chaude** continue, accrochée au sol et
+    assez floue pour ne jamais scintiller : quartiers plus ou moins lumineux, parcs sombres, avenues de l'Étoile,
+    quais de Seine, quelques rues par endroits (toutes les rues faisaient un grillage). Une petite rampe de l'accent
+    chaud (4 intensités, tramées entre voisines). De grandes vagues lentes la traversent (le réseau).
     Refusé : des pointillés et des éclats le long des rues (« trop précis, pas une ambiance ») ;
   - à l'approche : le **« lapin »**, l'éclair qui court sur les feux d'approche d'une piste parallèle.
-  - **le faisceau de la tour Eiffel**, refait : un vrai faisceau en 3D vu en perspective (long sur le côté, court
-    quand il vient vers nous ou s'éloigne), qui s'élargit et pâlit avec la distance, inégal dans la brume, plus
-    lumineux quand il vient vers nous, et un éclat quand il balaie l'avion. Toujours un seul faisceau.
+  - **le faisceau de la tour Eiffel**, refait deux fois (« toujours pas naturel ») : il **tourne avec le défilement**,
+    pas avec le temps. Physique : droite en 3D vue en perspective ; plus fin et plus pâle au loin (sa lumière
+    s'étale), jamais plus large qu'il ne faut à l'écran ; diffusion vers l'avant de la brume (bien plus brillant quand
+    il vient vers nous) ; brume inégale fixée dans l'air ; caché par les bâtiments, le sol et l'aile qui sont devant ;
+    une petite lueur à la lampe. Garé, il monte en travers du ciel au-dessus du terminal. Toujours un seul faisceau.
   Essayé et retiré : le front de la vague du réseau en anneau plein (un aplat orange à l'horizon, laid).
+- **Le flash n'éclaire l'aile que dans le nuage** : hors du nuage, une lumière qui n'éclairait que l'aile « fait
+  bizarre ».
 - **Dans le brouillard, l'aile disparaît aussi** (Jules) : d'autant plus vers le bout (17 m) qu'à l'emplanture (2 m).
   Le flash du stroboscope est surtout une grande lueur diffuse autour du bout d'aile, avec des faisceaux à peine
   marqués (une première version en étoile de rayons faisait « soleil dessiné »).

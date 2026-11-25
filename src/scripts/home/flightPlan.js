@@ -70,14 +70,17 @@ export const RUNWAYS = [-400, 3200, 98200, 101800];
    Real things one can see from a window seat, drawn as an atmosphere rather than as precise shapes. */
 /** 22° halo and sun dogs (parhelia), when breaking through the clouds with the sun low: one sun, three images. */
 export const halo = curve([[.43, 0], [.455, 1], [.53, 1], [.6, 0]]);
-/** Another airliner crossing far above in cruise: its contrail widens and spreads, its shadow falls on the clouds.
- *  Returns [progress of the crossing 0..1, visibility]. */
+/** Another airliner crossing far above, at golden hour: its contrail widens and spreads as it ages.
+ *  Returns [progress of the crossing 0..1, visibility]. Gone before we descend into the clouds (0.772). */
 export function contrail(f) {
-  const k = clamp((f - .55) / .18);
-  return [k, smooth(clamp((f - .55) / .03)) * (1 - smooth(clamp((f - .70) / .03)))];
+  const k = clamp((f - .63) / .14);
+  return [k, smooth(clamp((f - .63) / .03)) * (1 - smooth(clamp((f - .735) / .03)))];
 }
 /** Over Paris at night: light runs along the streets, spreading out from the centre (the internet, made visible). */
 export const network = curve([[.845, 0], [.9, 1], [1, 1]]);
+/** The Eiffel Tower beacon turns with the scroll (radians), about one turn over the night arrival; parked, it points
+ *  to the right and a little towards us, so it rises across the sky above the terminal. */
+export const beacon = (f) => -.3 + (f - 1) * 30;
 
 /** Distance travelled over the ground, in metres. `drift` is the extra distance flown with time while climbing. */
 export function travel(f, drift) {

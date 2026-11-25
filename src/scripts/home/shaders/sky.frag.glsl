@@ -8,13 +8,13 @@
  * Only off-ladder colours: the warm light of windows and cities, and real aviation lights (red, blue, green, white).
  *
  * Order of main(): frame and horizon, calm zone, sky and sun (with the 22° halo and sun dogs), night sky, a contrail
- * crossing above, ground phase (cloud layer, ground, buildings), Eiffel Tower beacon, sea of clouds (with the
- * contrail's shadow) and fog (lit by the strobe), left wing, navigation lights.
+ * crossing above, ground phase (cloud layer, ground, buildings), Eiffel Tower beacon, sea of clouds and fog (lit by
+ * the strobe), left wing, navigation lights.
  *
  * Phenomena that illustrate the texts are drawn as an atmosphere, not as precise shapes (pixels cannot do precise):
- * halo and sun dogs at the breakthrough, strobe flashes lighting the fog (the wing fades into it), a contrail and its
- * shadow in cruise, slow waves of light crossing Paris (the network), the "rabbit" of approach lights on the parallel
- * runway, and the Eiffel Tower beacon, a real beam in perspective.
+ * halo and sun dogs at the breakthrough, strobe flashes lighting the fog (the wing fades into it), a contrail at
+ * golden hour, Paris as a carpet of warm light crossed by slow waves (the network), the "rabbit" of approach lights on
+ * the parallel runway, and the Eiffel Tower beacon, a real beam in perspective, turned by the scroll.
  */
 precision highp float;
 out vec4 o;
@@ -26,7 +26,7 @@ uniform float uGround, uH, uTravel, uTilt, uHorizon, uNight, uCity, uStrobe, uWi
 uniform vec4 uRwy; uniform vec4 uCalm; uniform float uCalmK;
 uniform vec4 uMoon; uniform vec3 uMoonL; uniform float uMilky; uniform vec4 uMet; uniform vec2 uMet2;
 uniform float uFogDir; uniform float uFlightX;
-uniform float uHalo; uniform vec2 uContrail; uniform float uNet;
+uniform float uHalo; uniform vec2 uContrail; uniform float uNet; uniform float uBeam;
 const float F = 1.2;                                     /* focal length of the camera (screen height = 1) */
 const float B[16] = float[16](0.,8.,2.,10.,12.,4.,14.,6.,3.,11.,1.,9.,15.,7.,13.,5.);
 float bay(vec2 fc){ return (B[int(mod(fc.y, 4.)) * 4 + int(mod(fc.x, 4.))] + .5) / 16.; }
@@ -116,20 +116,35 @@ float ground(vec2 w, float fwx, float fwz, out float emit, out vec3 ecol, out fl
         float sz = 4700. + 1300. * sin((w.x - 98600.) / 2400.) + 350. * sin((w.x - 98600.) / 780.);
         float sd = abs(z - sz);
         if (sd < max(85., fwz * .7)) {                                                   /* the Seine and its lit bridges */
-          if (abs(mod(w.x, 460.) - 230.) < max(7., .6 * fwx)) { emit = 1.; ecol = fract(z / 14.) < .5 ? warm : warm * .7; return G(.2); }
+          if (abs(mod(w.x, 460.) - 230.) < max(9., .7 * fwx)) { emit = 1.; ecol = warm * .85; return G(.2); }
           wet = 1.; return G(.1);
         }
-        if (sd < 110. && lamp(w.x, 20., z, sz + sign(z - sz) * 96., 1., fwx, fwz) > 0.) { emit = 1.; ecol = warm; }   /* the quays */
+        /* Paris is not drawn as points of light (they pop in and out as we move): it is a continuous carpet of warm
+           light, fixed to the ground and soft enough never to shimmer. Districts are brighter or darker (parks), the
+           streets and the big avenues of the Étoile glow, so do the quays of the Seine. Every line is at least about a
+           cell wide; when it would be thinner, it gets dimmer instead (its light is spread over the cell). */
+        float fm = max(max(fwx, fwz), 1.);
         vec2 gq = mat2(.86, -.5, .5, .86) * dq;
-        bool street = abs(mod(gq.x, 150.) - 75.) < max(5., fwx * .5) || abs(mod(gq.y, 120.) - 60.) < max(5., fwz * .5);
+        float gx = abs(mod(gq.x, 150.) - 75.), gy = abs(mod(gq.y, 120.) - 60.), wS = max(7., 1.3 * fm);
+        float streets = max(exp(-gx * gx / (wS * wS)), exp(-gy * gy / (wS * wS))) * min(1., 9. / wS)
+                      * smoothstep(.45, .7, fbm3(w * .0016 + 5.));                      /* only here and there: no grid */
         vec2 et = w - vec2(96900., 7400.); float le = length(et);
-        if (le < 3200. && abs(fract(atan(et.y, et.x) / 6.2832 * 12.) - .5) * le * .52 < max(8., fw * .6)) street = true;   /* the Étoile */
+        float ra = abs(fract(atan(et.y, et.x) / 6.2832 * 12.) - .5) * le * .52, wA = max(16., 1.3 * fm);
+        float avenues = exp(-ra * ra / (wA * wA)) * (1. - smoothstep(600., 3600., le)) * min(1., 26. / wA);
+        float quays = exp(-pow((sd - 100.) / max(22., fwz), 2.));
+        float blocks = smoothstep(.3, .78, fbm3(w * .0009 + 2.)) * (.75 + .5 * fbm3(w * .0031 + 7.) * (1. - smoothstep(40., 140., fm)));
+        float edge = 1. - smoothstep(3800., 5600., rad);
         /* the network, as an atmosphere: slow, wide waves of light leave the centre and cross the city (about one every
-           ten seconds); where a wave passes, more windows are lit and the lights are brighter, then it settles */
+           ten seconds); where a wave passes the city glows a little brighter, then it settles */
         float wave = uNet * pow(.5 + .5 * sin((rad - uTime * 420.) / 700.), 3.);
-        float dens = (1. - rad / 5600. * .45) * (1. + wave * .45), lb;
-        if (emit < .5 && cityLight(w, fwx, fwz, (street ? .95 : .5) * dens, lb) > 0.) { emit = 1.; ecol = warm * lb * (.82 + .45 * wave); }
-        return G((street ? .22 : .13) + wave * .05);
+        float a = (blocks * .68 + streets * .16 + avenues * .7 + quays * .45) * edge * (.85 + .4 * wave);
+        /* a small warm ramp (the one accent, at a few intensities), dithered between neighbours like the tones */
+        float q = clamp(a, 0., 1.) * 4., qi = floor(q); qi += step(bay(gl_FragCoord.xy), q - qi);
+        if (qi > .5) {
+          emit = 1.;
+          ecol = qi < 1.5 ? mix(uPal[1], warm, .3) : qi < 2.5 ? mix(uPal[1], warm, .6) : qi < 3.5 ? warm : mix(warm, vec3(1., .93, .78), .5);
+        }
+        return G(.13 + wave * .03);
       }
     }
     vec2 p = mat2(.94, -.34, .34, .94) * w;
@@ -369,6 +384,7 @@ void main(){
     if (length((p - vec2(cX, .83 - .023 * (cX + .3))) * uRes.y) < 1.3) T = uTop + .35;  /* the plane itself: one glint */
   }
   float emit = 0.; vec3 ecol = vec3(0.);
+  float occZ = 1e9;                                     /* distance of what is drawn on the ground (hides the beacon) */
 
   if (gnd) {
     if (sy > 0.) {
@@ -408,6 +424,7 @@ void main(){
     }
     if (sy < 0.) {
       float z = uH * F / (-sy);
+      occZ = z;
       if (z < 90000.) {
         vec2 w = vec2(sx * z / F + uTravel, z);
         float fwx = z / (F * uRes.y), fwz = z * z / (max(uH, 1.) * F * uRes.y);   /* footprint of one cell on the ground */
@@ -437,39 +454,50 @@ void main(){
     float bt, zb, be; vec3 bc;
     bool hit = building(sx, sy, uRwy.x, bt, zb, be, bc);
     if (!hit) hit = building(sx, sy, 100000., bt, zb, be, bc);
+    if (hit) occZ = min(occZ, zb);
     if (hit) { float hb = clamp(1. - exp(-zb / 13000.), 0., 1.); T = mix(bt, mix(G(.66), uBot - .1, smoothstep(.5, .97, hb)), hb); emit = be; ecol = bc; }
   }
 
-  /* ---- the Eiffel Tower beacon: one beam turning in 3D, seen in perspective ----
-     The beam is a straight line in the world (from the top of the tower, almost horizontal), projected with the same
-     camera: it looks long when it points sideways, short and bright when it points towards us or away. Along the beam,
-     light fades with distance in metres (not on screen) and the haze makes it uneven; it gets wider far away (the beam
-     opens a little). It is brighter when it points towards us (light scattered forward), and when it sweeps over the
-     plane the source flares and lights up the wing. Relative coordinates: the camera is at the origin. */
+  /* ---- the Eiffel Tower beacon: one beam, turned by the scroll (uBeam), seen in perspective ----
+     The beam is a straight line in the world, from the top of the tower (324 m), almost horizontal, projected with the
+     same camera: long when it points sideways, short when it points towards us or away. What we see is light
+     scattered by the haze, so:
+     - it opens a little (~0.5°): far away it is wider in metres, but its light is spread, so it gets fainter; on screen
+       it gets thinner with distance, and when it would be thinner than a cell it gets dimmer, not wider;
+     - haze scatters mostly forwards (Henyey-Greenstein, g = 0.55): the beam is much brighter where it comes towards
+       us than where it goes away;
+     - it fades with distance, the haze is uneven (fixed in the air, it does not slide along the beam);
+     - when it sweeps over the plane, the source flares and lights up the wing.
+     Relative coordinates: the camera is at the origin. */
   float beamHit = 0.;
   if (gnd && uCity > .5) {
     vec3 src = vec3(98100. - uTravel, 324. - uH, 4300.);
     vec2 s0 = vec2(src.x * F / src.z + .5 * asp, src.y * F / src.z + uHorizon);
     if (s0.x > -1.5 && s0.x < asp + 1.5) {
-      float th = uTime * .85;
-      vec3 dir = normalize(vec3(cos(th), .035, sin(th))), toCam = normalize(-src);
-      float Lm = 9000.;
-      if (dir.z < 0.) Lm = min(Lm, (src.z - 300.) / -dir.z);                           /* stop before reaching the camera */
+      vec3 dir = normalize(vec3(cos(uBeam), .03, sin(uBeam)));
+      float Lm = 12000.;
+      if (dir.z < 0.) Lm = min(Lm, (src.z - 400.) / -dir.z);                           /* stop before reaching the camera */
       vec3 e3 = src + dir * Lm;
       vec2 s1 = vec2(e3.x * F / e3.z + .5 * asp, e3.y * F / e3.z + uHorizon), seg = s1 - s0;
       float u = clamp(dot(p - s0, seg) / max(dot(seg, seg), 1e-6), 0., 1.);
       float pe = length(p - (s0 + seg * u));
       float iz = (1. - u) / src.z + u / e3.z, L = (u * Lm / e3.z) / iz;                 /* perspective-correct distance */
-      float hw = max((3. + L * .012) * F * iz, .55 / uRes.y);                            /* half width on screen */
-      float fw = dot(dir, toCam);
-      float I = (exp(-pow(pe / hw, 2.)) * 1.6 + exp(-pow(pe / (hw * 4.), 2.)) * .4)
-              * exp(-L / 6500.) * (.85 + 1.3 * pow(max(fw, 0.), 3.))
-              * (.65 + .7 * fbm3(vec2(L / 420. - uTime * .2, 2.)))
-              * smoothstep(0., .02, u) * (1. - smoothstep(.85, 1., u) * step(dir.z, 0.));
+      vec3 P = src + dir * L;
+      float g = .55, cosT = dot(dir, normalize(-P));                                     /* beam vs. line of sight, there */
+      float phase = pow(1. + g * g, 1.5) / pow(1. + g * g - 2. * g * cosT, 1.5);        /* 1 when seen sideways */
+      float wW = 2.5 + L * .009, hw = wW * F * iz, cell = 1. / uRes.y;
+      float sub = min(1., hw / (.7 * cell)); hw = max(hw, .7 * cell);
+      float I = (exp(-pow(pe / hw, 2.)) + .16 * exp(-pow(pe / (hw * 6.), 2.)))
+              * pow(sub, .6) * pow(2.5 / wW, .35) * min(phase, 7.) * 1.7 * exp(-L / 9000.)
+              * (.75 + .5 * fbm3(vec2(L / 600., 2.)))
+              * smoothstep(0., .015, u) * (1. - smoothstep(.9, 1., u) * step(dir.z, 0.));
+      float Zu = 1. / iz;
+      if (occZ < Zu) I = 0.;                                                              /* behind buildings or ground */
       T = mix(T, uHi + .42, clamp(I, 0., 1.));
-      beamHit = pow(max(fw, 0.), 60.);                                                   /* it sweeps over the plane */
+      if (occZ > src.z) T += .22 * exp(-length(p - s0) * uRes.y * .7);                   /* the lamp itself */
+      beamHit = pow(max(dot(dir, normalize(-src)), 0.), 80.);                             /* it sweeps over the plane */
       float r0 = length(p - s0);
-      T += beamHit * (.55 * exp(-r0 * uRes.y * .25) + .1 * exp(-r0 * 3.));
+      T += beamHit * (.6 * exp(-r0 * uRes.y * .3) + .12 * exp(-r0 * 4.));
     }
   }
 
@@ -482,13 +510,6 @@ void main(){
     float n = fbm(q), nl = fbm(q + vec2(0., -.05));
     float lt = clamp((n - nl) * 4. + .5, .2, 1.);
     float tc = mix(uLo, uHi, clamp(n * 1.2 - .1, 0., 1.) * .55 + lt * .45);
-    if (uContrail.y > .01) {                                                         /* the contrail's shadow on the clouds */
-      float age = cX - .45 - p.x, pr = (p.y - (.17 - .009 * (p.x + .3))) * 1.8;     /* flattened: it lies on the cloud tops */
-      if (age > .05) {
-        float wd = .008 + age * .035, wav = (fbm3(vec2((p.x + uFlightX * .006) * 6., 5.)) - .5) * age * .05;
-        tc -= exp(-pow((pr - wav) / wd, 2.)) * exp(-age * .6) * .3 * uContrail.y;
-      }
-    }
     T = mix(T, tc, msc);
   }
   float fogM = 0., fogT = 0., flashL = 0.;
@@ -530,7 +551,7 @@ void main(){
   float zw = SPAN + .15, xw = wx * zw / F, yw = wy * zw / F, wu = (yw - tipY) / 2.4;
   if (wu > 0. && wu < 1.) {                                                              /* winglet */
     float le = tipLE - 1.5 * wu, te = le - mix(tipLE - tipTE, .7, wu);
-    float wT = mix(uWing.x, uWing.y, .3 + wu * .3 + (le - xw) * .08 + uStrobe * .3);
+    float wT = mix(uWing.x, uWing.y, .3 + wu * .3 + (le - xw) * .08 + uStrobe * fogM * .3);
     if (xw < le && xw > te) col = pal(mix(wT, fogT, fogM * .94), b);
   }
   float den = wy - DH * F;
@@ -553,7 +574,7 @@ void main(){
         if (ch > .965) wt = .2;
         wt += (1. - smoothstep(0., 1.3, abs(z - (3. + uGlint * 40.) + ch * 2.))) * .26 * clamp(uGlow * 2., 0., 1.);   /* sun glint */
         wt += beamHit * .35;                                                              /* the beacon sweeps over the wing */
-        wt += uStrobe * smoothstep(10., 17., z) * .3;                                     /* the strobe lights the outer wing */
+        wt += uStrobe * fogM * smoothstep(10., 17., z) * .3;                              /* in the cloud, the strobe lights the outer wing */
         /* in the cloud the wing fades with distance: the root, 2 m away, stays; the tip, 17 m away, almost disappears */
         col = pal(mix(mix(uWing.x, uWing.y, wt), fogT, fogM * (1. - exp(-z / 6.))), b);
       }

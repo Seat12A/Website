@@ -27,8 +27,7 @@ en ligne publique (un texte qui décrit un fonctionnement doit être vrai).
 | 0,265 | Dans le nuage | Le problème | Sur les réseaux, on y voit mal |
 | 0,455 | La percée | Ce qu'on fait | Vérifier, remettre en contexte, nuancer |
 | 0,55 | Croisière | Transparence | Rien à vendre, rien à cacher |
-| 0,64 | Croisière | Les études | Ce qui vient ensuite |
-| 0,72 | Heure dorée | S'en servir | Demander une vérification, l'extension |
+| 0,72 | Heure dorée | S'en servir | Demander une vérification, l'extension (et la traînée d'un autre avion) |
 | 0,885 | Paris la nuit | Internet | La beauté d'Internet |
 | 1 | Garé | Arrivée | Détachez votre ceinture, et deux boutons |
 
@@ -60,9 +59,9 @@ Le brouillard est la métaphore : on n'y voit rien.
 Le moment le plus lumineux de la page porte le concept. Un pictogramme par point (loupe, photo légendée, balance).
 
 - **Ce que fait Seat 12A.** (illustré par les parhélies : un soleil, trois images)
-- Vérifier : « Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source. »
-- Remettre en contexte : « Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque. »
-- Nuancer : « Beaucoup de posts ne sont ni complètement vrais ni complètement faux. On explique ce qui est sûr et ce
+- Vérifier les posts : « Ce chiffre est-il juste ? Cette citation existe-t-elle ? On remonte à la source. »
+- Remettre les posts dans leur contexte : « Une photo de 2015 présentée comme d'hier, une phrase coupée : on montre ce qui manque. »
+- Apporter de la nuance : « Beaucoup de posts ne sont ni complètement vrais ni complètement faux. On explique ce qui est sûr et ce
   qui ne l'est pas. »
 
 ## 4. Transparence (f = 0,55)
@@ -78,15 +77,10 @@ Le moment le plus lumineux de la page porte le concept. Un pictogramme par point
 publiée ?** La page « Méthode » n'existe pas encore : il faut qu'elle existe avant d'ouvrir la bêta au public.
 Retiré en attendant d'être confirmé : « Un humain a le dernier mot / l'équipage relit chaque note ».
 
-## 5. Les études (f = 0,64)
+## 5. Les études : retirée
 
-- **Plus tard : des études.**
-- « Avec les vérifications accumulées, on publiera de petites études : combien de fausses infos circulent, sur quels
-  sujets, à quels moments d'une campagne, et comment elles se propagent. »
-- Illustré par le décor : la traînée d'un autre avion, qui s'élargit et se défait.
-
-À valider : ne pas promettre la publication des données brutes tant que ce n'est pas décidé (des données sur des
-comptes X sont des données personnelles).
+Retirée le 25/11/2026 à la demande de Jules (« Plus tard : des études… »). Les études restent un projet ; la traînée
+qui l'illustrait est passée sur « Un doute ? ».
 
 ## 6. S'en servir (f = 0,72)
 
@@ -103,7 +97,7 @@ affiche les notes sous les posts ?) Le formulaire ne fait rien pour l'instant.
 - **On aime Internet.**
 - « Wikipédia, les cours en ligne gratuits, les archives ouvertes : on n'a jamais eu autant de savoir à portée de
   main. On veut juste pouvoir continuer à s'y fier. »
-- Illustré par le décor : des vagues de lumière lentes qui traversent Paris.
+- Illustré par le décor : Paris en nappe de lumière chaude, traversée de vagues lentes.
 
 ## 8. Arrivée (f = 1)
 

@@ -64,8 +64,9 @@ son, puis le pied de page **après** la piste du vol.
   - `sunSize` : rayon du disque (0 = pas de disque). La **position** du soleil ne se règle plus ici (voir §4).
 - Courbes : `altFt` (pieds), `tilt` (degrés), `horizon` (hauteur de l'horizon), `groundLights` (lumières du sol),
   `travel` (distance parcourue).
-- Phénomènes (0 à 1) : `halo(f)` (parhélies, 0,43–0,6), `contrail(f)` (traînée, 0,55–0,73 : avancement de la
-  traversée et visibilité), `network(f)` (réseau de Paris, à partir de 0,845). Le lapin et le flash dans le nuage
+- Phénomènes (0 à 1) : `halo(f)` (parhélies, 0,43–0,6), `contrail(f)` (traînée, 0,63–0,765 : avancement de la
+  traversée et visibilité), `network(f)` (vagues sur Paris, à partir de 0,845), `beacon(f)` (angle du faisceau de la
+  tour Eiffel, environ un tour sur l'arrivée de nuit). Le lapin et le flash dans le nuage
   n'ont pas de courbe : ils existent dès que la piste (de nuit, à l'arrivée) ou le brouillard sont là.
 - Repères : `GROUND_END = 0.215` (fin de la phase sol), `NIGHT_START = 0.81` (retour au sol, nuit), `CITY_START = 0.5`.
 - Étapes : 0 au sol (heure bleue) · ~0,05 rotation · 0,05–0,17 montée · 0,165–0,215 entrée dans le nuage ·
@@ -122,19 +123,24 @@ Une ambiance, pas des formes précises : le pixel art ne permet pas le détail.
   montée, comme en vrai.
 - **L'aile dans le brouillard** : le ton de l'aile est mélangé au ton du brouillard (`fogT`), d'autant plus que la
   partie est loin (`1 - exp(-z / 6)` : l'emplanture reste, le bout disparaît) ; le stroboscope éclaire le bout d'aile ;
-  le feu rouge est atténué.
+  le feu rouge est atténué. Hors du nuage, le flash n'éclaire pas l'aile.
 - **Traînée** (`uContrail`, ciel de croisière) : l'avion (un point clair) traverse en haut de l'écran sur une
   trajectoire fixe ; derrière lui, la traînée commence fine, s'élargit, ondule et pâlit avec l'âge (`age = cX - p.x`).
   Ses formes (ondulations, grain) dépendent de la position dans le ciel, pas de la distance à l'avion : elles restent
-  sur place quand l'avion avance. **Son ombre** : une bande sombre aplatie sur la mer de nuages, décalée.
-- **Réseau de Paris** (`uNet`, dans `ground()`) : une vague `pow(0,5 + 0,5 sin((rad - t·420) / 700), 3)` part du centre
-  (une toutes les dix secondes environ) ; elle augmente la densité et l'éclat des lumières de la ville et éclaircit un
-  peu les rues. Aucun trait, aucun point dessiné en plus.
+  sur place quand l'avion avance. (Son ombre sur la mer de nuages a été retirée.)
+- **Paris** (dans `ground()`) : plus de points lumineux (`cityLight` ne sert plus qu'aux villages). Une valeur `a`
+  (quartiers `fbm3`, quelques rues par endroits, avenues de l'Étoile, quais, bord de la ville) devient une petite rampe
+  de lumière chaude à 4 intensités, tramée entre voisines. Chaque ligne fait au moins une cellule : plus fine, elle
+  devient plus pâle au lieu de disparaître, donc rien ne scintille au défilement. **Le réseau** (`uNet`) : une vague
+  `pow(0,5 + 0,5 sin((rad - t·420) / 700), 3)` part du centre et éclaire un peu plus la nappe là où elle passe.
 - **Faisceau de la tour Eiffel** (après les bâtiments) : une droite en 3D depuis le sommet (324 m), presque
-  horizontale, qui tourne (`uTime × 0,85`), projetée avec la caméra ; la distance en mètres le long du faisceau est
-  retrouvée par interpolation en perspective (`iz`). Largeur `3 m + 1,2 %` de la distance, atténuation sur 6,5 km,
-  brume (`fbm3`), plus lumineux vers nous (`dot(dir, toCam)`), éclat de la source et de l'aile quand il nous balaie.
-  Le sommet de la tour fait au moins une cellule de large, pour que le faisceau parte bien de quelque chose.
+  horizontale, orientée par `uBeam` (le défilement), projetée avec la caméra ; la distance en mètres le long du
+  faisceau est retrouvée par interpolation en perspective (`iz`). Largeur `2,5 m + 0,9 %` de la distance ; plus fin
+  qu'une cellule, il pâlit au lieu de s'élargir (`sub`) ; sa lumière s'étale (`(2,5 / largeur)^0,35`) ; diffusion
+  Henyey-Greenstein `g = 0,55` (1 vu de côté, jusqu'à 7 quand il vient vers nous) ; atténuation sur 9 km ; brume
+  `fbm3` fixée le long du faisceau. Caché par ce qui est plus proche (`occZ` : sol, bâtiments ; l'aile est dessinée
+  après). Lueur de la lampe, éclat de la source et de l'aile quand il nous balaie. Le sommet de la tour fait au moins
+  une cellule de large.
 - **Lapin** (dans `ground()`, avant l'aéroport) : piste parallèle à 1 km (z 978–1022), feux d'approche sur 900 m
   avant le seuil, une barre transversale à 300 m, seuil vert ; un éclair blanc parcourt les 30 postes deux fois par
   seconde vers le seuil. Visible vers f = 0,89–0,93.
