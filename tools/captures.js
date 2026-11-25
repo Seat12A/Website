@@ -18,7 +18,8 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const here = path.dirname(fileURLToPath(import.meta.url));
-const dist = path.resolve(here, '../dist');
+/* with the Vercel adapter, the static pages are in dist/client (the server-rendered ones need tools/pages.js) */
+const dist = [path.resolve(here, '../dist/client'), path.resolve(here, '../dist')].find((d) => fs.existsSync(path.join(d, 'index.html'))) ?? path.resolve(here, '../dist');
 const out = path.resolve(here, 'captures');
 
 if (!fs.existsSync(path.join(dist, 'index.html'))) {

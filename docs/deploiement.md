@@ -34,17 +34,20 @@ Le prototype chargeait Geist depuis Google Fonts et Lenis depuis un CDN. Désorm
   n'est pas transmise à un tiers) ;
 - Lenis est installé par npm (version 1.1.13, celle du prototype, pour garder exactement le même défilement).
 
-## Quand il faudra un serveur (cases, chatbot)
+## Les pages rendues côté serveur (depuis le 25/11/2026)
 
-Les cases viendront de l'API de Tower et le chatbot devra l'appeler sans exposer de clé dans le navigateur. Il faudra
-alors :
+Les fact-checks lisent l'API de Tower à chaque visite (voir `fact-checks.md`). Le projet utilise donc l'adaptateur
+`@astrojs/vercel` : l'accueil et la 404 restent des fichiers statiques, les pages avec `export const prerender = false`
+deviennent des fonctions Vercel. Conséquences :
 
-1. `npx astro add vercel` (installe l'adaptateur `@astrojs/vercel`) ;
-2. garder les pages statiques par défaut et rendre à la demande seulement ce qui en a besoin
-   (`export const prerender = false` dans la page ou la route d'API) ;
-3. pour les cases, utiliser le cache de Vercel (ISR) plutôt qu'un appel à Tower à chaque visite ;
-4. mettre l'adresse et la clé de l'API de Tower dans les variables d'environnement Vercel (jamais dans le dépôt, qui
-   est public).
+- `npm run build` produit `.vercel/output/` (format attendu par Vercel) et `dist/client/` (les pages statiques, que
+  `tools/captures.js` utilise). `vercel.json` n'a plus `outputDirectory` ni `cleanUrls` (l'adaptateur s'en charge,
+  comme du cache d'un an sur `/_astro/*`) ; les en-têtes de sécurité y restent.
+- Les pages des fact-checks sont gardées 5 minutes par le CDN de Vercel (`s-maxage=300`), comme Tower : la plupart des
+  visites ne réveillent pas la fonction.
+- `TOWER_API_URL` (facultatif, pas secret) : autre adresse de Tower, par défaut `https://api.seat12a.org`. Aucune clé :
+  les routes utilisées sont publiques. Ne jamais mettre de token d'équipe.
+- Le chatbot, plus tard, sera une route d'API du même genre, avec sa clé dans les variables d'environnement Vercel.
 
 ## Avant d'ouvrir la bêta au public
 

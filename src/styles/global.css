@@ -1,0 +1,138 @@
+/*
+ * Pages other than the home page (fact-checks, a post): Tailwind + shadcn/ui. Minimal, light by default, dark when the
+ * visitor's computer is set to dark (prefers-color-scheme; no toggle). Same fonts as the home page (Geist, Geist Mono),
+ * the home page's navy as ink in light mode and as the background in dark mode, and small pixel touches: pixel icons,
+ * square dots, a dithered rule under the header. No aviation dressing here (Jules, 25/11/2026).
+ * Rules (docs/decisions.md): no all-caps text, single-colour titles, no frosted glass, no glow.
+ */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+:root {
+  color-scheme: light dark;
+  --radius: 0.5rem;
+  --background: #FFFFFF;
+  --foreground: #0B1030;
+  --card: #FFFFFF;
+  --card-foreground: #0B1030;
+  --popover: #FFFFFF;
+  --popover-foreground: #0B1030;
+  --primary: #0B1030;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F2F3F7;
+  --secondary-foreground: #0B1030;
+  --muted: #F4F5F8;
+  --muted-foreground: #5C6178;
+  --accent: #EEF0F5;
+  --accent-foreground: #0B1030;
+  --destructive: #C2412F;
+  --border: #E3E5EC;
+  --input: #D9DCE5;
+  --ring: #7A8099;
+  /* verdicts: darker shades on white, lighter ones on the night (same hues as docs/fact-checks.md) */
+  --v-true: #0E7C68;
+  --v-mostly_true: #4C7A2C;
+  --v-misleading: #A35F00;
+  --v-false: #BF3E2C;
+  --v-unverifiable: #5A6176;
+  --amber: #B86E00;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0B1030;
+    --foreground: #F1F2F7;
+    --card: #10163A;
+    --card-foreground: #F1F2F7;
+    --popover: #10163A;
+    --popover-foreground: #F1F2F7;
+    --primary: #FFFFFF;
+    --primary-foreground: #0B1030;
+    --secondary: #161D45;
+    --secondary-foreground: #F1F2F7;
+    --muted: #131A40;
+    --muted-foreground: #9BA1BD;
+    --accent: #1A2250;
+    --accent-foreground: #F1F2F7;
+    --destructive: #F27A68;
+    --border: #222A56;
+    --input: #2A3262;
+    --ring: #8A90B0;
+    --v-true: #3FC1A6;
+    --v-mostly_true: #9BCB7C;
+    --v-misleading: #F0B043;
+    --v-false: #F27A68;
+    --v-unverifiable: #A3ABBD;
+    --amber: #FFB020;
+  }
+}
+
+@theme inline {
+  --font-sans: "Geist Variable", "SF Pro Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-amber: var(--amber);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground font-sans antialiased; }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+}
+
+/* ---------- Pixel touches ---------- */
+@layer components {
+  /* icons drawn on a cell grid (PixelIcon.tsx) */
+  .pixel { shape-rendering: crispEdges; fill: currentColor; flex: none; }
+  /* a dithered rule: two rows of a 2-cell checkerboard fading the border colour in */
+  .dither {
+    height: 4px;
+    background:
+      conic-gradient(var(--border) 25%, transparent 0 50%, var(--border) 0 75%, transparent 0) 0 0 / 4px 4px;
+  }
+  /* a square dot, a pixel of a colour */
+  .dot { display: inline-block; width: 8px; height: 8px; background: currentColor; flex: none; }
+  /* links: dashed underline that steps along on hover, like on the home page */
+  .link-dash {
+    text-decoration: none; padding-bottom: 3px;
+    background: linear-gradient(90deg, currentColor 50%, transparent 0) 0 100% / 6px 1px repeat-x;
+  }
+  .link-dash:hover { animation: dash .5s steps(3) infinite; }
+  @keyframes dash { to { background-position: 6px 100%; } }
+  /* verdict colour from data-veracity */
+  [data-veracity] { --v: var(--v-unverifiable); }
+  [data-veracity="true"] { --v: var(--v-true); }
+  [data-veracity="mostly_true"] { --v: var(--v-mostly_true); }
+  [data-veracity="misleading"] { --v: var(--v-misleading); }
+  [data-veracity="false"] { --v: var(--v-false); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-dash:hover { animation: none; }
+}

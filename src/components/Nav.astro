@@ -1,0 +1,16 @@
+---
+/*
+ * Navigation bar of the home page: it floats over the flight and turns solid when you scroll (main.js). The other
+ * pages have their own header (layouts/Page.astro), with the same links (lib/links.js). Links marked data-soon point
+ * to pages that do not exist yet: a click does nothing.
+ */
+import Logo from './Logo.astro';
+import { NAV } from '../lib/links.js';
+---
+<nav class="nav" id="nav" aria-label="Navigation principale">
+  <a class="brand" href="/" id="home" aria-label="Seat 12A, accueil"><Logo /></a>
+  <div class="nav-links">
+    {NAV.map((l) => l.href ? <a href={l.href}>{l.label}</a> : <a href="#" data-soon>{l.label}</a>)}
+  </div>
+  <a class="btn small" href="#" data-soon>Ajouter l'extension</a>
+</nav>

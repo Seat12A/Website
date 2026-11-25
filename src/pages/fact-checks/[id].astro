@@ -1,0 +1,212 @@
+---
+/*
+ * The page of one fact-check: the claim, the verdict, the context note, what the post leaves out, the detailed sheet,
+ * the sources, the post (on demand), the facts of the claim and its history. Rendered on the server (cached 5 minutes
+ * by Vercel's CDN) from GET /v1/cases/{public_id}/details?lang=fr (docs/api-tower.md §3.2). Unknown or unpublished:
+ * a real 404.
+ *
+ * The claim is always shown between quotation marks: it is what the post says, not what Seat 12A says.
+ */
+export const prerender = false;
+
+import Page from '../../layouts/Page.astro';
+import PostEmbed from '../../components/PostEmbed.astro';
+import { PixelIcon } from '../../components/fc/PixelIcon';
+import { VerdictBadge } from '../../components/fc/VerdictBadge';
+import { cn } from '../../lib/utils';
+import { badgeVariants } from '../../components/ui/badge';
+import { Separator } from '../../components/ui/separator';
+import { ApiError, caseDetails, isNotFound, CACHE_NONE, CACHE_NOT_FOUND, CACHE_OK } from '../../lib/tower.js';
+import {
+  CLAIM_TYPES, CONTEXT_NEED, CONTEXT_TYPES, STATUSES, VERACITY, clock, jurisdiction, language, longDate, period, quote,
+  safeUrl, shortDate, sourceLabel,
+} from '../../lib/labels.js';
+
+const { id = '' } = Astro.params;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+let c = null, missing = false, failed = false;
+if (!UUID.test(id)) missing = true;
+else {
+  try {
+    c = await caseDetails(id.toLowerCase());
+  } catch (e) {
+    if (isNotFound(e)) missing = true;
+    else {
+      failed = true;
+      console.error('Tower unavailable for a fact-check', e instanceof ApiError ? `${e.status} ${e.code} ${e.requestId}` : e);
+    }
+  }
+}
+Astro.response.status = missing ? 404 : failed ? 503 : 200;
+Astro.response.headers.set('Cache-Control', missing ? CACHE_NOT_FOUND : failed ? CACHE_NONE : CACHE_OK);
+
+const claimText = c ? (c.claim?.text_fr ?? c.claim?.text ?? c.title) : null;
+const heading = claimText ? quote(claimText) : c?.kind === 'moderation' ? 'Modération' : 'Vérification';
+const verdict = c?.verdict ?? null;
+const veracity = verdict?.veracity ?? c?.veracity ?? null;
+const need = CONTEXT_NEED[verdict?.context_need ?? c?.context_need ?? 'none'];
+const note = c?.note ?? null;
+const sources = (note?.links ?? []).map(safeUrl).filter(Boolean);
+const sheet = (note?.fact_sheet ?? '').trim().split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+const state = verdict?.state ?? c?.verdict_state ?? null;
+const juris = c?.claim?.jurisdictions?.length ? c.claim.jurisdictions : (c?.jurisdictions ?? []);
+const claimType = c?.claim?.claim_type ?? c?.claim_type ?? null;
+const claimLang = c?.claim_lang ?? c?.content?.lang ?? null;
+const published = c && !c.legacy ? safeUrl(c.published_url) : null;
+
+const facts = c ? [
+  claimType && ['Type', CLAIM_TYPES[claimType] ?? claimType],
+  c.claim?.subject && ['Sujet', c.claim.subject],
+  c.claim?.place && ['Lieu', c.claim.place],
+  (c.claim?.period_start || c.claim?.period_end) && ['Période', period(c.claim.period_start, c.claim.period_end)],
+  juris.length && ['Pays', juris.map(jurisdiction).join(', ')],
+  claimLang && claimLang !== 'fr' && ['Langue du post', language(claimLang)],
+].filter(Boolean) : [];
+
+const timeline = (c?.timeline ?? []).filter((t) => t.status in STATUSES);
+const v = veracity ? VERACITY[veracity] : null;
+const title = missing ? 'Vérification introuvable · Seat 12A'
+  : failed ? 'Fact-check · Seat 12A'
+  : `${heading}${v ? ` : ${v.label}` : ''} · Seat 12A`;
+const description = note?.text ? (note.text.length > 155 ? `${note.text.slice(0, 154)}…` : note.text)
+  : 'Une vérification de Seat 12A : le verdict, le contexte qui manque et les sources.';
+
+const h2 = 'text-sm font-medium text-muted-foreground';
+const banner = 'mt-6 max-w-3xl rounded-lg border border-[color-mix(in_oklab,var(--v)_35%,transparent)] bg-[color-mix(in_oklab,var(--v)_8%,transparent)] px-4 py-3 text-sm';
+---
+<Page title={title} description={description} current="/fact-checks" noindex={missing || failed}>
+  <a href="/fact-checks" class="group mb-10 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+    <PixelIcon name="arrow-left" className="size-3 transition-transform duration-200 ease-[steps(2)] group-hover:-translate-x-1" />
+    Tous les fact-checks
+  </a>
+
+  {missing && (
+    <section class="grid max-w-3xl gap-3">
+      <h1 class="text-4xl font-medium tracking-tight md:text-5xl">Cette vérification n'existe pas.</h1>
+      <p class="text-lg text-muted-foreground">Le lien est peut-être incomplet, ou la vérification n'est pas encore publiée.</p>
+    </section>
+  )}
+
+  {failed && (
+    <section class="grid max-w-3xl gap-3">
+      <h1 class="text-4xl font-medium tracking-tight md:text-5xl">Cette vérification n'est pas disponible pour le moment.</h1>
+      <p class="text-lg text-muted-foreground">Le service qui fournit les vérifications ne répond pas. Réessayez dans quelques minutes.</p>
+    </section>
+  )}
+
+  {c && (
+    <article>
+      <header class="grid max-w-3xl gap-5">
+        <h1 class="text-3xl leading-tight font-medium tracking-tight md:text-5xl md:leading-[1.08]">{heading}</h1>
+        <div class="flex flex-wrap items-center gap-2">
+          {v && <VerdictBadge veracity={veracity} size="lg" />}
+          {need && <span class={cn(badgeVariants({ variant: 'outline' }), 'rounded-md px-3 py-1.5 text-sm font-normal text-muted-foreground')}>{need}</span>}
+        </div>
+        <p class="font-mono text-xs text-muted-foreground">
+          {verdict?.validated_at && <>Vérifié le <time datetime={verdict.validated_at}>{longDate(verdict.validated_at)}</time></>}
+          {verdict?.validated_at && c.published_at && ' · '}
+          {c.published_at && <>publié le <time datetime={c.published_at}>{longDate(c.published_at)}</time></>}
+          {!verdict?.validated_at && !c.published_at && c.updated_at && <>Mis à jour le <time datetime={c.updated_at}>{longDate(c.updated_at)}</time></>}
+        </p>
+      </header>
+
+      {state === 'expired' && <p data-veracity="misleading" class={banner}>Vérification du {shortDate(verdict?.validated_at ?? c.published_at)}, susceptible d'être dépassée : la situation a pu changer depuis.</p>}
+      {state === 'superseded' && <p data-veracity="misleading" class={banner}>Ce verdict a été mis à jour depuis : une vérification plus récente le remplace.</p>}
+
+      <Separator className="my-10" />
+
+      <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-16">
+        <div class="grid min-w-0 gap-10">
+          {c.legacy && (
+            <p class="text-lg leading-relaxed">Le détail de cette vérification (verdict, contexte, sources) sera bientôt affiché ici.{safeUrl(c.published_url) && <> En attendant, elle est publiée sur X : <a class="link-dash font-medium" href={safeUrl(c.published_url)} rel="noopener noreferrer" target="_blank">voir la publication</a>.</>}</p>
+          )}
+          {c.kind === 'moderation' && !c.legacy && <p class="text-lg leading-relaxed">Ce dossier concerne une décision de modération : il n'a pas de verdict.</p>}
+
+          {note?.text && (
+            <section class="grid gap-3">
+              <h2 class={h2}>Ce qu'il faut savoir</h2>
+              <p class="max-w-[62ch] text-lg leading-relaxed">{note.text}</p>
+              {note.machine_translated && <p class="text-xs text-muted-foreground">Traduit automatiquement.</p>}
+            </section>
+          )}
+          {!note && verdict && <p class="text-sm text-muted-foreground">La note de contexte de cette vérification n'est plus affichée : seul le verdict reste.</p>}
+
+          {verdict?.context_types?.length > 0 && (
+            <section class="grid gap-3">
+              <h2 class={h2}>Ce qui manque au post</h2>
+              <ul class="flex flex-wrap gap-2">
+                {verdict.context_types.map((t) => <li class={cn(badgeVariants({ variant: 'secondary' }), 'gap-2 rounded-md px-2.5 py-1 text-[13px] font-normal')}><span class="dot size-1.5 opacity-50" aria-hidden="true"></span>{CONTEXT_TYPES[t] ?? t}</li>)}
+              </ul>
+            </section>
+          )}
+
+          {sheet.length > 0 && (
+            <details class="group border-y">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-medium outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+                En savoir plus
+                <PixelIcon name="chevron-down" className="size-3 text-muted-foreground transition-transform group-open:rotate-180" />
+              </summary>
+              <div class="grid gap-4 pb-6">{sheet.map((p) => <p class="max-w-[66ch] leading-relaxed whitespace-pre-line text-muted-foreground">{p}</p>)}</div>
+            </details>
+          )}
+
+          {sources.length > 0 && (
+            <section class="grid gap-3">
+              <h2 class={h2}>Sources</h2>
+              <ol class="grid gap-1">
+                {sources.map((s, i) => { const l = sourceLabel(s); return (
+                  <li>
+                    <a href={s} rel="noopener noreferrer" target="_blank" class="group -mx-3 grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline rounded-md px-3 py-2 transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none">
+                      <span class="font-mono text-xs text-muted-foreground tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                      <span class="min-w-0">
+                        <span class="block font-medium [overflow-wrap:anywhere]">{l.host}</span>
+                        {l.path && <span class="block font-mono text-xs text-muted-foreground [overflow-wrap:anywhere]">{l.path}</span>}
+                      </span>
+                      <PixelIcon name="arrow-out" className="size-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                    </a>
+                  </li>
+                ); })}
+              </ol>
+            </section>
+          )}
+        </div>
+
+        <aside class="grid min-w-0 gap-10">
+          {(c.content?.url || c.url) && (
+            <section class="grid gap-3">
+              <h2 class={h2}>Le post vérifié</h2>
+              <PostEmbed url={c.content?.url ?? c.url} platform={c.content?.platform ?? c.platform} externalId={c.content?.external_id ?? c.external_id ?? c.x_post_id} />
+              {c.posts_count > 1 && <p class="text-sm text-muted-foreground">Cette affirmation circule dans {c.posts_count} posts.</p>}
+            </section>
+          )}
+
+          {(facts.length > 0 || published) && (
+            <section class="grid gap-3">
+              <h2 class={h2}>L'affirmation</h2>
+              <dl class="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-5 gap-y-2.5 text-sm">
+                {facts.map(([k, val]) => <><dt class="text-muted-foreground">{k}</dt><dd class="[overflow-wrap:anywhere]">{val}</dd></>)}
+                {published && <><dt class="text-muted-foreground">Sur X</dt><dd><a class="link-dash font-medium" href={published} rel="noopener noreferrer" target="_blank">Notre publication</a></dd></>}
+              </dl>
+            </section>
+          )}
+
+          {timeline.length > 0 && (
+            <section class="grid gap-3">
+              <h2 class={h2}>Historique</h2>
+              <ol class="grid gap-2.5 text-sm">
+                {timeline.map((t, i) => (
+                  <li class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+                    <span class:list={['dot size-2', i === timeline.length - 1 ? 'text-foreground' : 'text-muted-foreground/50']} aria-hidden="true"></span>
+                    <span>{STATUSES[t.status]}</span>
+                    <time class="font-mono text-xs text-muted-foreground tabular-nums" datetime={t.at}>{shortDate(t.at)} {clock(t.at)}</time>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+        </aside>
+      </div>
+    </article>
+  )}
+</Page>

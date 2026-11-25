@@ -158,11 +158,19 @@ complété au passage en bêta puis le 25/11/2026 (textes, illustrations, bouton
   sections empilées au centre (bug vu par Jules le 25/11/2026, quand le script tarde ou échoue). Si le script ne
   démarre pas en 6 s, ou sans JavaScript, les textes s'affichent comme une page simple, lisible.
 
+## Les autres pages (fact-checks…)
+
+- **Minimalistes, shadcn/ui obligatoire, clair par défaut et sombre si l'ordinateur l'est** (Jules, 25/11/2026). Même
+  typo que l'accueil (Geist, Geist Mono), le bleu nuit `#0B1030` pour la continuité, de petits rappels au pixel
+  (pictogrammes, points carrés, ligne tramée). **Ne pas recopier un style avion** sur ces pages : une première version
+  sombre en « tableau des arrivées », avec un « parcours » façon vol, a été remplacée. Détails : `fact-checks.md`.
+- L'affirmation vérifiée toujours entre guillemets : sinon le titre se lit comme une affirmation de Seat 12A.
+
 ## Points à valider avec Jules ou l'équipe
 
 - Les textes qui décrivent le fonctionnement de Tower (voir `textes.md`) : notamment « un humain relit chaque note »
   (retiré en attendant), le code public de Tower et de l'extension, l'endroit où la méthode est publiée, ce que fait
   l'extension.
-- Les libellés exacts des verdicts (pour le futur tableau des arrivées).
+- Les libellés et les couleurs des verdicts (`src/lib/labels.js`, `global.css`) : repris de la doc de l'API.
 - L'éclairage de nuit de la tour Eiffel et son phare font l'objet de droits pour certains usages : à vérifier avant la
   mise en ligne.

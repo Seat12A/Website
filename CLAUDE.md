@@ -9,8 +9,10 @@ Le site aura trois parties : la page d'accueil (en bêta), les cases (chaque fac
 demander une vérification. On ne vend rien, et tout le code est public. Seat 12A n'a pas encore de statut juridique :
 ne jamais écrire « association » sur le site.
 
-Pile : **Astro** (site statique pour l'instant), déployé sur **Vercel**. Pas de CDN externe au chargement : polices
-(Fontsource) et Lenis viennent de npm. Voir `docs/deploiement.md`.
+Pile : **Astro**, déployé sur **Vercel** (adaptateur `@astrojs/vercel`) : l'accueil est statique, les pages des
+fact-checks sont rendues côté serveur depuis l'API de Tower (`docs/fact-checks.md`, `docs/api-tower.md`). Ces pages-là
+utilisent **shadcn/ui** (Tailwind 4, React rendu sur le serveur), en clair par défaut. Pas de CDN externe au
+chargement : polices (Fontsource) et Lenis viennent de npm. Voir `docs/deploiement.md`.
 
 Le développeur principal s'appelle Jules. Il parle français ; répondre en français, honnêtement, et dire quand on ne
 sait pas.
@@ -35,8 +37,9 @@ sait pas.
 - Les textes doivent apprendre quelque chose au visiteur, et ce qu'ils disent du fonctionnement doit être vrai :
   voir `docs/textes.md`.
 - Soleil et lune : jamais de position écrite à l'écran, une hauteur au-dessus de l'horizon (`flightPlan.js`).
-- Vérifier chaque changement visuel avec `npm run build` puis `node tools/captures.js <points du vol>`, et regarder
-  les images.
+- Vérifier chaque changement visuel avec `npm run build` puis `node tools/captures.js <points du vol>` (accueil) ou
+  `node tools/pages.js <adresses>` (fact-checks, en clair et avec `SOMBRE=1`), et regarder les images.
+- Les pages autres que l'accueil : shadcn/ui, minimalistes, sans style avion recopié (`docs/decisions.md`).
 - Chaque session se termine par un résumé dans `docs/sessions/AAAA-MM-JJ-sujet.md`.
 
 ## Vérifier
@@ -46,6 +49,7 @@ npm install && npm run build            # d'abord : les captures utilisent dist/
 node tools/captures.js                  # vol complet en 11 images, dans tools/captures/
 node tools/captures.js 0.16 0.18 0.2    # zoom sur un passage
 LARGEUR=390 HAUTEUR=844 node tools/captures.js 0 0.55 1   # téléphone
+node tools/pages.js                     # pages des fact-checks (faux Tower local ; REEL=1 pour la vraie API)
 ```
 
 Playwright et Chromium sont nécessaires (`require('playwright')`). Le rendu passe par SwiftShader : lent mais fidèle.

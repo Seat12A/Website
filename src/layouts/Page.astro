@@ -1,0 +1,67 @@
+---
+/*
+ * Shell of the pages other than the home page: minimal, light by default and dark when the computer is (global.css),
+ * Tailwind + shadcn/ui. Header with the logo and the same links as the home page (lib/links.js), a dithered rule as
+ * a pixel reminder, the content, a quiet footer.
+ */
+import Base from './Base.astro';
+import Logo from '../components/Logo.astro';
+import { buttonVariants } from '../components/ui/button';
+import { ABOUT, FOOTER, NAV } from '../lib/links.js';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  current?: string;
+}
+const { title, description, noindex = false, current } = Astro.props;
+const year = new Date().getFullYear();
+---
+<Base title={title} description={description} noindex={noindex}>
+  <slot name="head" slot="head" />
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:text-primary-foreground">Aller au contenu</a>
+
+  <header class="sticky top-0 z-40 bg-background/95">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-6 px-4">
+      <a href="/" class="flex items-center text-foreground" aria-label="Seat 12A, accueil"><span class="block h-[22px] [&>svg]:h-full [&>svg]:w-auto"><Logo /></span></a>
+      <nav aria-label="Navigation principale" class="flex items-center gap-1 max-md:hidden">
+        {NAV.map((l) => l.href
+          ? <a href={l.href} aria-current={current === l.href ? 'page' : undefined} class={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-foreground' })}>{l.label}</a>
+          : <a href="#" data-soon class={buttonVariants({ variant: 'ghost', size: 'sm', className: 'text-muted-foreground' })}>{l.label}</a>)}
+      </nav>
+      <a href="#" data-soon class={buttonVariants({ variant: 'outline', size: 'sm' })}>Ajouter l'extension</a>
+    </div>
+    <div class="dither" aria-hidden="true"></div>
+  </header>
+
+  <main id="main" class="mx-auto min-h-[70vh] max-w-5xl px-4 pt-12 pb-24 md:pt-16">
+    <slot />
+  </main>
+
+  <footer class="border-t bg-muted/40">
+    <div class="mx-auto grid max-w-5xl gap-10 px-4 py-12">
+      <p class="max-w-prose text-sm leading-relaxed text-muted-foreground">{ABOUT}</p>
+      <nav aria-label="Pied de page" class="grid grid-cols-2 gap-8 md:grid-cols-4">
+        {FOOTER.map((col) => (
+          <div class="grid content-start gap-2.5">
+            <h2 class="text-sm font-medium">{col.title}</h2>
+            {col.links.map((l) => l.href
+              ? <a href={l.href} rel={l.href.startsWith('http') ? 'noopener' : undefined} class="text-sm text-muted-foreground hover:text-foreground">{l.label}</a>
+              : <a href="#" data-soon class="text-sm text-muted-foreground hover:text-foreground">{l.label}</a>)}
+          </div>
+        ))}
+      </nav>
+      <div class="flex flex-wrap justify-between gap-4 border-t pt-5 font-mono text-xs text-muted-foreground">
+        <span>© {year} Seat 12A</span>
+        <a href="/" class="link-dash text-foreground">Retour à l'accueil</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* links to pages that do not exist yet do nothing */
+    document.querySelectorAll('[data-soon]').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+  </script>
+</Base>

@@ -7,11 +7,13 @@ Projet Astro, page `src/pages/index.astro`. La scène du vol est dessinée en We
 
 | Fichier | Rôle |
 |---|---|
-| `src/pages/index.astro` | Le HTML : barre de navigation, sections de texte, altimètre, bouton son. |
+| `src/pages/index.astro` | Le HTML : sections de texte, altimètre, bouton son. |
+| `src/components/Nav.astro` | La barre de navigation de l'accueil. Liens partagés avec les autres pages : `src/lib/links.js`. |
 | `src/layouts/Base.astro` | Coquille commune : langue, balises meta, Open Graph, favicon. |
 | `src/components/Logo.astro`, `Footer.astro` | Le logo complet (SVG), le pied de page. |
 | `src/pages/404.astro` | Page introuvable. |
-| `src/styles/home.css` | Tout le style de l'accueil. Les polices sont importées ici (Fontsource). |
+| `src/styles/site.css` | Partie commune : polices (Fontsource), couleurs, barre de navigation, boutons, liens, pied de page. |
+| `src/styles/home.css` | Le style propre à l'accueil (le vol, les sections, l'altimètre, le son). |
 | `src/scripts/home/main.js` | Point d'entrée : relie tout et fait tourner la boucle d'animation. |
 | `src/scripts/home/flightPlan.js` | **Le plan de vol** : images clés, altitude, tangage, horizon, soleil, lune. |
 | `src/scripts/home/palettes.js` | Les 8 échelles de 8 tons (OKLCH). |
@@ -22,7 +24,7 @@ Projet Astro, page `src/pages/index.astro`. La scène du vol est dessinée en We
 | `src/scripts/home/intro.js` | L'arrivée : la scène apparaît cellule par cellule, en tramage, depuis le milieu. |
 | `src/scripts/home/effects.js` | Étoiles filantes, stroboscope. |
 | `src/scripts/home/cabinSound.js` | Son d'ambiance (Web Audio), coupé par défaut, et le « ding » de la ceinture à l'arrivée. |
-| `tools/captures.js` | Captures du vol (Playwright) à partir de `dist/`. |
+| `tools/captures.js` | Captures du vol (Playwright) à partir de `dist/client/`. |
 
 ## Vue d'ensemble
 

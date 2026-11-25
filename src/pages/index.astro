@@ -9,11 +9,12 @@
  * Seat 12A does); in cruise, how we work and what comes next; over Paris at night, the internet seen from above.
  *
  * Pictograms (.picto) are drawn by hud.js. Links marked data-soon point to pages that
- * do not exist yet: they do nothing for now. Texts: see docs/textes.md (current version, what must be validated).
+ * do not exist yet: they do nothing for now. The fact-checks are at /fact-checks (server-rendered from the Tower API). Texts: see docs/textes.md (current version, what must be validated).
  */
 import Base from '../layouts/Base.astro';
-import Logo from '../components/Logo.astro';
+import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import '../styles/site.css';
 import '../styles/home.css';
 
 const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X, en français, avec ses sources. Gratuit, sans publicité, code ouvert.";
@@ -26,23 +27,14 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
   </script>
   <canvas id="sky" aria-hidden="true"></canvas>
 
-  <nav class="nav" id="nav" aria-label="Navigation principale">
-    <a class="brand" href="/" id="home" aria-label="Seat 12A, accueil"><Logo /></a>
-    <div class="nav-links">
-      <a href="#" data-soon>Fact-checks</a>
-      <a href="#" data-soon>Demander</a>
-      <a href="#" data-soon>Méthode</a>
-      <a href="#" data-soon>À propos</a>
-    </div>
-    <a class="btn small" href="#" data-soon>Ajouter l'extension</a>
-  </nav>
+  <Nav />
 
   <main id="track">
     <section class="sec hero" style="--f:0" data-calm="1">
       <h1>Prenez de la hauteur sur ce qui circule.</h1>
       <p>Sur les réseaux, une info peut faire le tour du web avant que quiconque ait vérifié qu'elle est vraie. Seat 12A vérifie des posts qui circulent sur X, ajoute le contexte qui manque et donne ses sources.</p>
       <div class="ctas">
-        <a class="btn" href="#" data-soon>Voir les fact-checks</a>
+        <a class="btn" href="/fact-checks">Voir les fact-checks</a>
         <a class="link" href="#" data-soon>Ajouter l'extension</a>
       </div>
     </section>
@@ -94,7 +86,7 @@ const description = "Seat 12A vérifie et remet en contexte ce qui circule sur X
       <p>Avant de partager un post surprenant, prenez une minute pour le vérifier. Il l'a peut-être déjà été.</p>
       <div class="ctas">
         <a class="btn" href="#" data-soon>Ajouter l'extension</a>
-        <a class="link" href="#" data-soon>Voir les fact-checks</a>
+        <a class="link" href="/fact-checks">Voir les fact-checks</a>
       </div>
     </section>
   </main>

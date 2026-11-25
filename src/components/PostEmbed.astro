@@ -1,0 +1,61 @@
+---
+/*
+ * The verified post. Tower never gives its text or its author: the page shows it through the platform's official
+ * embed. For X, the embed loads a script from X (which can set cookies), so nothing is loaded until the visitor asks
+ * for it; until then, a plain link. No external request on page load (docs/deploiement.md).
+ */
+import { buttonVariants } from './ui/button';
+import { PLATFORMS, safeUrl } from '../lib/labels.js';
+
+interface Props {
+  url: string | null | undefined;
+  platform?: string | null;
+  externalId?: string | null;
+}
+const { url, platform, externalId } = Astro.props;
+const link = safeUrl(url);
+const name = PLATFORMS[platform ?? ''] ?? 'la plateforme';
+const xId = platform === 'x' && /^\d{1,20}$/.test(externalId ?? '') ? externalId : null;
+---
+{link && (
+  <div class="post" data-x-id={xId}>
+    <div class="grid gap-4 rounded-lg border bg-card p-4" data-frame>
+      <p class="text-sm leading-relaxed text-muted-foreground">Le post n'est pas recopié ici : son texte et son auteur restent sur {name}.</p>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+        {xId && <button type="button" data-load class={buttonVariants({ size: 'sm' })}>Afficher le post ici</button>}
+        <a href={link} rel="noopener noreferrer" target="_blank" class="link-dash text-sm font-medium">Ouvrir sur {name}</a>
+      </div>
+      {xId && <p class="text-xs leading-relaxed text-muted-foreground">L'affichage charge un script de X, qui peut déposer des cookies.</p>}
+    </div>
+  </div>
+)}
+
+<script>
+  /* Official X embed, on demand only, in the colours of the visitor's theme. */
+  function loadX(box: HTMLElement) {
+    const id = box.dataset.xId;
+    const frame = box.querySelector<HTMLElement>('[data-frame]');
+    if (!id || !frame) return;
+    const quote = document.createElement('blockquote');
+    quote.className = 'twitter-tweet';
+    quote.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    quote.dataset.lang = 'fr';
+    quote.dataset.dnt = 'true';
+    const a = document.createElement('a');
+    a.href = `https://twitter.com/i/status/${id}`;
+    a.textContent = 'Chargement du post…';
+    a.className = 'link-dash text-sm';
+    quote.append(a);
+    frame.replaceWith(quote);
+    const w = window as unknown as { twttr?: { widgets?: { load: (el?: Element) => void } } };
+    if (w.twttr?.widgets) { w.twttr.widgets.load(box); return; }
+    const s = document.createElement('script');
+    s.src = 'https://platform.twitter.com/widgets.js';
+    s.async = true;
+    s.onerror = () => { a.textContent = 'Le post n’a pas pu être chargé. Ouvrir sur X'; };
+    document.head.append(s);
+  }
+  document.querySelectorAll<HTMLElement>('.post[data-x-id]').forEach((box) => {
+    box.querySelector('[data-load]')?.addEventListener('click', () => loadX(box));
+  });
+</script>
